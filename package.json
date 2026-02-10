@@ -12,6 +12,11 @@
     "test:perf": "playwright test tests/performance.spec.ts",
     "test:visual": "playwright test tests/visual-regression.spec.ts",
     "test:smoke": "playwright test tests/model-tabs.spec.ts --project=chromium",
+    "test:security": "playwright test tests/security.spec.ts",
+    "test:load": "playwright test tests/load-testing.spec.ts",
+    "test:mocking": "playwright test tests/api-mocking.spec.ts",
+    "test:custom-report": "playwright test tests/custom-reporting.spec.ts",
+    "test:all": "playwright test --reporter=html,json",
     "serve": "python3 -m http.server 8080",
     "test:ci": "playwright test --reporter=github",
     "lighthouse": "lighthouse https://ai.blackroadai.com --output html --output-path ./lighthouse-report.html"
