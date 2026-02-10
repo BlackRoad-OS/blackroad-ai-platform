@@ -16,14 +16,29 @@ const Anthropic = require('@anthropic-ai/sdk');
 const AgentMemory = require('./agent-memory');
 const WebSocket = require('ws');
 const { VM } = require('vm2');
+const rateLimit = require('express-rate-limit');
+const { nanoid } = require('nanoid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const HOME = process.env.HOME || '/Users/alexa';
 
+// ==================== RATE LIMITING & SECURITY ====================
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: '⚠️ Too many requests, please try again later'
+});
+
+const executeLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 20, // 20 executions per minute
+    message: '⚠️ Execution rate limit reached. Please wait a moment.'
+});
+
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static('.'));
 
 // ==================== DATABASE CONNECTIONS ====================
@@ -1156,7 +1171,7 @@ const executionHistory = [];
 const MAX_HISTORY = 100;
 
 // Execute JavaScript code in sandboxed VM
-app.post('/api/execute', async (req, res) => {
+app.post('/api/execute', executeLimiter, async (req, res) => {
     const { code, language = 'javascript', timeout = 30000 } = req.body;
 
     if (!code) {
@@ -1165,6 +1180,7 @@ app.post('/api/execute', async (req, res) => {
 
     const executionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
     const startTime = Date.now();
+    metrics.executions++;
 
     try {
         let output = '';
@@ -1223,6 +1239,7 @@ app.post('/api/execute', async (req, res) => {
                 executionHistory.pop();
             }
 
+            metrics.totalExecutionTime += executionTime;
             res.json(response);
 
         } else if (language === 'python') {
@@ -1525,6 +1542,8 @@ app.post('/api/execute', async (req, res) => {
 
     } catch (error) {
         const executionTime = Date.now() - startTime;
+        metrics.errors++;
+        metrics.totalExecutionTime += executionTime;
         res.status(500).json({
             success: false,
             error: error.message,
@@ -1789,6 +1808,249 @@ wss.on('connection', (ws) => {
 
     ws.on('close', () => {
         console.log('🔌 WebSocket client disconnected');
+    });
+});
+
+// ==================== PACKAGE MANAGEMENT ====================
+// Install npm packages
+app.post('/api/packages/npm/install', executeLimiter, async (req, res) => {
+    try {
+        const { packages } = req.body;
+        if (!packages || !Array.isArray(packages)) {
+            return res.status(400).json({ success: false, error: 'packages array required' });
+        }
+        
+        const workDir = `/tmp/npm-${nanoid()}`;
+        fs.mkdirSync(workDir, { recursive: true });
+        fs.writeFileSync(path.join(workDir, 'package.json'), JSON.stringify({ name: 'temp', version: '1.0.0' }));
+        
+        const { exec } = require('child_process');
+        const cmd = `cd ${workDir} && npm install ${packages.join(' ')} --no-save 2>&1`;
+        
+        exec(cmd, { timeout: 60000 }, (error, stdout, stderr) => {
+            const output = stdout + stderr;
+            
+            // Cleanup
+            try {
+                fs.rmSync(workDir, { recursive: true, force: true });
+            } catch(e) {}
+            
+            if (error && !output.includes('added')) {
+                return res.json({ 
+                    success: false, 
+                    error: error.message,
+                    output 
+                });
+            }
+            
+            res.json({ 
+                success: true, 
+                installed: packages,
+                output 
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Install pip packages
+app.post('/api/packages/pip/install', executeLimiter, async (req, res) => {
+    try {
+        const { packages } = req.body;
+        if (!packages || !Array.isArray(packages)) {
+            return res.status(400).json({ success: false, error: 'packages array required' });
+        }
+        
+        const { exec } = require('child_process');
+        const cmd = `pip3 install ${packages.join(' ')} --user 2>&1`;
+        
+        exec(cmd, { timeout: 60000 }, (error, stdout, stderr) => {
+            const output = stdout + stderr;
+            
+            if (error && !output.includes('Successfully installed')) {
+                return res.json({ 
+                    success: false, 
+                    error: error.message,
+                    output 
+                });
+            }
+            
+            res.json({ 
+                success: true, 
+                installed: packages,
+                output 
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ==================== CODE SHARING & COLLABORATION ====================
+const sharedCode = new Map(); // In-memory store (use Redis in production)
+
+app.post('/api/code/share', apiLimiter, (req, res) => {
+    try {
+        const { code, language, title } = req.body;
+        const shareId = nanoid(10);
+        
+        sharedCode.set(shareId, {
+            code,
+            language,
+            title: title || 'Untitled',
+            createdAt: Date.now(),
+            views: 0
+        });
+        
+        res.json({ 
+            success: true, 
+            shareId,
+            url: `/share/${shareId}`
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/code/share/:id', (req, res) => {
+    try {
+        const { id } = req.params;
+        const shared = sharedCode.get(id);
+        
+        if (!shared) {
+            return res.status(404).json({ success: false, error: 'Code not found' });
+        }
+        
+        shared.views++;
+        res.json({ success: true, ...shared });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ==================== AI SUPERPOWERS ====================
+app.post('/api/ai/complete-code', apiLimiter, async (req, res) => {
+    try {
+        const { code, language, cursor } = req.body;
+        
+        const prompt = `Complete this ${language} code. Return ONLY the completion, no explanation:
+
+${code}
+
+Continue from cursor position ${cursor}. Provide the next 1-3 lines.`;
+
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const response = await anthropic.messages.create({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 200,
+            messages: [{ role: 'user', content: prompt }]
+        });
+        
+        const completion = response.content[0].text.trim();
+        res.json({ success: true, completion });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/ai/fix-error', apiLimiter, async (req, res) => {
+    try {
+        const { code, language, error } = req.body;
+        
+        const prompt = `Fix this ${language} code error:
+
+CODE:
+${code}
+
+ERROR:
+${error}
+
+Return the FIXED CODE ONLY, no explanation.`;
+
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const response = await anthropic.messages.create({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: prompt }]
+        });
+        
+        const fixedCode = response.content[0].text.trim();
+        res.json({ success: true, fixedCode });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/ai/explain-code', apiLimiter, async (req, res) => {
+    try {
+        const { code, language } = req.body;
+        
+        const prompt = `Explain this ${language} code in simple terms:
+
+${code}
+
+Be concise and clear.`;
+
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const response = await anthropic.messages.create({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 500,
+            messages: [{ role: 'user', content: prompt }]
+        });
+        
+        const explanation = response.content[0].text;
+        res.json({ success: true, explanation });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/ai/generate-tests', apiLimiter, async (req, res) => {
+    try {
+        const { code, language } = req.body;
+        
+        const prompt = `Generate unit tests for this ${language} code:
+
+${code}
+
+Return ONLY the test code, using appropriate testing framework.`;
+
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const response = await anthropic.messages.create({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: prompt }]
+        });
+        
+        const tests = response.content[0].text.trim();
+        res.json({ success: true, tests });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ==================== HEALTH CHECK ====================
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        timestamp: Date.now()
+    });
+});
+
+// ==================== METRICS ====================
+let metrics = {
+    executions: 0,
+    errors: 0,
+    totalExecutionTime: 0
+};
+
+app.get('/api/metrics', (req, res) => {
+    res.json({
+        ...metrics,
+        avgExecutionTime: metrics.executions > 0 ? metrics.totalExecutionTime / metrics.executions : 0
     });
 });
 

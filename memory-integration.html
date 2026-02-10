@@ -1,0 +1,564 @@
+<!-- Enhanced AI Models Panel with Conversation Sidebar & Memory Integration -->
+
+<style>
+/* Conversation Sidebar */
+.ai-models-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.conversation-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 13px;
+    padding: 20px;
+    height: fit-content;
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+.conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.conversation-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    background: var(--br-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.new-conversation-btn {
+    background: var(--br-gradient);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.new-conversation-btn:hover {
+    transform: translateY(-2px);
+}
+
+.conversation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.conversation-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.conversation-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(147, 51, 234, 0.5);
+    transform: translateX(4px);
+}
+
+.conversation-item.active {
+    background: rgba(147, 51, 234, 0.2);
+    border-color: rgba(147, 51, 234, 0.8);
+}
+
+.conversation-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.conversation-meta {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    justify-content: space-between;
+}
+
+.conversation-badge {
+    background: rgba(147, 51, 234, 0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+/* Context Indicator */
+.context-indicator {
+    background: rgba(147, 51, 234, 0.2);
+    border: 1px solid rgba(147, 51, 234, 0.4);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.context-indicator.active {
+    display: block;
+}
+
+.context-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 8px;
+}
+
+.context-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.context-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Streaming Response */
+.streaming-indicator {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    color: var(--br-purple);
+    font-size: 14px;
+}
+
+.streaming-indicator.active {
+    display: flex;
+}
+
+.streaming-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--br-purple);
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Message History */
+.message-history {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    display: none;
+}
+
+.message-history.active {
+    display: block;
+}
+
+.message {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid;
+}
+
+.message.user {
+    background: rgba(147, 51, 234, 0.1);
+    border-left-color: var(--br-purple);
+}
+
+.message.assistant {
+    background: rgba(192, 132, 252, 0.1);
+    border-left-color: var(--br-pink);
+}
+
+.message-role {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.message-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.message-meta {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 8px;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 20px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--br-purple);
+}
+
+/* Enhanced buttons */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+</style>
+
+<script>
+// Enhanced AI Chat with Memory Integration
+(function() {
+    const API_BASE = window.location.origin;
+    let currentConversation = null;
+    let conversations = [];
+    let messageHistory = [];
+
+    // Initialize when AI Models tab is selected
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadConversations();
+        setupEventListeners();
+    });
+
+    // Load all conversations
+    async function loadConversations() {
+        try {
+            const response = await fetch(`${API_BASE}/api/conversations?limit=20`);
+            const data = await response.json();
+            conversations = data.conversations || [];
+            renderConversations();
+        } catch (error) {
+            console.error('Failed to load conversations:', error);
+        }
+    }
+
+    // Render conversations in sidebar
+    function renderConversations() {
+        const sidebar = document.getElementById('conversation-list');
+        if (!sidebar) return;
+
+        if (conversations.length === 0) {
+            sidebar.innerHTML = `
+                <div style="text-align: center; padding: 20px; opacity: 0.6;">
+                    <p>No conversations yet</p>
+                    <p style="font-size: 12px; margin-top: 8px;">Click "New Chat" to start</p>
+                </div>
+            `;
+            return;
+        }
+
+        sidebar.innerHTML = conversations.map(conv => `
+            <div class="conversation-item ${conv.id === currentConversation?.id ? 'active' : ''}" 
+                 data-id="${conv.id}"
+                 onclick="selectConversation('${conv.id}')">
+                <div class="conversation-title">${escapeHtml(conv.title)}</div>
+                <div class="conversation-meta">
+                    <span>${conv.model}</span>
+                    <span class="conversation-badge">${conv.message_count || 0} msgs</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Select a conversation
+    window.selectConversation = async function(conversationId) {
+        try {
+            const response = await fetch(`${API_BASE}/api/conversations/${conversationId}`);
+            currentConversation = await response.json();
+            messageHistory = currentConversation.messages || [];
+            
+            updateContextIndicator();
+            renderMessageHistory();
+            renderConversations(); // Re-render to update active state
+        } catch (error) {
+            console.error('Failed to load conversation:', error);
+        }
+    };
+
+    // Create new conversation
+    window.createNewConversation = async function() {
+        const model = document.querySelector('.model-option.active')?.dataset.model || 'claude-sonnet-4';
+        const title = 'New Conversation ' + new Date().toLocaleTimeString();
+
+        try {
+            const response = await fetch(`${API_BASE}/api/conversations`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model, title })
+            });
+            
+            currentConversation = await response.json();
+            messageHistory = [];
+            conversations.unshift(currentConversation);
+            
+            renderConversations();
+            updateContextIndicator();
+            renderMessageHistory();
+            
+            showNotification('✨ New conversation created!');
+        } catch (error) {
+            console.error('Failed to create conversation:', error);
+            showNotification('❌ Failed to create conversation', 'error');
+        }
+    };
+
+    // Send message with memory
+    async function sendMessageWithMemory() {
+        const promptInput = document.getElementById('prompt-input');
+        const prompt = promptInput.value.trim();
+        
+        if (!prompt) {
+            showNotification('⚠️  Please enter a prompt', 'warning');
+            return;
+        }
+
+        // Create conversation if none exists
+        if (!currentConversation) {
+            await createNewConversation();
+        }
+
+        const generateBtn = document.getElementById('generate-btn');
+        const output = document.getElementById('output');
+        const streamingIndicator = document.getElementById('streaming-indicator');
+        
+        // Show loading state
+        generateBtn.disabled = true;
+        generateBtn.textContent = '⏳ Generating...';
+        streamingIndicator?.classList.add('active');
+        
+        // Add user message to history immediately
+        messageHistory.push({
+            role: 'user',
+            content: prompt,
+            created_at: Date.now() / 1000
+        });
+        renderMessageHistory();
+
+        try {
+            const model = document.querySelector('.model-option.active')?.dataset.model || 'claude-sonnet-4';
+            const temperature = parseFloat(document.getElementById('temperature')?.value || 0.7);
+            const maxTokens = parseInt(document.getElementById('max-tokens')?.value || 2048);
+
+            const response = await fetch(`${API_BASE}/api/ai/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt,
+                    model,
+                    conversationId: currentConversation.id,
+                    temperature,
+                    maxTokens,
+                    includeContext: true
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Add assistant message
+                messageHistory.push({
+                    role: 'assistant',
+                    content: data.message.content,
+                    model: data.message.model,
+                    tokens: data.message.tokens,
+                    cost: data.message.cost,
+                    created_at: Date.now() / 1000
+                });
+
+                // Update UI
+                output.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${escapeHtml(data.message.content)}</pre>`;
+                updateStats(data);
+                updateContextIndicator();
+                renderMessageHistory();
+                
+                // Clear input
+                promptInput.value = '';
+                
+                showNotification('✅ Response generated!');
+            } else {
+                throw new Error(data.error || 'Failed to generate response');
+            }
+        } catch (error) {
+            console.error('Generation error:', error);
+            output.innerHTML = `<div style="color: #ff6b6b;">❌ Error: ${escapeHtml(error.message)}</div>`;
+            showNotification('❌ Generation failed', 'error');
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.textContent = 'Generate AI Response';
+            streamingIndicator?.classList.remove('active');
+        }
+    }
+
+    // Update context indicator
+    function updateContextIndicator() {
+        const indicator = document.getElementById('context-indicator');
+        if (!indicator) return;
+
+        if (currentConversation && messageHistory.length > 0) {
+            indicator.classList.add('active');
+            const contextCount = Math.min(messageHistory.length, 10);
+            indicator.innerHTML = `
+                <div class="context-label">🧠 Context: ${contextCount} previous messages</div>
+                <div class="context-items">
+                    <div class="context-item">Conversation: ${escapeHtml(currentConversation.title)}</div>
+                    <div class="context-item">${messageHistory.length} total messages</div>
+                    <div class="context-item">Model: ${currentConversation.model}</div>
+                </div>
+            `;
+        } else {
+            indicator.classList.remove('active');
+        }
+    }
+
+    // Render message history
+    function renderMessageHistory() {
+        const historyEl = document.getElementById('message-history');
+        if (!historyEl) return;
+
+        if (messageHistory.length === 0) {
+            historyEl.classList.remove('active');
+            return;
+        }
+
+        historyEl.classList.add('active');
+        historyEl.innerHTML = messageHistory.slice(-10).map(msg => `
+            <div class="message ${msg.role}">
+                <div class="message-role">${msg.role}</div>
+                <div class="message-content">${escapeHtml(msg.content.substring(0, 200))}${msg.content.length > 200 ? '...' : ''}</div>
+                <div class="message-meta">
+                    ${new Date(msg.created_at * 1000).toLocaleTimeString()}
+                    ${msg.tokens ? ` • ${msg.tokens} tokens` : ''}
+                    ${msg.cost ? ` • $${msg.cost.toFixed(4)}` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Update stats
+    function updateStats(data) {
+        const statsBar = document.getElementById('stats-bar');
+        if (!statsBar) return;
+
+        statsBar.innerHTML = `
+            <div class="stat-item">
+                <div class="stat-label">Context</div>
+                <div class="stat-value">${data.context || 0}</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Latency</div>
+                <div class="stat-value">${data.latency || 0}ms</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Messages</div>
+                <div class="stat-value">${messageHistory.length}</div>
+            </div>
+        `;
+    }
+
+    // Show notification
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'error' ? '#ff6b6b' : type === 'warning' ? '#ffd93d' : '#51cf66'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        const generateBtn = document.getElementById('generate-btn');
+        if (generateBtn) {
+            // Replace existing click handler
+            generateBtn.replaceWith(generateBtn.cloneNode(true));
+            document.getElementById('generate-btn').addEventListener('click', sendMessageWithMemory);
+        }
+
+        // Keyboard shortcut: Enter to send (Shift+Enter for new line)
+        const promptInput = document.getElementById('prompt-input');
+        if (promptInput) {
+            promptInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessageWithMemory();
+                }
+            });
+        }
+    }
+
+    // Helper function to escape HTML
+    window.escapeHtml = function(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+})();
+</script>
