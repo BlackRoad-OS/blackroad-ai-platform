@@ -1,0 +1,21 @@
+{
+  "name": "blackroad-ai-platform",
+  "version": "1.0.0",
+  "description": "BlackRoad AI Platform - Sovereign AI with 30k agents",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "serve": "python3 -m http.server 8080",
+    "test:ci": "playwright test --reporter=github"
+  },
+  "keywords": ["ai", "platform", "blackroad", "sovereign"],
+  "author": "BlackRoad OS Inc",
+  "license": "SEE LICENSE IN LICENSE",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "playwright": "^1.48.0"
+  }
+}

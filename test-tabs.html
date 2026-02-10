@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tab Test for BlackRoad AI</title>
+    <script>
+        function testTabs() {
+            const results = [];
+            
+            // Test 1: Model selector tabs
+            const modelOptions = document.querySelectorAll('.model-option');
+            results.push(`✓ Found ${modelOptions.length} model option tabs`);
+            
+            // Test 2: Check if one is active
+            const activeOptions = document.querySelectorAll('.model-option.active');
+            results.push(`✓ Found ${activeOptions.length} active tab (should be 1)`);
+            
+            // Test 3: Check sliders
+            const sliders = ['temperature', 'max-tokens', 'top-p'];
+            sliders.forEach(id => {
+                const slider = document.getElementById(id);
+                if (slider) {
+                    results.push(`✓ Slider '${id}' found`);
+                } else {
+                    results.push(`✗ Slider '${id}' NOT FOUND`);
+                }
+            });
+            
+            // Test 4: Check output displays
+            const outputs = ['temp-value', 'tokens-value', 'topp-value'];
+            outputs.forEach(id => {
+                const output = document.getElementById(id);
+                if (output) {
+                    results.push(`✓ Output '${id}' found with value: ${output.textContent}`);
+                } else {
+                    results.push(`✗ Output '${id}' NOT FOUND`);
+                }
+            });
+            
+            // Test 5: Check generate button
+            const btn = document.getElementById('generate-btn');
+            if (btn) {
+                results.push(`✓ Generate button found`);
+            } else {
+                results.push(`✗ Generate button NOT FOUND`);
+            }
+            
+            // Test 6: Check output box
+            const output = document.getElementById('output');
+            if (output) {
+                results.push(`✓ Output box found`);
+            } else {
+                results.push(`✗ Output box NOT FOUND`);
+            }
+            
+            // Test 7: Check prompt input
+            const prompt = document.getElementById('prompt-input');
+            if (prompt) {
+                results.push(`✓ Prompt input found`);
+            } else {
+                results.push(`✗ Prompt input NOT FOUND`);
+            }
+            
+            return results;
+        }
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const results = testTabs();
+                console.log('=== Tab Test Results ===');
+                results.forEach(r => console.log(r));
+            }, 1000);
+        });
+    </script>
+</head>
+<body>
+    <h1>Open Console to see test results</h1>
+    <p>This page tests the main index.html file.</p>
+</body>
+</html>
