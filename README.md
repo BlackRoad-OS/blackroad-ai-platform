@@ -1,6 +1,12 @@
 # BlackRoad AI Platform
 
+[![E2E Tests](https://github.com/BlackRoad-OS/blackroad-ai-platform/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/BlackRoad-OS/blackroad-ai-platform/actions/workflows/e2e-tests.yml)
+[![Playwright](https://img.shields.io/badge/tested%20with-Playwright-45ba4b.svg)](https://playwright.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+
 Unified sovereign AI platform combining all BlackRoad AI capabilities. One platform for inference, training, agents, and deployment.
+
+🔗 **Live Site**: [ai.blackroadai.com](https://ai.blackroadai.com)
 
 ## Features
 
@@ -13,16 +19,44 @@ Unified sovereign AI platform combining all BlackRoad AI capabilities. One platf
 
 ## Quick Start
 
+### Visit the Platform
+
+Visit [ai.blackroadai.com](https://ai.blackroadai.com) to try the AI playground with:
+- 4 AI models (Claude Sonnet 4, Llama 3 70B, Mistral Large, GPT-4 Turbo)
+- Interactive parameter controls
+- Real-time response generation
+
+### Local Development
+
 ```bash
-# Initialize platform
-./blackroad-ai-platform.sh init
+# Serve locally
+python3 -m http.server 8080
 
-# Deploy a model
-./blackroad-ai-platform.sh deploy --model llama3.1
+# Run E2E tests
+npm install
+npx playwright install
+npm test
 
-# Launch agent swarm
-./blackroad-ai-platform.sh agents --count 100
+# Test against production
+BASE_URL=https://ai.blackroadai.com npm test
 ```
+
+## Testing
+
+Comprehensive E2E testing with Playwright:
+
+- ✅ **41+ tests** covering all interactive elements
+- ✅ **5 browsers/devices** (Chrome, Firefox, Safari, Mobile)
+- ✅ **Accessibility** compliant (ARIA, keyboard navigation)
+- ✅ **CI/CD** automated testing on every push/PR
+
+```bash
+npm test                    # Run all tests
+npm run test:ui             # Interactive mode
+npm run test:report         # View HTML reports
+```
+
+See [tests/README.md](tests/README.md) for complete testing guide.
 
 ## Architecture
 
