@@ -8,8 +8,20 @@ Unified sovereign AI platform combining all BlackRoad AI capabilities. One platf
 
 🔗 **Live Site**: [ai.blackroadai.com](https://ai.blackroadai.com)
 
+## ✨ NEW: Live Code Execution (REPL)
+
+⚡ **Run code directly in your browser!**
+- **JavaScript & Python** support with real-time output
+- **Secure sandboxed** execution environment
+- **WebSocket streaming** for instant results
+- **AI Integration** - Run AI-generated code with one click
+- **Execution history** with replay capability
+
+See [REPL_FEATURE.md](./REPL_FEATURE.md) for full documentation.
+
 ## Features
 
+- **⚡ Live Code REPL** - Execute JavaScript and Python in real-time
 - **Unified API** - Single interface for all AI operations
 - **Model Hub** - Access to 100+ pre-trained models
 - **Agent Orchestration** - Deploy and manage AI agent swarms

@@ -14,6 +14,8 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const Anthropic = require('@anthropic-ai/sdk');
 const AgentMemory = require('./agent-memory');
+const WebSocket = require('ws');
+const { VM } = require('vm2');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -1148,21 +1150,646 @@ app.use((req, res, next) => {
     next();
 });
 
-app.listen(PORT, () => {
+// ==================== CODE EXECUTION SYSTEM ====================
+
+const executionHistory = [];
+const MAX_HISTORY = 100;
+
+// Execute JavaScript code in sandboxed VM
+app.post('/api/execute', async (req, res) => {
+    const { code, language = 'javascript', timeout = 30000 } = req.body;
+
+    if (!code) {
+        return res.status(400).json({ error: 'Code is required' });
+    }
+
+    const executionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    const startTime = Date.now();
+
+    try {
+        let output = '';
+        let errorOutput = '';
+
+        if (language === 'javascript' || language === 'node') {
+            // JavaScript execution using VM2
+            const vm = new VM({
+                timeout: timeout,
+                sandbox: {
+                    console: {
+                        log: (...args) => {
+                            output += args.map(arg => 
+                                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                            ).join(' ') + '\n';
+                        },
+                        error: (...args) => {
+                            errorOutput += args.map(arg => 
+                                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                            ).join(' ') + '\n';
+                        },
+                        warn: (...args) => {
+                            output += '[WARN] ' + args.map(arg => 
+                                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                            ).join(' ') + '\n';
+                        }
+                    }
+                }
+            });
+
+            const result = vm.run(code);
+            
+            // If there's a return value, add it to output
+            if (result !== undefined) {
+                output += typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result);
+            }
+
+            const executionTime = Date.now() - startTime;
+            
+            const response = {
+                success: true,
+                output: output || '// Execution completed successfully',
+                error: errorOutput || null,
+                executionTime,
+                executionId,
+                language
+            };
+
+            // Store in history
+            executionHistory.unshift({
+                ...response,
+                code,
+                timestamp: new Date().toISOString()
+            });
+            if (executionHistory.length > MAX_HISTORY) {
+                executionHistory.pop();
+            }
+
+            res.json(response);
+
+        } else if (language === 'python') {
+            // Python execution using child_process
+            const { spawn } = require('child_process');
+            const python = spawn('python3', ['-c', code], { timeout });
+
+            let output = '';
+            let errorOutput = '';
+
+            python.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            python.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            python.on('close', (code) => {
+                const executionTime = Date.now() - startTime;
+                const response = {
+                    success: code === 0,
+                    output: output || '// Execution completed',
+                    error: errorOutput || null,
+                    executionTime,
+                    executionId,
+                    language
+                };
+
+                executionHistory.unshift({
+                    ...response,
+                    code: req.body.code,
+                    timestamp: new Date().toISOString()
+                });
+                if (executionHistory.length > MAX_HISTORY) {
+                    executionHistory.pop();
+                }
+
+                res.json(response);
+            });
+
+            python.on('error', (err) => {
+                res.status(500).json({
+                    success: false,
+                    error: err.message,
+                    executionTime: Date.now() - startTime,
+                    executionId,
+                    language
+                });
+            });
+
+        } else if (language === 'typescript' || language === 'ts') {
+            // TypeScript execution using ts-node
+            const { spawn } = require('child_process');
+            const tsNode = spawn('npx', ['ts-node', '-e', code], { 
+                timeout,
+                cwd: __dirname
+            });
+
+            let output = '';
+            let errorOutput = '';
+
+            tsNode.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            tsNode.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            tsNode.on('close', (code) => {
+                const executionTime = Date.now() - startTime;
+                const response = {
+                    success: code === 0,
+                    output: output || '// Execution completed',
+                    error: errorOutput || null,
+                    executionTime,
+                    executionId,
+                    language: 'typescript'
+                };
+
+                executionHistory.unshift({
+                    ...response,
+                    code: req.body.code,
+                    timestamp: new Date().toISOString()
+                });
+                if (executionHistory.length > MAX_HISTORY) {
+                    executionHistory.pop();
+                }
+
+                res.json(response);
+            });
+
+            tsNode.on('error', (err) => {
+                res.status(500).json({
+                    success: false,
+                    error: err.message,
+                    executionTime: Date.now() - startTime,
+                    executionId,
+                    language: 'typescript'
+                });
+            });
+
+        } else if (language === 'go') {
+            // Go execution - create temp file and run
+            const { spawn } = require('child_process');
+            const tempFile = path.join('/tmp', `go-${executionId}.go`);
+            
+            fs.writeFileSync(tempFile, code);
+            
+            const goRun = spawn('go', ['run', tempFile], { timeout });
+
+            let output = '';
+            let errorOutput = '';
+
+            goRun.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            goRun.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            goRun.on('close', (code) => {
+                // Cleanup temp file
+                try { fs.unlinkSync(tempFile); } catch(e) {}
+                
+                const executionTime = Date.now() - startTime;
+                const response = {
+                    success: code === 0,
+                    output: output || '// Execution completed',
+                    error: errorOutput || null,
+                    executionTime,
+                    executionId,
+                    language
+                };
+
+                executionHistory.unshift({
+                    ...response,
+                    code: req.body.code,
+                    timestamp: new Date().toISOString()
+                });
+                if (executionHistory.length > MAX_HISTORY) {
+                    executionHistory.pop();
+                }
+
+                res.json(response);
+            });
+
+            goRun.on('error', (err) => {
+                try { fs.unlinkSync(tempFile); } catch(e) {}
+                res.status(500).json({
+                    success: false,
+                    error: err.message,
+                    executionTime: Date.now() - startTime,
+                    executionId,
+                    language
+                });
+            });
+
+        } else if (language === 'rust') {
+            // Rust execution - create temp file, compile, and run
+            const { spawn } = require('child_process');
+            const tempFile = path.join('/tmp', `rust-${executionId}.rs`);
+            const tempBin = path.join('/tmp', `rust-${executionId}`);
+            
+            fs.writeFileSync(tempFile, code);
+            
+            // First compile
+            const rustc = spawn('rustc', [tempFile, '-o', tempBin], { timeout: timeout / 2 });
+
+            let compileError = '';
+
+            rustc.stderr.on('data', (data) => {
+                compileError += data.toString();
+            });
+
+            rustc.on('close', (compileCode) => {
+                if (compileCode !== 0) {
+                    // Compilation failed
+                    try { fs.unlinkSync(tempFile); } catch(e) {}
+                    return res.json({
+                        success: false,
+                        output: '',
+                        error: compileError || 'Compilation failed',
+                        executionTime: Date.now() - startTime,
+                        executionId,
+                        language
+                    });
+                }
+
+                // Compilation successful, now run
+                const rustExec = spawn(tempBin, [], { timeout: timeout / 2 });
+
+                let output = '';
+                let errorOutput = '';
+
+                rustExec.stdout.on('data', (data) => {
+                    output += data.toString();
+                });
+
+                rustExec.stderr.on('data', (data) => {
+                    errorOutput += data.toString();
+                });
+
+                rustExec.on('close', (code) => {
+                    // Cleanup temp files
+                    try { fs.unlinkSync(tempFile); } catch(e) {}
+                    try { fs.unlinkSync(tempBin); } catch(e) {}
+                    
+                    const executionTime = Date.now() - startTime;
+                    const response = {
+                        success: code === 0,
+                        output: output || '// Execution completed',
+                        error: errorOutput || null,
+                        executionTime,
+                        executionId,
+                        language
+                    };
+
+                    executionHistory.unshift({
+                        ...response,
+                        code: req.body.code,
+                        timestamp: new Date().toISOString()
+                    });
+                    if (executionHistory.length > MAX_HISTORY) {
+                        executionHistory.pop();
+                    }
+
+                    res.json(response);
+                });
+
+                rustExec.on('error', (err) => {
+                    try { fs.unlinkSync(tempFile); } catch(e) {}
+                    try { fs.unlinkSync(tempBin); } catch(e) {}
+                    res.status(500).json({
+                        success: false,
+                        error: err.message,
+                        executionTime: Date.now() - startTime,
+                        executionId,
+                        language
+                    });
+                });
+            });
+
+        } else if (language === 'ruby') {
+            // Ruby execution
+            const { spawn } = require('child_process');
+            const ruby = spawn('ruby', ['-e', code], { timeout });
+
+            let output = '';
+            let errorOutput = '';
+
+            ruby.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            ruby.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            ruby.on('close', (code) => {
+                const executionTime = Date.now() - startTime;
+                const response = {
+                    success: code === 0,
+                    output: output || '// Execution completed',
+                    error: errorOutput || null,
+                    executionTime,
+                    executionId,
+                    language
+                };
+
+                executionHistory.unshift({
+                    ...response,
+                    code: req.body.code,
+                    timestamp: new Date().toISOString()
+                });
+                if (executionHistory.length > MAX_HISTORY) {
+                    executionHistory.pop();
+                }
+
+                res.json(response);
+            });
+
+            ruby.on('error', (err) => {
+                res.status(500).json({
+                    success: false,
+                    error: err.message,
+                    executionTime: Date.now() - startTime,
+                    executionId,
+                    language
+                });
+            });
+
+        } else {
+            res.status(400).json({
+                error: `Language "${language}" not supported. Supported: javascript, python, typescript, go, rust, ruby`
+            });
+        }
+
+    } catch (error) {
+        const executionTime = Date.now() - startTime;
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            stack: error.stack,
+            executionTime,
+            executionId,
+            language
+        });
+    }
+});
+
+// Get execution history
+app.get('/api/execute/history', (req, res) => {
+    res.json({
+        history: executionHistory.slice(0, 50), // Return last 50
+        total: executionHistory.length
+    });
+});
+
+// Clear execution history
+app.delete('/api/execute/history', (req, res) => {
+    executionHistory.length = 0;
+    res.json({ success: true, message: 'History cleared' });
+});
+
+// ==================== WEBSOCKET FOR REAL-TIME EXECUTION ====================
+
+const server = app.listen(PORT, () => {
     console.log(`
 ╔════════════════════════════════════════════════════════════╗
 ║           BlackRoad AI Platform - Server Started           ║
 ╠════════════════════════════════════════════════════════════╣
 ║  🌐 URL: http://localhost:${PORT}                            ║
 ║  📊 API: http://localhost:${PORT}/api                        ║
+║  🔌 WS:  ws://localhost:${PORT}                              ║
 ║                                                            ║
 ║  Services:                                                 ║
 ║    🤖 AI:     ${anthropic ? 'Claude API Connected' : 'Simulation Mode'}               ║
 ║    🧠 Memory: ${fs.existsSync(path.join(HOME, '.blackroad', 'memory')) ? 'Connected' : 'Limited'}                          ║
 ║    🤝 Agents: ${agentDB ? 'Database Connected' : 'Defaults Loaded'}              ║
 ║    📋 Tasks:  Database Ready                               ║
+║    ⚡ REPL:   Live Code Execution Ready                    ║
 ╚════════════════════════════════════════════════════════════╝
     `);
+});
+
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+    console.log('🔌 WebSocket client connected');
+
+    ws.on('message', async (message) => {
+        try {
+            const { type, code, language = 'javascript', timeout = 30000 } = JSON.parse(message);
+
+            if (type === 'execute') {
+                const executionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+                const startTime = Date.now();
+
+                ws.send(JSON.stringify({ type: 'start', executionId }));
+
+                try {
+                    if (language === 'javascript' || language === 'node') {
+                        const vm = new VM({
+                            timeout: timeout,
+                            sandbox: {
+                                console: {
+                                    log: (...args) => {
+                                        const output = args.map(arg => 
+                                            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                                        ).join(' ');
+                                        ws.send(JSON.stringify({ type: 'stdout', data: output + '\n' }));
+                                    },
+                                    error: (...args) => {
+                                        const output = args.map(arg => 
+                                            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                                        ).join(' ');
+                                        ws.send(JSON.stringify({ type: 'stderr', data: output + '\n' }));
+                                    },
+                                    warn: (...args) => {
+                                        const output = '[WARN] ' + args.map(arg => 
+                                            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                                        ).join(' ');
+                                        ws.send(JSON.stringify({ type: 'stdout', data: output + '\n' }));
+                                    }
+                                }
+                            }
+                        });
+
+                        const result = vm.run(code);
+                        
+                        if (result !== undefined) {
+                            const output = typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result);
+                            ws.send(JSON.stringify({ type: 'stdout', data: output }));
+                        }
+
+                        const executionTime = Date.now() - startTime;
+                        ws.send(JSON.stringify({ 
+                            type: 'complete', 
+                            success: true, 
+                            executionTime,
+                            executionId 
+                        }));
+
+                    } else if (language === 'python') {
+                        const { spawn } = require('child_process');
+                        const python = spawn('python3', ['-c', code], { timeout });
+
+                        python.stdout.on('data', (data) => {
+                            ws.send(JSON.stringify({ type: 'stdout', data: data.toString() }));
+                        });
+
+                        python.stderr.on('data', (data) => {
+                            ws.send(JSON.stringify({ type: 'stderr', data: data.toString() }));
+                        });
+
+                        python.on('close', (code) => {
+                            const executionTime = Date.now() - startTime;
+                            ws.send(JSON.stringify({ 
+                                type: 'complete', 
+                                success: code === 0, 
+                                executionTime,
+                                executionId 
+                            }));
+                        });
+
+                        python.on('error', (err) => {
+                            ws.send(JSON.stringify({ 
+                                type: 'error', 
+                                error: err.message,
+                                executionId 
+                            }));
+                        });
+                    
+                    } else {
+                        // For other languages, use spawn and stream output
+                        const { spawn } = require('child_process');
+                        let proc;
+                        let tempFile, tempBin;
+
+                        if (language === 'typescript' || language === 'ts') {
+                            proc = spawn('npx', ['ts-node', '-e', code], { timeout, cwd: __dirname });
+                        } else if (language === 'ruby') {
+                            proc = spawn('ruby', ['-e', code], { timeout });
+                        } else if (language === 'go') {
+                            tempFile = path.join('/tmp', `go-ws-${executionId}.go`);
+                            fs.writeFileSync(tempFile, code);
+                            proc = spawn('go', ['run', tempFile], { timeout });
+                        } else if (language === 'rust') {
+                            tempFile = path.join('/tmp', `rust-ws-${executionId}.rs`);
+                            tempBin = path.join('/tmp', `rust-ws-${executionId}`);
+                            fs.writeFileSync(tempFile, code);
+                            
+                            // Compile first
+                            const rustc = spawn('rustc', [tempFile, '-o', tempBin], { timeout: timeout / 2 });
+                            let compileError = '';
+                            
+                            rustc.stderr.on('data', (data) => {
+                                compileError += data.toString();
+                                ws.send(JSON.stringify({ type: 'stderr', data: data.toString() }));
+                            });
+                            
+                            rustc.on('close', (compileCode) => {
+                                if (compileCode !== 0) {
+                                    try { fs.unlinkSync(tempFile); } catch(e) {}
+                                    ws.send(JSON.stringify({ 
+                                        type: 'complete', 
+                                        success: false, 
+                                        executionTime: Date.now() - startTime,
+                                        executionId 
+                                    }));
+                                    return;
+                                }
+                                
+                                // Run the compiled binary
+                                proc = spawn(tempBin, [], { timeout: timeout / 2 });
+                                
+                                proc.stdout.on('data', (data) => {
+                                    ws.send(JSON.stringify({ type: 'stdout', data: data.toString() }));
+                                });
+                                
+                                proc.stderr.on('data', (data) => {
+                                    ws.send(JSON.stringify({ type: 'stderr', data: data.toString() }));
+                                });
+                                
+                                proc.on('close', (code) => {
+                                    try { fs.unlinkSync(tempFile); } catch(e) {}
+                                    try { fs.unlinkSync(tempBin); } catch(e) {}
+                                    const executionTime = Date.now() - startTime;
+                                    ws.send(JSON.stringify({ 
+                                        type: 'complete', 
+                                        success: code === 0, 
+                                        executionTime,
+                                        executionId 
+                                    }));
+                                });
+                                
+                                proc.on('error', (err) => {
+                                    try { fs.unlinkSync(tempFile); } catch(e) {}
+                                    try { fs.unlinkSync(tempBin); } catch(e) {}
+                                    ws.send(JSON.stringify({ 
+                                        type: 'error', 
+                                        error: err.message,
+                                        executionId 
+                                    }));
+                                });
+                            });
+                            return; // Exit early for Rust
+                        } else {
+                            ws.send(JSON.stringify({ 
+                                type: 'error', 
+                                error: `Language ${language} not supported in WebSocket mode`
+                            }));
+                            return;
+                        }
+
+                        if (proc) {
+                            proc.stdout.on('data', (data) => {
+                                ws.send(JSON.stringify({ type: 'stdout', data: data.toString() }));
+                            });
+
+                            proc.stderr.on('data', (data) => {
+                                ws.send(JSON.stringify({ type: 'stderr', data: data.toString() }));
+                            });
+
+                            proc.on('close', (code) => {
+                                if (tempFile) try { fs.unlinkSync(tempFile); } catch(e) {}
+                                const executionTime = Date.now() - startTime;
+                                ws.send(JSON.stringify({ 
+                                    type: 'complete', 
+                                    success: code === 0, 
+                                    executionTime,
+                                    executionId 
+                                }));
+                            });
+
+                            proc.on('error', (err) => {
+                                if (tempFile) try { fs.unlinkSync(tempFile); } catch(e) {}
+                                ws.send(JSON.stringify({ 
+                                    type: 'error', 
+                                    error: err.message,
+                                    executionId 
+                                }));
+                            });
+                        }
+                    }
+
+                } catch (error) {
+                    ws.send(JSON.stringify({ 
+                        type: 'error', 
+                        error: error.message,
+                        stack: error.stack,
+                        executionId 
+                    }));
+                }
+            }
+
+        } catch (error) {
+            ws.send(JSON.stringify({ type: 'error', error: error.message }));
+        }
+    });
+
+    ws.on('close', () => {
+        console.log('🔌 WebSocket client disconnected');
+    });
 });
 
 module.exports = app;

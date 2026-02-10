@@ -1967,6 +1967,25 @@
             display: flex;
             gap: 0.5rem;
         }
+
+        /* REPL specific styles */
+        .repl-running {
+            animation: replPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes replPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(76, 175, 80, 0.6); }
+        }
+
+        .code-executed {
+            animation: codeSuccess 0.5s ease-out;
+        }
+
+        @keyframes codeSuccess {
+            0% { background: rgba(76, 175, 80, 0.3); }
+            100% { background: transparent; }
+        }
     </style>
 </head>
 <body>
@@ -2012,6 +2031,10 @@
         <button class="main-tab active" data-tab="ai" role="tab" aria-selected="true" aria-controls="ai-panel">
             <span class="tab-icon">🤖</span>
             <span class="tab-label">AI Models</span>
+        </button>
+        <button class="main-tab" data-tab="repl" role="tab" aria-selected="false" aria-controls="repl-panel">
+            <span class="tab-icon">⚡</span>
+            <span class="tab-label">Code REPL</span>
         </button>
         <button class="main-tab" data-tab="memory" role="tab" aria-selected="false" aria-controls="memory-panel">
             <span class="tab-icon">🧠</span>
@@ -2097,6 +2120,217 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
             </div>
         </div>
     </div>
+    </section>
+
+    <!-- REPL Panel -->
+    <section class="tab-panel" id="repl-panel" role="tabpanel" aria-labelledby="repl-tab">
+        <div class="playground">
+            <h2 class="section-title">⚡ Live Code Execution</h2>
+            <p class="section-subtitle">Run JavaScript and Python code in real-time • Secure sandboxed environment</p>
+
+            <div class="playground-container">
+                <!-- Language Selector -->
+                <div style="margin-bottom: 21px;">
+                    <label class="control-label" style="margin-bottom: 8px; display: block;">Language: <span id="current-lang-display" style="color: var(--br-pink);">JavaScript</span></label>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px;">
+                        <button class="model-option active" id="lang-js" style="cursor: pointer; padding: 13px;">
+                            <div class="model-name">JavaScript</div>
+                            <div class="model-desc">Node.js VM</div>
+                        </button>
+                        <button class="model-option" id="lang-python" style="cursor: pointer; padding: 13px;">
+                            <div class="model-name">Python</div>
+                            <div class="model-desc">Python 3</div>
+                        </button>
+                        <button class="model-option" id="lang-typescript" style="cursor: pointer; padding: 13px;">
+                            <div class="model-name">TypeScript</div>
+                            <div class="model-desc">ts-node</div>
+                        </button>
+                        <button class="model-option" id="lang-go" style="cursor: pointer; padding: 13px;">
+                            <div class="model-name">Go</div>
+                            <div class="model-desc">go run</div>
+                        </button>
+                        <button class="model-option" id="lang-rust" style="cursor: pointer; padding: 13px;">
+                            <div class="model-name">Rust</div>
+                            <div class="model-desc">rustc</div>
+                        </button>
+                        <button class="model-option" id="lang-ruby" style="cursor: pointer; padding: 13px;">
+                            <div class="model-name">Ruby</div>
+                            <div class="model-desc">ruby</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code Editor -->
+                <div style="margin-bottom: 13px;">
+                    <label class="control-label">Code:</label>
+                </div>
+                <textarea id="repl-code" style="font-family: 'SF Mono', 'Monaco', 'Menlo', monospace; min-height: 300px;" placeholder="// Write your JavaScript code here
+console.log('Hello, BlackRoad! 🚀');
+
+const fibonacci = (n) => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+};
+
+console.log('Fibonacci(10):', fibonacci(10));
+"></textarea>
+
+                <!-- Execution Controls -->
+                <div style="display: flex; gap: 13px; margin-bottom: 21px;">
+                    <button class="btn" id="run-code-btn" style="flex: 1;">
+                        ▶️ Run Code (Cmd+Enter)
+                    </button>
+                    <button class="btn btn-outline" id="clear-output-btn" style="flex: 0 0 auto; padding: 13px 34px;">
+                        🗑️ Clear
+                    </button>
+                    <button class="btn btn-outline" id="stop-execution-btn" style="flex: 0 0 auto; padding: 13px 34px; display: none;">
+                        ⏹️ Stop
+                    </button>
+                </div>
+
+                <!-- Output Console -->
+                <div style="margin-bottom: 13px;">
+                    <label class="control-label">Output:</label>
+                </div>
+                <div id="repl-output" style="background: #0a0a0a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 21px; min-height: 200px; font-family: 'SF Mono', 'Monaco', 'Menlo', monospace; font-size: 13px; white-space: pre-wrap; overflow-x: auto; line-height: 1.6;">
+                    <span style="opacity: 0.5; font-style: italic;">// Output will appear here...</span>
+                </div>
+
+                <!-- Execution Stats -->
+                <div id="execution-stats" style="margin-top: 13px; padding: 13px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; display: none;">
+                    <span style="opacity: 0.7;">Execution time:</span> <strong id="exec-time">-</strong>
+                    <span style="margin-left: 21px; opacity: 0.7;">Language:</span> <strong id="exec-lang">-</strong>
+                </div>
+
+                <!-- Sample Code -->
+                <div style="margin-top: 34px;">
+                    <h3 style="margin-bottom: 13px; color: var(--br-blue);">📚 Sample Code</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 13px;">
+                        <button class="btn btn-outline sample-code" data-lang="javascript" data-code="// FizzBuzz
+for (let i = 1; i <= 20; i++) {
+    if (i % 15 === 0) console.log('FizzBuzz');
+    else if (i % 3 === 0) console.log('Fizz');
+    else if (i % 5 === 0) console.log('Buzz');
+    else console.log(i);
+}">
+                            FizzBuzz
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="javascript" data-code="// Async/Await Example
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+console.log('Starting...');
+for (let i = 1; i <= 3; i++) {
+    console.log(`Count: ${i}`);
+}
+console.log('Done!');
+">
+                            Async Demo
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="python" data-code="# List Comprehension
+squares = [x**2 for x in range(1, 11)]
+print('Squares:', squares)
+
+# Dictionary
+fruits = {'apple': 3, 'banana': 5, 'orange': 2}
+for fruit, count in fruits.items():
+    print(f'{fruit}: {count}')
+">
+                            Python Basics
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="python" data-code="# Fibonacci
+def fibonacci(n):
+    if n <= 1:
+        return n
+    a, b = 0, 1
+    for _ in range(n - 1):
+        a, b = b, a + b
+    return b
+
+for i in range(15):
+    print(f'fib({i}) = {fibonacci(i)}')
+">
+                            Fibonacci
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="typescript" data-code="// TypeScript Types
+interface Person {
+    name: string;
+    age: number;
+}
+
+const greet = (person: Person): string => {
+    return `Hello, ${person.name}!`;
+};
+
+const user: Person = { name: 'BlackRoad', age: 1 };
+console.log(greet(user));
+console.log('TypeScript is LEGENDARY! 🔥');
+">
+                            TypeScript
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="go" data-code="package main
+
+import \"fmt\"
+
+func fibonacci(n int) int {
+    if n <= 1 {
+        return n
+    }
+    return fibonacci(n-1) + fibonacci(n-2)
+}
+
+func main() {
+    fmt.Println(\"Go is FAST! 🚀\")
+    for i := 0; i < 10; i++ {
+        fmt.Printf(\"fib(%d) = %d\\n\", i, fibonacci(i))
+    }
+}
+">
+                            Go
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="rust" data-code="fn fibonacci(n: u32) -> u32 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => fibonacci(n - 1) + fibonacci(n - 2),
+    }
+}
+
+fn main() {
+    println!(\"Rust is BLAZING! 🦀\");
+    for i in 0..10 {
+        println!(\"fib({}) = {}\", i, fibonacci(i));
+    }
+}
+">
+                            Rust
+                        </button>
+                        <button class="btn btn-outline sample-code" data-lang="ruby" data-code="# Ruby Fibonacci
+def fibonacci(n)
+  return n if n <= 1
+  fibonacci(n - 1) + fibonacci(n - 2)
+end
+
+puts 'Ruby is ELEGANT! 💎'
+(0..10).each do |i|
+  puts \"fib(#{i}) = #{fibonacci(i)}\"
+end
+">
+                            Ruby
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Execution History -->
+                <div style="margin-top: 34px;">
+                    <h3 style="margin-bottom: 13px; color: var(--br-blue);">📜 Execution History</h3>
+                    <div id="repl-history" style="max-height: 300px; overflow-y: auto;">
+                        <div style="opacity: 0.5; font-style: italic; padding: 21px; text-align: center;">
+                            No execution history yet
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Memory Panel -->
@@ -4268,7 +4502,30 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                 if (data.success) {
                     const latency = data.latency || 'N/A';
                     const simulated = data.simulated ? ' (simulated)' : '';
-                    output.innerHTML = `<div style="white-space: pre-wrap;">${escapeHtml(data.response)}</div>
+                    
+                    // Process response to add Run Code buttons
+                    let processedResponse = escapeHtml(data.response);
+                    
+                    // Detect code blocks and add run buttons
+                    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+                    processedResponse = processedResponse.replace(codeBlockRegex, (match, lang, code) => {
+                        lang = lang || 'javascript';
+                        const cleanCode = code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+                        const buttonId = 'run-' + Math.random().toString(36).substr(2, 9);
+                        
+                        const supportedLangs = ['javascript', 'js', 'python', 'py', 'typescript', 'ts', 'go', 'rust', 'ruby', 'rb'];
+                        if (supportedLangs.includes(lang)) {
+                            return `<div style="position: relative; margin: 13px 0;">
+                                <div style="background: #0a0a0a; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 13px; font-family: monospace; white-space: pre-wrap;">${match}</div>
+                                <button class="btn" id="${buttonId}" style="margin-top: 8px; padding: 8px 16px; font-size: 13px;" onclick="runAICode('${lang}', \`${cleanCode.replace(/`/g, '\\`')}\`)">
+                                    ⚡ Run in REPL
+                                </button>
+                            </div>`;
+                        }
+                        return match;
+                    });
+                    
+                    output.innerHTML = `<div style="white-space: pre-wrap;">${processedResponse}</div>
                     <div style="margin-top: 21px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: #FFF;">
                         🤖 Model: ${modelName}${simulated} | ⚡ Latency: ${latency}ms | 🎯 Temp: ${temperature}
                     </div>`;
@@ -4312,6 +4569,51 @@ The server connects to:
             div.textContent = text;
             return div.innerHTML;
         }
+
+        // Run code from AI response in REPL
+        window.runAICode = function(language, code) {
+            // Switch to REPL tab
+            const replTab = document.querySelector('[data-tab="repl"]');
+            replTab.click();
+            
+            // Set language
+            const langMap = { 
+                'js': 'javascript', 
+                'py': 'python',
+                'ts': 'typescript',
+                'rb': 'ruby'
+            };
+            language = langMap[language] || language;
+            currentLanguage = language;
+            
+            // Click the appropriate language button
+            const langButtons = {
+                'javascript': 'lang-js',
+                'python': 'lang-python',
+                'typescript': 'lang-typescript',
+                'go': 'lang-go',
+                'rust': 'lang-rust',
+                'ruby': 'lang-ruby'
+            };
+            
+            const buttonId = langButtons[language];
+            if (buttonId && document.getElementById(buttonId)) {
+                document.getElementById(buttonId).click();
+            }
+            
+            // Set code
+            document.getElementById('repl-code').value = code;
+            
+            // Scroll to REPL
+            setTimeout(() => {
+                document.getElementById('repl-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Auto-run after a short delay
+                setTimeout(() => {
+                    const runBtn = document.getElementById('run-code-btn');
+                    runBtn.style.animation = 'pulse 0.5s ease-in-out 3';
+                }, 500);
+            }, 300);
+        };
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -4572,6 +4874,313 @@ The server connects to:
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(card);
         });
+
+        // ==================== CODE REPL FUNCTIONALITY ====================
+        
+        let currentLanguage = 'javascript';
+        let ws = null;
+        let executionHistory = [];
+
+        // Language switcher - Helper function
+        const setLanguage = (lang, displayName, placeholder) => {
+            currentLanguage = lang;
+            document.getElementById('current-lang-display').textContent = displayName;
+            ['lang-js', 'lang-python', 'lang-typescript', 'lang-go', 'lang-rust', 'lang-ruby'].forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+            document.getElementById(`lang-${lang === 'javascript' ? 'js' : lang}`).classList.add('active');
+            document.getElementById('repl-code').placeholder = placeholder;
+        };
+
+        document.getElementById('lang-js').addEventListener('click', () => {
+            setLanguage('javascript', 'JavaScript', `// Write your JavaScript code here
+console.log('Hello, BlackRoad! 🚀');
+
+const fibonacci = (n) => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+};
+
+console.log('Fibonacci(10):', fibonacci(10));`);
+        });
+
+        document.getElementById('lang-python').addEventListener('click', () => {
+            setLanguage('python', 'Python', `# Write your Python code here
+print('Hello, BlackRoad! 🚀')
+
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print('Fibonacci(10):', fibonacci(10))`);
+        });
+
+        document.getElementById('lang-typescript').addEventListener('click', () => {
+            setLanguage('typescript', 'TypeScript', `// Write your TypeScript code here
+console.log('Hello, BlackRoad! 🚀');
+
+interface Fibonacci {
+    compute(n: number): number;
+}
+
+const fib: Fibonacci = {
+    compute(n: number): number {
+        return n <= 1 ? n : this.compute(n-1) + this.compute(n-2);
+    }
+};
+
+console.log('Fibonacci(10):', fib.compute(10));`);
+        });
+
+        document.getElementById('lang-go').addEventListener('click', () => {
+            setLanguage('go', 'Go', `package main
+
+import "fmt"
+
+func fibonacci(n int) int {
+    if n <= 1 {
+        return n
+    }
+    return fibonacci(n-1) + fibonacci(n-2)
+}
+
+func main() {
+    fmt.Println("Hello, BlackRoad! 🚀")
+    fmt.Printf("Fibonacci(10): %d\\n", fibonacci(10))
+}`);
+        });
+
+        document.getElementById('lang-rust').addEventListener('click', () => {
+            setLanguage('rust', 'Rust', `fn fibonacci(n: u32) -> u32 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => fibonacci(n - 1) + fibonacci(n - 2),
+    }
+}
+
+fn main() {
+    println!("Hello, BlackRoad! 🚀");
+    println!("Fibonacci(10): {}", fibonacci(10));
+}`);
+        });
+
+        document.getElementById('lang-ruby').addEventListener('click', () => {
+            setLanguage('ruby', 'Ruby', `# Write your Ruby code here
+puts 'Hello, BlackRoad! 🚀'
+
+def fibonacci(n)
+  return n if n <= 1
+  fibonacci(n - 1) + fibonacci(n - 2)
+end
+
+puts "Fibonacci(10): #{fibonacci(10)}"`);
+        });
+
+        // Connect to WebSocket
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                console.log('🔌 WebSocket connected');
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const outputEl = document.getElementById('repl-output');
+                
+                if (data.type === 'start') {
+                    outputEl.innerHTML = '<span style="color: #4CAF50;">► Executing...</span>\n';
+                    document.getElementById('stop-execution-btn').style.display = 'inline-block';
+                } else if (data.type === 'stdout') {
+                    const line = document.createElement('span');
+                    line.textContent = data.data;
+                    line.style.color = '#FFF';
+                    outputEl.appendChild(line);
+                    outputEl.scrollTop = outputEl.scrollHeight;
+                } else if (data.type === 'stderr') {
+                    const line = document.createElement('span');
+                    line.textContent = data.data;
+                    line.style.color = '#FF1D6C';
+                    outputEl.appendChild(line);
+                    outputEl.scrollTop = outputEl.scrollHeight;
+                } else if (data.type === 'complete') {
+                    const statusLine = document.createElement('div');
+                    statusLine.style.marginTop = '13px';
+                    statusLine.style.paddingTop = '13px';
+                    statusLine.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+                    statusLine.innerHTML = data.success 
+                        ? `<span style="color: #4CAF50;">✓ Execution completed in ${data.executionTime}ms</span>`
+                        : `<span style="color: #FF1D6C;">✗ Execution failed</span>`;
+                    outputEl.appendChild(statusLine);
+                    document.getElementById('stop-execution-btn').style.display = 'none';
+                    
+                    // Update stats
+                    document.getElementById('exec-time').textContent = data.executionTime + 'ms';
+                    document.getElementById('exec-lang').textContent = currentLanguage;
+                    document.getElementById('execution-stats').style.display = 'block';
+                } else if (data.type === 'error') {
+                    const errorLine = document.createElement('div');
+                    errorLine.style.color = '#FF1D6C';
+                    errorLine.style.marginTop = '8px';
+                    errorLine.textContent = '❌ Error: ' + data.error;
+                    outputEl.appendChild(errorLine);
+                    document.getElementById('stop-execution-btn').style.display = 'none';
+                }
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+            
+            ws.onclose = () => {
+                console.log('🔌 WebSocket disconnected');
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+        
+        connectWebSocket();
+
+        // Run code function
+        async function runCode() {
+            const code = document.getElementById('repl-code').value.trim();
+            if (!code) {
+                alert('Please enter some code to execute');
+                return;
+            }
+
+            const outputEl = document.getElementById('repl-output');
+            
+            // Use WebSocket if available, otherwise fallback to HTTP
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'execute',
+                    code: code,
+                    language: currentLanguage,
+                    timeout: 30000
+                }));
+            } else {
+                // Fallback to HTTP API
+                outputEl.innerHTML = '<span style="color: #F5A623;">► Executing via HTTP...</span>\n';
+                
+                try {
+                    const response = await fetch('/api/execute', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            code: code,
+                            language: currentLanguage,
+                            timeout: 30000
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        outputEl.innerHTML = `<span style="color: #FFF;">${result.output}</span>`;
+                        if (result.error) {
+                            outputEl.innerHTML += `\n<span style="color: #FF1D6C;">${result.error}</span>`;
+                        }
+                        outputEl.innerHTML += `\n\n<span style="color: #4CAF50;">✓ Execution completed in ${result.executionTime}ms</span>`;
+                    } else {
+                        outputEl.innerHTML = `<span style="color: #FF1D6C;">❌ Error: ${result.error}</span>`;
+                        if (result.stack) {
+                            outputEl.innerHTML += `\n<span style="opacity: 0.7;">${result.stack}</span>`;
+                        }
+                    }
+
+                    // Update stats
+                    document.getElementById('exec-time').textContent = result.executionTime + 'ms';
+                    document.getElementById('exec-lang').textContent = currentLanguage;
+                    document.getElementById('execution-stats').style.display = 'block';
+
+                    // Add to history
+                    executionHistory.unshift({
+                        code: code.substring(0, 100) + (code.length > 100 ? '...' : ''),
+                        language: currentLanguage,
+                        timestamp: new Date().toLocaleTimeString(),
+                        success: result.success
+                    });
+                    updateHistoryDisplay();
+
+                } catch (error) {
+                    outputEl.innerHTML = `<span style="color: #FF1D6C;">❌ Error: ${error.message}</span>`;
+                }
+            }
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            const historyEl = document.getElementById('repl-history');
+            if (executionHistory.length === 0) {
+                historyEl.innerHTML = '<div style="opacity: 0.5; font-style: italic; padding: 21px; text-align: center;">No execution history yet</div>';
+                return;
+            }
+
+            historyEl.innerHTML = executionHistory.slice(0, 10).map((item, index) => `
+                <div style="padding: 13px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; margin-bottom: 8px; cursor: pointer;" onclick="document.getElementById('repl-code').value = this.dataset.code; currentLanguage = '${item.language}'; document.getElementById('lang-${item.language === 'javascript' ? 'js' : 'python'}').click();" data-code="${item.code}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="color: ${item.success ? '#4CAF50' : '#FF1D6C'};">
+                            ${item.success ? '✓' : '✗'} ${item.language}
+                        </span>
+                        <span style="opacity: 0.5; font-size: 12px;">${item.timestamp}</span>
+                    </div>
+                    <code style="opacity: 0.7; font-size: 12px;">${item.code}</code>
+                </div>
+            `).join('');
+        }
+
+        // Event listeners
+        document.getElementById('run-code-btn').addEventListener('click', runCode);
+        
+        document.getElementById('clear-output-btn').addEventListener('click', () => {
+            document.getElementById('repl-output').innerHTML = '<span style="opacity: 0.5; font-style: italic;">// Output will appear here...</span>';
+            document.getElementById('execution-stats').style.display = 'none';
+        });
+
+        // Keyboard shortcut: Cmd+Enter to run
+        document.getElementById('repl-code').addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                e.preventDefault();
+                runCode();
+            }
+        });
+
+        // Sample code buttons
+        document.querySelectorAll('.sample-code').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.dataset.code;
+                const lang = btn.dataset.lang;
+                document.getElementById('repl-code').value = code;
+                currentLanguage = lang;
+                if (lang === 'javascript') {
+                    document.getElementById('lang-js').click();
+                } else {
+                    document.getElementById('lang-python').click();
+                }
+            });
+        });
+
+        // Load execution history on mount
+        fetch('/api/execute/history')
+            .then(r => r.json())
+            .then(data => {
+                if (data.history && data.history.length > 0) {
+                    executionHistory = data.history.map(item => ({
+                        code: item.code,
+                        language: item.language,
+                        timestamp: new Date(item.timestamp).toLocaleTimeString(),
+                        success: item.success
+                    }));
+                    updateHistoryDisplay();
+                }
+            })
+            .catch(err => console.log('No history available'));
+
         }); // End DOMContentLoaded
     </script>
 </body>
