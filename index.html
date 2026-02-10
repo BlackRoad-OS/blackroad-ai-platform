@@ -2663,6 +2663,33 @@ console.log('Fibonacci(10):', fibonacci(10));
                     <span style="margin-left: 21px; opacity: 0.7;">Language:</span> <strong id="exec-lang">-</strong>
                 </div>
 
+                <!-- Platform Metrics -->
+                <div class="metrics-panel" id="platform-metrics" style="display: none;">
+                    <div class="metric-item">
+                        <div class="metric-value" id="metric-executions">0</div>
+                        <div class="metric-label">Total Executions</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="metric-avg-time">0ms</div>
+                        <div class="metric-label">Avg Exec Time</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="metric-success">100%</div>
+                        <div class="metric-label">Success Rate</div>
+                    </div>
+                </div>
+
+                <!-- Package Manager -->
+                <div class="package-panel" id="package-panel" style="display: none;">
+                    <h3 style="margin-bottom: 13px; color: var(--br-green);">📦 Package Manager</h3>
+                    <input type="text" id="package-input" class="package-input" placeholder="e.g., lodash axios moment">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" id="install-npm-btn" style="flex: 1;">Install npm packages</button>
+                        <button class="btn btn-outline" id="install-pip-btn" style="flex: 1;">Install pip packages</button>
+                    </div>
+                    <div id="package-output" style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 12px; display: none; max-height: 200px; overflow-y: auto;"></div>
+                </div>
+
                 <!-- Sample Code -->
                 <div style="margin-top: 34px;">
                     <h3 style="margin-bottom: 13px; color: var(--br-blue);">📚 Sample Code</h3>
@@ -5926,6 +5953,349 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
                 return div.innerHTML;
             };
         })();
+
+        // ==================== VISUAL EFFECTS ====================
+        
+        // Particle effect
+        (function() {
+            const canvas = document.getElementById('particles-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 2 + 1
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'rgba(147, 51, 234, 0.5)';
+                
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        })();
+
+        // Matrix rain effect
+        (function() {
+            const canvas = document.getElementById('matrix-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const chars = '01';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00ff9d';
+                ctx.font = fontSize + 'px monospace';
+                
+                drops.forEach((y, x) => {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, x * fontSize, y * fontSize);
+                    
+                    if (y * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[x] = 0;
+                    }
+                    drops[x]++;
+                });
+            }
+            
+            setInterval(draw, 50);
+        })();
+
+        // ==================== AI FEATURES ====================
+        
+        async function explainCode() {
+            const code = document.getElementById('code-input').value;
+            const language = window.currentLanguage || 'javascript';
+            
+            if (!code.trim()) {
+                alert('Please enter some code first!');
+                return;
+            }
+            
+            const output = document.getElementById('repl-output');
+            output.innerHTML = '<span style="color: #00ff9d;">🤖 AI is analyzing your code...</span>';
+            
+            try {
+                const response = await fetch('/api/ai/explain-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    output.innerHTML = '<span style="color: #00ff9d;">📖 Explanation:</span>\n\n' + data.explanation;
+                } else {
+                    output.innerHTML = '<span style="color: #ff4444;">Error: ' + data.error + '</span>';
+                }
+            } catch (error) {
+                output.innerHTML = '<span style="color: #ff4444;">Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function fixError() {
+            const code = document.getElementById('code-input').value;
+            const language = window.currentLanguage || 'javascript';
+            const outputText = document.getElementById('repl-output').textContent;
+            
+            if (!code.trim()) {
+                alert('Please enter some code first!');
+                return;
+            }
+            
+            const output = document.getElementById('repl-output');
+            output.innerHTML = '<span style="color: #00ff9d;">🔧 AI is fixing your code...</span>';
+            
+            try {
+                const response = await fetch('/api/ai/fix-error', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language, error: outputText })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('code-input').value = data.fixedCode;
+                    output.innerHTML = '<span style="color: #00ff9d;">✅ Code fixed! Try running it now.</span>';
+                } else {
+                    output.innerHTML = '<span style="color: #ff4444;">Error: ' + data.error + '</span>';
+                }
+            } catch (error) {
+                output.innerHTML = '<span style="color: #ff4444;">Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function generateTests() {
+            const code = document.getElementById('code-input').value;
+            const language = window.currentLanguage || 'javascript';
+            
+            if (!code.trim()) {
+                alert('Please enter some code first!');
+                return;
+            }
+            
+            const output = document.getElementById('repl-output');
+            output.innerHTML = '<span style="color: #00ff9d;">🧪 AI is generating tests...</span>';
+            
+            try {
+                const response = await fetch('/api/ai/generate-tests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    output.innerHTML = '<span style="color: #00ff9d;">🧪 Generated Tests:</span>\n\n' + data.tests;
+                } else {
+                    output.innerHTML = '<span style="color: #ff4444;">Error: ' + data.error + '</span>';
+                }
+            } catch (error) {
+                output.innerHTML = '<span style="color: #ff4444;">Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function completeCode() {
+            const codeInput = document.getElementById('code-input');
+            const code = codeInput.value;
+            const cursor = codeInput.selectionStart;
+            const language = window.currentLanguage || 'javascript';
+            
+            const output = document.getElementById('repl-output');
+            output.innerHTML = '<span style="color: #00ff9d;">✨ AI is completing your code...</span>';
+            
+            try {
+                const response = await fetch('/api/ai/complete-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language, cursor })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    const before = code.slice(0, cursor);
+                    const after = code.slice(cursor);
+                    codeInput.value = before + '\n' + data.completion + after;
+                    output.innerHTML = '<span style="color: #00ff9d;">✨ Code completed!</span>';
+                } else {
+                    output.innerHTML = '<span style="color: #ff4444;">Error: ' + data.error + '</span>';
+                }
+            } catch (error) {
+                output.innerHTML = '<span style="color: #ff4444;">Error: ' + error.message + '</span>';
+            }
+        }
+
+        // ==================== CODE SHARING ====================
+        
+        document.getElementById('share-code-btn')?.addEventListener('click', async () => {
+            const code = document.getElementById('code-input').value;
+            const language = window.currentLanguage || 'javascript';
+            
+            if (!code.trim()) {
+                alert('Please enter some code first!');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/code/share', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language, title: 'Shared Code' })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    const shareUrl = window.location.origin + data.url;
+                    await navigator.clipboard.writeText(shareUrl);
+                    alert('🔗 Share URL copied to clipboard!\n' + shareUrl);
+                } else {
+                    alert('Error sharing code: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // ==================== PACKAGE MANAGEMENT ====================
+        
+        document.getElementById('install-npm-btn')?.addEventListener('click', async () => {
+            const input = document.getElementById('package-input').value;
+            const packages = input.split(' ').filter(p => p.trim());
+            
+            if (packages.length === 0) {
+                alert('Enter package names separated by spaces');
+                return;
+            }
+            
+            const outputDiv = document.getElementById('package-output');
+            outputDiv.style.display = 'block';
+            outputDiv.innerHTML = '<span style="color: #00ff9d;">Installing ' + packages.join(', ') + '...</span>';
+            
+            try {
+                const response = await fetch('/api/packages/npm/install', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ packages })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    outputDiv.innerHTML = '<span style="color: #00ff9d;">✅ Installed: ' + data.installed.join(', ') + '</span>\n\n' + data.output;
+                } else {
+                    outputDiv.innerHTML = '<span style="color: #ff4444;">❌ Error: ' + data.error + '</span>\n\n' + (data.output || '');
+                }
+            } catch (error) {
+                outputDiv.innerHTML = '<span style="color: #ff4444;">Error: ' + error.message + '</span>';
+            }
+        });
+
+        document.getElementById('install-pip-btn')?.addEventListener('click', async () => {
+            const input = document.getElementById('package-input').value;
+            const packages = input.split(' ').filter(p => p.trim());
+            
+            if (packages.length === 0) {
+                alert('Enter package names separated by spaces');
+                return;
+            }
+            
+            const outputDiv = document.getElementById('package-output');
+            outputDiv.style.display = 'block';
+            outputDiv.innerHTML = '<span style="color: #00ff9d;">Installing ' + packages.join(', ') + '...</span>';
+            
+            try {
+                const response = await fetch('/api/packages/pip/install', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ packages })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    outputDiv.innerHTML = '<span style="color: #00ff9d;">✅ Installed: ' + data.installed.join(', ') + '</span>\n\n' + data.output;
+                } else {
+                    outputDiv.innerHTML = '<span style="color: #ff4444;">❌ Error: ' + data.error + '</span>\n\n' + (data.output || '');
+                }
+            } catch (error) {
+                outputDiv.innerHTML = '<span style="color: #ff4444;">Error: ' + error.message + '</span>';
+            }
+        });
+
+        // ==================== METRICS ====================
+        
+        async function updateMetrics() {
+            try {
+                const response = await fetch('/api/metrics');
+                const data = await response.json();
+                
+                document.getElementById('metric-executions').textContent = data.executions;
+                document.getElementById('metric-avg-time').textContent = Math.round(data.avgExecutionTime) + 'ms';
+                const successRate = data.executions > 0 ? 
+                    Math.round(((data.executions - data.errors) / data.executions) * 100) : 100;
+                document.getElementById('metric-success').textContent = successRate + '%';
+                
+                document.getElementById('platform-metrics').style.display = 'grid';
+            } catch (error) {
+                console.error('Failed to fetch metrics:', error);
+            }
+        }
+
+        // Update metrics every 5 seconds
+        setInterval(updateMetrics, 5000);
+        setTimeout(updateMetrics, 1000);
+
+        // Show advanced panels on first execution
+        const originalRunCode = window.runCode;
+        let firstRun = true;
+        window.runCode = async function() {
+            await originalRunCode();
+            if (firstRun) {
+                document.getElementById('ai-suggestions').style.display = 'block';
+                document.getElementById('package-panel').style.display = 'block';
+                firstRun = false;
+            }
+        };
+
+        // Add execution pulse animation
+        document.getElementById('run-code-btn')?.addEventListener('click', function() {
+            const output = document.getElementById('repl-output');
+            output.classList.add('executing');
+            setTimeout(() => output.classList.remove('executing'), 2000);
+        });
+
     </script>
 </body>
 </html>
