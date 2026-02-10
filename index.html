@@ -283,7 +283,7 @@
             padding: 21px;
             min-height: 200px;
             margin-top: 21px;
-            font-family: 'Monaco', 'Courier New', monospace;
+            font-family: 'Monaco', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             font-size: 14px;
             white-space: pre-wrap;
             line-height: 1.8;
@@ -697,6 +697,11 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
     </footer>
 
     <script>
+        // Handle /app route redirect to prevent loop
+        if (window.location.pathname === '/app' || window.location.pathname === '/app/') {
+            window.history.replaceState({}, '', '/');
+        }
+
         // Model selector
         document.querySelectorAll('.model-option').forEach(option => {
             option.addEventListener('click', () => {
