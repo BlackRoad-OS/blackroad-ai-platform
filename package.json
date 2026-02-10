@@ -8,14 +8,27 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "test:report": "playwright show-report",
+    "test:a11y": "playwright test tests/accessibility.spec.ts",
+    "test:perf": "playwright test tests/performance.spec.ts",
+    "test:visual": "playwright test tests/visual-regression.spec.ts",
+    "test:smoke": "playwright test tests/model-tabs.spec.ts --project=chromium",
     "serve": "python3 -m http.server 8080",
-    "test:ci": "playwright test --reporter=github"
+    "test:ci": "playwright test --reporter=github",
+    "lighthouse": "lighthouse https://ai.blackroadai.com --output html --output-path ./lighthouse-report.html"
   },
-  "keywords": ["ai", "platform", "blackroad", "sovereign"],
+  "keywords": [
+    "ai",
+    "platform",
+    "blackroad",
+    "sovereign"
+  ],
   "author": "BlackRoad OS Inc",
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.48.0",
-    "playwright": "^1.48.0"
+    "lighthouse": "^12.8.2",
+    "playwright": "^1.48.0",
+    "playwright-lighthouse": "^4.0.0"
   }
 }

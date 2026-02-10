@@ -6,15 +6,19 @@ on:
   pull_request:
     branches: [ master, main ]
   workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
 
 jobs:
   test:
-    timeout-minutes: 15
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     
     strategy:
+      fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
+        test-suite: [functional, accessibility, performance]
     
     steps:
       - name: Checkout code
@@ -32,8 +36,27 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Run E2E tests
-        run: npm test -- --project=${{ matrix.browser }}
+      - name: Run Functional Tests
+        if: matrix.test-suite == 'functional'
+        run: |
+          npm test -- --project=${{ matrix.browser }} \
+            tests/model-tabs.spec.ts \
+            tests/sliders.spec.ts \
+            tests/generate-button.spec.ts \
+            tests/page-elements.spec.ts \
+            tests/advanced-workflows.spec.ts
+        env:
+          CI: true
+
+      - name: Run Accessibility Tests
+        if: matrix.test-suite == 'accessibility'
+        run: npm test -- --project=${{ matrix.browser }} tests/accessibility.spec.ts
+        env:
+          CI: true
+
+      - name: Run Performance Tests
+        if: matrix.test-suite == 'performance'
+        run: npm test -- --project=${{ matrix.browser }} tests/performance.spec.ts
         env:
           CI: true
 
@@ -41,7 +64,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.test-suite }}
           path: playwright-report/
           retention-days: 30
 
@@ -49,12 +72,46 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-screenshots-${{ matrix.browser }}
+          name: test-screenshots-${{ matrix.browser }}-${{ matrix.test-suite }}
+          path: test-results/
+          retention-days: 7
+
+  visual-regression:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Visual Regression Tests
+        run: npm test -- --project=chromium tests/visual-regression.spec.ts
+        env:
+          CI: true
+
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-diffs
           path: test-results/
           retention-days: 7
 
   test-mobile:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     
     strategy:
@@ -90,6 +147,37 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  smoke-test-production:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run production smoke tests
+        run: npm run test:smoke
+        env:
+          BASE_URL: https://ai.blackroadai.com
+          CI: true
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "Production smoke tests failed!"
+
   deploy-report:
     needs: [test, test-mobile]
     if: always()
@@ -101,7 +189,9 @@ jobs:
         with:
           path: all-reports
 
-      - name: Merge reports
+      - name: Generate summary
         run: |
-          echo "Tests completed. Reports are available in artifacts."
-          ls -la all-reports/
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Tests completed. Reports are available in artifacts." >> $GITHUB_STEP_SUMMARY
+          ls -la all-reports/ >> $GITHUB_STEP_SUMMARY || true
+
