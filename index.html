@@ -5780,7 +5780,8 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
                 const streamingIndicator = document.getElementById('streaming-indicator');
                 
                 generateBtn.disabled = true;
-                generateBtn.textContent = '⏳ Generating...';
+                generateBtn.textContent = '🛑 Stop';
+                generateBtn.onclick = () => stopGeneration();
                 streamingIndicator?.classList.add('active');
                 
                 messageHistory.push({
@@ -5790,12 +5791,27 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
                 });
                 renderMessageHistory();
 
+                // Clear output and prepare for streaming
+                output.innerHTML = '<pre style="white-space: pre-wrap; font-family: inherit;" id="streaming-output"></pre>';
+                const streamingOutput = document.getElementById('streaming-output');
+                let fullResponse = '';
+                let streamingAborted = false;
+
+                window.stopGeneration = () => {
+                    streamingAborted = true;
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Generate AI Response';
+                    generateBtn.onclick = null;
+                    streamingIndicator?.classList.remove('active');
+                    showNotification('⚠️ Generation stopped', 'warning');
+                };
+
                 try {
                     const model = document.querySelector('.model-option.active')?.dataset.model || 'claude-sonnet-4';
                     const temperature = parseFloat(document.getElementById('temperature')?.value || 0.7);
                     const maxTokens = parseInt(document.getElementById('max-tokens')?.value || 2048);
 
-                    const response = await fetch(`${API_BASE}/api/ai/chat`, {
+                    const response = await fetch(`${API_BASE}/api/ai/chat/stream`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -5808,36 +5824,78 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
                         })
                     });
 
-                    const data = await response.json();
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+                    let messageId = null;
+                    let tokens = null;
+                    let cost = null;
+                    let contextCount = 0;
+                    const startTime = Date.now();
 
-                    if (data.success) {
+                    while (!streamingAborted) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop(); // Keep incomplete line in buffer
+
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = JSON.parse(line.substring(6));
+
+                                if (data.type === 'conversationId') {
+                                    currentConversation.id = data.conversationId;
+                                }
+                                else if (data.type === 'token') {
+                                    fullResponse += data.text;
+                                    streamingOutput.textContent = fullResponse;
+                                    // Auto-scroll
+                                    streamingOutput.scrollTop = streamingOutput.scrollHeight;
+                                }
+                                else if (data.type === 'done') {
+                                    messageId = data.messageId;
+                                    tokens = data.tokens;
+                                    cost = data.cost;
+                                    contextCount = data.context;
+                                }
+                                else if (data.type === 'error') {
+                                    throw new Error(data.error);
+                                }
+                            }
+                        }
+                    }
+
+                    if (!streamingAborted) {
+                        const latency = Date.now() - startTime;
+
                         messageHistory.push({
                             role: 'assistant',
-                            content: data.message.content,
-                            model: data.message.model,
-                            tokens: data.message.tokens,
-                            cost: data.message.cost,
+                            content: fullResponse,
+                            model: model,
+                            tokens: tokens,
+                            cost: cost,
                             created_at: Date.now() / 1000
                         });
 
-                        output.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${escapeHtml(data.message.content)}</pre>`;
-                        updateStats(data);
+                        updateStats({ context: contextCount, latency, message: { tokens, cost } });
                         updateContextIndicator();
                         renderMessageHistory();
                         
                         promptInput.value = '';
                         
                         showNotification('✅ Response generated!');
-                    } else {
-                        throw new Error(data.error || 'Failed to generate response');
                     }
+
                 } catch (error) {
-                    console.error('Generation error:', error);
+                    console.error('Streaming error:', error);
                     output.innerHTML = `<div style="color: #ff6b6b;">❌ Error: ${escapeHtml(error.message)}</div>`;
                     showNotification('❌ Generation failed', 'error');
                 } finally {
                     generateBtn.disabled = false;
                     generateBtn.textContent = 'Generate AI Response';
+                    generateBtn.onclick = null;
                     streamingIndicator?.classList.remove('active');
                 }
             }

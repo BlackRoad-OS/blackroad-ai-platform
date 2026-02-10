@@ -320,6 +320,136 @@ app.post('/api/ai/chat', async (req, res) => {
     }
 });
 
+// Streaming AI response endpoint (SSE)
+app.post('/api/ai/chat/stream', async (req, res) => {
+    const { prompt, model, conversationId, temperature = 0.7, maxTokens = 2048, includeContext = true } = req.body;
+
+    if (!prompt) {
+        return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    // Set SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    try {
+        let conversation;
+        let context = [];
+
+        // Get or create conversation
+        if (conversationId) {
+            conversation = await agentMemory.getConversation(conversationId);
+            if (!conversation) {
+                res.write(`data: ${JSON.stringify({ error: 'Conversation not found' })}\n\n`);
+                res.end();
+                return;
+            }
+            if (includeContext) {
+                context = await agentMemory.getContext(conversationId, 10);
+            }
+        } else {
+            const title = prompt.substring(0, 50) + (prompt.length > 50 ? '...' : '');
+            conversation = await agentMemory.createConversation(model, title);
+        }
+
+        // Save user message
+        await agentMemory.addMessage(conversation.id, 'user', prompt);
+
+        // Send conversation ID first
+        res.write(`data: ${JSON.stringify({ type: 'conversationId', conversationId: conversation.id })}\n\n`);
+
+        // Build messages array with context
+        const messages = [];
+        if (includeContext && context.length > 0) {
+            messages.push(...context.map(msg => ({
+                role: msg.role,
+                content: msg.content
+            })));
+        }
+        messages.push({ role: 'user', content: prompt });
+
+        let responseText = '';
+        let tokens = null;
+        let cost = null;
+
+        // Try Claude API with streaming
+        if (anthropic && (model === 'claude-sonnet-4' || model === 'claude-opus-4')) {
+            try {
+                const modelId = model === 'claude-opus-4' ? 'claude-opus-4-20250514' : 'claude-sonnet-4-20250514';
+
+                const stream = await anthropic.messages.stream({
+                    model: modelId,
+                    max_tokens: maxTokens,
+                    temperature: temperature,
+                    messages: messages
+                });
+
+                // Stream the response
+                for await (const event of stream) {
+                    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+                        const text = event.delta.text;
+                        responseText += text;
+                        res.write(`data: ${JSON.stringify({ type: 'token', text })}\n\n`);
+                    }
+                }
+
+                // Get usage stats
+                const finalMessage = await stream.finalMessage();
+                tokens = finalMessage.usage.input_tokens + finalMessage.usage.output_tokens;
+                cost = model === 'claude-opus-4' 
+                    ? (finalMessage.usage.input_tokens * 0.015 / 1000 + finalMessage.usage.output_tokens * 0.075 / 1000)
+                    : (finalMessage.usage.input_tokens * 0.003 / 1000 + finalMessage.usage.output_tokens * 0.015 / 1000);
+
+            } catch (claudeError) {
+                console.log('Claude streaming failed, using simulation:', claudeError.message);
+                // Fall through to simulation
+                responseText = generateSimulatedResponse(prompt, model);
+                // Simulate streaming
+                const words = responseText.split(' ');
+                for (const word of words) {
+                    res.write(`data: ${JSON.stringify({ type: 'token', text: word + ' ' })}\n\n`);
+                    await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay per word
+                }
+            }
+        } else {
+            // Simulation mode with streaming
+            responseText = generateSimulatedResponse(prompt, model);
+            const words = responseText.split(' ');
+            for (const word of words) {
+                res.write(`data: ${JSON.stringify({ type: 'token', text: word + ' ' })}\n\n`);
+                await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay per word
+            }
+        }
+
+        // Save assistant message
+        const assistantMsg = await agentMemory.addMessage(
+            conversation.id,
+            'assistant',
+            responseText,
+            model,
+            tokens,
+            cost
+        );
+
+        // Send completion event
+        res.write(`data: ${JSON.stringify({ 
+            type: 'done', 
+            messageId: assistantMsg.id,
+            tokens,
+            cost,
+            context: context.length 
+        })}\n\n`);
+
+        res.end();
+
+    } catch (error) {
+        console.error('Streaming error:', error);
+        res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
+        res.end();
+    }
+});
+
 // Stream AI response (for future enhancement)
 app.post('/api/ai/stream', async (req, res) => {
     const { prompt, model, conversationId, temperature = 0.7 } = req.body;
@@ -2052,6 +2182,196 @@ app.get('/api/metrics', (req, res) => {
         ...metrics,
         avgExecutionTime: metrics.executions > 0 ? metrics.totalExecutionTime / metrics.executions : 0
     });
+});
+
+// ==================== GAMIFICATION SYSTEM ====================
+
+// User progress storage (in-memory, use database in production)
+const userProgress = new Map();
+
+// Achievement definitions
+const achievements = [
+    { id: 'first_steps', name: 'First Steps', desc: 'Execute your first code', xp: 10, icon: '🎯' },
+    { id: 'speed_runner', name: 'Speed Runner', desc: 'Execute code in under 10ms', xp: 25, icon: '⚡' },
+    { id: 'ai_curious', name: 'AI Curious', desc: 'Use an AI feature', xp: 20, icon: '🤖' },
+    { id: 'polyglot', name: 'Polyglot', desc: 'Execute code in 3 languages', xp: 50, icon: '🐍' },
+    { id: 'sharer', name: 'Sharer', desc: 'Share your first code', xp: 30, icon: '🔗' },
+    { id: 'on_fire', name: 'On Fire', desc: '3 day streak', xp: 100, icon: '🔥' },
+    { id: 'century', name: 'Century', desc: '100 total executions', xp: 200, icon: '💯' },
+    { id: 'legend', name: 'Legend', desc: 'Reach level 10', xp: 500, icon: '🏆' }
+];
+
+// Calculate level from XP
+function calculateLevel(xp) {
+    return Math.floor(Math.sqrt(xp / 100));
+}
+
+// Calculate XP needed for next level
+function xpForNextLevel(level) {
+    return (level + 1) * (level + 1) * 100;
+}
+
+// Get or create user progress
+function getUserProgress(userId = 'default') {
+    if (!userProgress.has(userId)) {
+        userProgress.set(userId, {
+            userId,
+            totalXP: 0,
+            level: 0,
+            executions: 0,
+            languagesUsed: new Set(),
+            aiUsed: false,
+            codeShared: false,
+            achievements: [],
+            lastLogin: Date.now(),
+            streak: 1
+        });
+    }
+    return userProgress.get(userId);
+}
+
+// Award XP and check for achievements
+function awardXP(userId, amount, reason) {
+    const progress = getUserProgress(userId);
+    const oldLevel = progress.level;
+    
+    progress.totalXP += amount;
+    progress.level = calculateLevel(progress.totalXP);
+    
+    const leveledUp = progress.level > oldLevel;
+    const unlockedAchievements = [];
+    
+    // Check for new achievements
+    if (progress.executions === 1 && !progress.achievements.includes('first_steps')) {
+        progress.achievements.push('first_steps');
+        unlockedAchievements.push(achievements.find(a => a.id === 'first_steps'));
+        progress.totalXP += 10;
+    }
+    
+    if (progress.languagesUsed.size >= 3 && !progress.achievements.includes('polyglot')) {
+        progress.achievements.push('polyglot');
+        unlockedAchievements.push(achievements.find(a => a.id === 'polyglot'));
+        progress.totalXP += 50;
+    }
+    
+    if (progress.aiUsed && !progress.achievements.includes('ai_curious')) {
+        progress.achievements.push('ai_curious');
+        unlockedAchievements.push(achievements.find(a => a.id === 'ai_curious'));
+        progress.totalXP += 20;
+    }
+    
+    if (progress.codeShared && !progress.achievements.includes('sharer')) {
+        progress.achievements.push('sharer');
+        unlockedAchievements.push(achievements.find(a => a.id === 'sharer'));
+        progress.totalXP += 30;
+    }
+    
+    if (progress.executions >= 100 && !progress.achievements.includes('century')) {
+        progress.achievements.push('century');
+        unlockedAchievements.push(achievements.find(a => a.id === 'century'));
+        progress.totalXP += 200;
+    }
+    
+    if (progress.level >= 10 && !progress.achievements.includes('legend')) {
+        progress.achievements.push('legend');
+        unlockedAchievements.push(achievements.find(a => a.id === 'legend'));
+        progress.totalXP += 500;
+    }
+    
+    return {
+        xpGained: amount,
+        totalXP: progress.totalXP,
+        level: progress.level,
+        leveledUp,
+        unlockedAchievements,
+        xpToNextLevel: xpForNextLevel(progress.level) - progress.totalXP
+    };
+}
+
+// Get user progress
+app.get('/api/gamification/progress', (req, res) => {
+    const userId = req.query.userId || 'default';
+    const progress = getUserProgress(userId);
+    
+    res.json({
+        ...progress,
+        languagesUsed: Array.from(progress.languagesUsed),
+        xpToNextLevel: xpForNextLevel(progress.level) - progress.totalXP,
+        nextLevelXP: xpForNextLevel(progress.level)
+    });
+});
+
+// Award XP manually (for testing)
+app.post('/api/gamification/award-xp', (req, res) => {
+    const { userId = 'default', amount, reason } = req.body;
+    const result = awardXP(userId, amount, reason);
+    res.json({ success: true, ...result });
+});
+
+// Track execution for gamification
+app.post('/api/gamification/track-execution', (req, res) => {
+    const { userId = 'default', language, executionTime } = req.body;
+    const progress = getUserProgress(userId);
+    
+    progress.executions++;
+    progress.languagesUsed.add(language);
+    
+    let xpAmount = 5; // Base XP
+    
+    // Bonus XP for fast execution
+    if (executionTime < 10) {
+        xpAmount += 5;
+        if (!progress.achievements.includes('speed_runner')) {
+            progress.achievements.push('speed_runner');
+            xpAmount += 25;
+        }
+    }
+    
+    const result = awardXP(userId, xpAmount, 'code_execution');
+    res.json({ success: true, ...result });
+});
+
+// Track AI usage
+app.post('/api/gamification/track-ai-use', (req, res) => {
+    const { userId = 'default' } = req.body;
+    const progress = getUserProgress(userId);
+    
+    progress.aiUsed = true;
+    const result = awardXP(userId, 10, 'ai_usage');
+    res.json({ success: true, ...result });
+});
+
+// Track code sharing
+app.post('/api/gamification/track-share', (req, res) => {
+    const { userId = 'default' } = req.body;
+    const progress = getUserProgress(userId);
+    
+    progress.codeShared = true;
+    const result = awardXP(userId, 15, 'code_share');
+    res.json({ success: true, ...result });
+});
+
+// Get leaderboard
+app.get('/api/gamification/leaderboard', (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    const leaderboard = Array.from(userProgress.values())
+        .sort((a, b) => b.totalXP - a.totalXP)
+        .slice(0, limit)
+        .map((user, index) => ({
+            rank: index + 1,
+            userId: user.userId,
+            level: user.level,
+            totalXP: user.totalXP,
+            executions: user.executions,
+            achievements: user.achievements.length
+        }));
+    
+    res.json({ leaderboard });
+});
+
+// Get all achievements
+app.get('/api/gamification/achievements', (req, res) => {
+    res.json({ achievements });
 });
 
 module.exports = app;
