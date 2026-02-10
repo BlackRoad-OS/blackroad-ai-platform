@@ -192,16 +192,40 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
+            position: relative;
         }
 
         .model-option:hover {
             border-color: #9C27B0;
             background: rgba(156, 39, 176, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .model-option:focus {
+            outline: 2px solid #9C27B0;
+            outline-offset: 2px;
         }
 
         .model-option.active {
             border-color: #9C27B0;
             background: rgba(156, 39, 176, 0.3);
+            box-shadow: 0 0 20px rgba(156, 39, 176, 0.4);
+        }
+
+        .model-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: #9C27B0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
         }
 
         .model-name {
@@ -427,6 +451,17 @@
             margin-bottom: 21px;
         }
 
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+        }
+
         .footer-links {
             display: flex;
             gap: 34px;
@@ -503,20 +538,23 @@
         <h2 class="section-title">AI Playground</h2>
 
         <div class="playground-container">
+            <div style="margin-bottom: 21px; padding: 13px 21px; background: rgba(41, 121, 255, 0.1); border-radius: 8px; border: 1px solid rgba(41, 121, 255, 0.3);">
+                <span style="opacity: 0.7;">Selected Model:</span> <strong id="selected-model-display">Claude Sonnet 4</strong>
+            </div>
             <div class="model-selector">
-                <div class="model-option active" data-model="claude-sonnet-4">
+                <div class="model-option active" data-model="claude-sonnet-4" tabindex="0" role="button" aria-pressed="true">
                     <div class="model-name">Claude Sonnet 4</div>
                     <div class="model-desc">200K context</div>
                 </div>
-                <div class="model-option" data-model="llama-3-70b">
+                <div class="model-option" data-model="llama-3-70b" tabindex="0" role="button" aria-pressed="false">
                     <div class="model-name">Llama 3 70B</div>
                     <div class="model-desc">Self-hosted</div>
                 </div>
-                <div class="model-option" data-model="mistral-large">
+                <div class="model-option" data-model="mistral-large" tabindex="0" role="button" aria-pressed="false">
                     <div class="model-name">Mistral Large</div>
                     <div class="model-desc">128K context</div>
                 </div>
-                <div class="model-option" data-model="gpt-4-turbo">
+                <div class="model-option" data-model="gpt-4-turbo" tabindex="0" role="button" aria-pressed="false">
                     <div class="model-name">GPT-4 Turbo</div>
                     <div class="model-desc">128K context</div>
                 </div>
@@ -697,16 +735,40 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
     </footer>
 
     <script>
-        // Handle /app route redirect to prevent loop
+        // Handle /app route redirect to prevent loop (needs to run immediately)
         if (window.location.pathname === '/app' || window.location.pathname === '/app/') {
             window.history.replaceState({}, '', '/');
         }
 
-        // Model selector
-        document.querySelectorAll('.model-option').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.model-option').forEach(o => o.classList.remove('active'));
+        // Wait for DOM to be ready before attaching event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Model selector
+            document.querySelectorAll('.model-option').forEach(option => {
+            const selectModel = () => {
+                // Remove active class from all options
+                document.querySelectorAll('.model-option').forEach(o => {
+                    o.classList.remove('active');
+                    o.setAttribute('aria-pressed', 'false');
+                });
+                // Add active class to clicked option
                 option.classList.add('active');
+                option.setAttribute('aria-pressed', 'true');
+                // Update selected model display
+                const modelName = option.querySelector('.model-name').textContent;
+                const display = document.getElementById('selected-model-display');
+                if (display) {
+                    display.textContent = modelName;
+                }
+            };
+
+            option.addEventListener('click', selectModel);
+            
+            // Keyboard support (Enter and Space keys)
+            option.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectModel();
+                }
             });
         });
 
@@ -726,20 +788,26 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
             const prompt = document.getElementById('prompt-input').value;
             const output = document.getElementById('output');
             const btn = document.getElementById('generate-btn');
+            const selectedModel = document.getElementById('selected-model-display');
 
             if (!prompt.trim()) {
-                output.innerHTML = '<span style="color: #FF1D6C;">Please enter a prompt first.</span>';
+                output.innerHTML = '<span style="color: #FF1D6C;">⚠️ Please enter a prompt first.</span>';
                 return;
             }
 
+            // Get selected model
+            const activeModel = document.querySelector('.model-option.active');
+            const modelName = activeModel ? activeModel.querySelector('.model-name').textContent : 'Claude Sonnet 4';
+
             // Simulate AI response (in production, this would call RoadAPI)
             btn.disabled = true;
-            btn.textContent = 'Generating...';
+            btn.style.opacity = '0.6';
+            btn.textContent = '⏳ Generating...';
             output.innerHTML = '<span class="loading">▋ Thinking...</span>';
 
             // Simulate streaming response
             setTimeout(() => {
-                const response = `# AI Response
+                const response = `# AI Response from ${modelName}
 
 Based on your prompt: "${prompt.substring(0, 50)}..."
 
@@ -776,11 +844,12 @@ This implementation uses dynamic programming to avoid redundant calculations, ac
 - Single pass through numbers
 - Constant-time lookups
 
-**Powered by BlackRoad AI** 🤖 | Latency: 47ms | Model: Claude Sonnet 4 | Tokens: 247`;
+**Powered by BlackRoad AI** 🤖 | Latency: 47ms | Model: ${modelName} | Tokens: 247`;
 
                 output.textContent = response;
                 btn.disabled = false;
-                btn.textContent = 'Generate AI Response';
+                btn.style.opacity = '1';
+                btn.textContent = '✨ Generate AI Response';
             }, 2000);
         });
 
@@ -809,6 +878,7 @@ This implementation uses dynamic programming to avoid redundant calculations, ac
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(card);
         });
+        }); // End DOMContentLoaded
     </script>
 </body>
 </html>
