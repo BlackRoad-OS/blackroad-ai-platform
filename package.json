@@ -1,8 +1,12 @@
 {
   "name": "blackroad-ai-platform",
-  "version": "1.0.0",
-  "description": "BlackRoad AI Platform - Sovereign AI with 30k agents",
+  "version": "2.0.0",
+  "description": "BlackRoad AI Platform - Sovereign AI with 30k agents, Memory System, Multi-Agent Collaboration",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "python3 -m http.server 8080",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
@@ -17,7 +21,6 @@
     "test:mocking": "playwright test tests/api-mocking.spec.ts",
     "test:custom-report": "playwright test tests/custom-reporting.spec.ts",
     "test:all": "playwright test --reporter=html,json",
-    "serve": "python3 -m http.server 8080",
     "test:ci": "playwright test --reporter=github",
     "lighthouse": "lighthouse https://ai.blackroadai.com --output html --output-path ./lighthouse-report.html"
   },
@@ -25,10 +28,19 @@
     "ai",
     "platform",
     "blackroad",
-    "sovereign"
+    "sovereign",
+    "agents",
+    "memory",
+    "collaboration"
   ],
   "author": "BlackRoad OS Inc",
   "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "sqlite3": "^5.1.7"
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.48.0",

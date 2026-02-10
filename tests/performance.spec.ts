@@ -1,7 +1,7 @@
-import { test, expect, devices } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Performance Testing', () => {
-  test.use({ ...devices['Desktop Chrome'] });
+  // Device settings handled by playwright.config.ts projects
 
   test('should load page within acceptable time', async ({ page }) => {
     const startTime = Date.now();
@@ -193,7 +193,7 @@ test.describe('Performance Testing', () => {
 });
 
 test.describe('Performance on Mobile', () => {
-  test.use({ ...devices['Pixel 5'] });
+  // Mobile device settings handled by playwright.config.ts 'Mobile Chrome' project
 
   test('should load quickly on mobile', async ({ page }) => {
     const startTime = Date.now();

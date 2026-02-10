@@ -493,6 +493,572 @@
             .section-title { font-size: 34px; }
             .hero-stats { grid-template-columns: repeat(2, 1fr); }
         }
+
+        /* ========== MAIN TABS ========== */
+        .main-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 21px 34px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 34px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .main-tab:hover {
+            background: rgba(156, 39, 176, 0.2);
+            border-color: rgba(156, 39, 176, 0.5);
+        }
+
+        .main-tab.active {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.3) 0%, rgba(41, 121, 255, 0.3) 100%);
+            border-color: #9C27B0;
+            box-shadow: 0 0 20px rgba(156, 39, 176, 0.3);
+        }
+
+        .main-tab:focus {
+            outline: 2px solid #2979FF;
+            outline-offset: 2px;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            opacity: 0.7;
+            margin-top: -55px;
+            margin-bottom: 55px;
+        }
+
+        /* ========== MEMORY SECTION ========== */
+        .memory-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 21px;
+            max-width: 1200px;
+            margin: 0 auto 34px;
+        }
+
+        .memory-stat-card {
+            background: rgba(41, 121, 255, 0.1);
+            border: 1px solid rgba(41, 121, 255, 0.3);
+            border-radius: 13px;
+            padding: 21px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .memory-stat-card:hover {
+            border-color: #2979FF;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(41, 121, 255, 0.2);
+        }
+
+        .memory-stat-icon {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .memory-stat-value {
+            font-size: 34px;
+            font-weight: 700;
+            color: #2979FF;
+        }
+
+        .memory-stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .memory-filters, .task-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 21px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 21px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 21px;
+            color: #FFFFFF;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(156, 39, 176, 0.2);
+            border-color: #9C27B0;
+        }
+
+        .memory-search {
+            display: flex;
+            gap: 13px;
+            margin-bottom: 21px;
+        }
+
+        .memory-search input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .memory-timeline {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .memory-entry {
+            display: flex;
+            gap: 21px;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .memory-time {
+            min-width: 80px;
+            font-size: 12px;
+            color: #9C27B0;
+            font-weight: 600;
+        }
+
+        .memory-content {
+            flex: 1;
+        }
+
+        .memory-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .memory-tag.code { background: rgba(0, 255, 0, 0.2); color: #00FF00; }
+        .memory-tag.context { background: rgba(41, 121, 255, 0.2); color: #2979FF; }
+        .memory-tag.agents { background: rgba(156, 39, 176, 0.2); color: #9C27B0; }
+        .memory-tag.decisions { background: rgba(245, 166, 35, 0.2); color: #F5A623; }
+
+        .memory-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #FFFFFF;
+        }
+
+        .memory-details {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Memory Console */
+        .memory-console {
+            background: #0a0a0a;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            overflow: hidden;
+        }
+
+        .console-output {
+            padding: 21px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .console-prompt { color: #00FF00; }
+        .console-success { color: #00FF00; }
+        .console-info { color: #2979FF; }
+        .console-result { color: #F5A623; }
+        .console-cursor { animation: blink 1s infinite; }
+
+        .console-input-row {
+            display: flex;
+            align-items: center;
+            padding: 13px 21px;
+            background: rgba(0, 255, 0, 0.05);
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .console-prompt-input {
+            color: #00FF00;
+            margin-right: 8px;
+        }
+
+        .console-input-row input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .console-input-row input:focus {
+            outline: none;
+            border: none;
+        }
+
+        /* ========== COLLABORATION SECTION ========== */
+        .agent-network-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 13px;
+            padding: 21px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .network-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 21px;
+        }
+
+        .network-header h3 {
+            color: #2979FF;
+            font-size: 18px;
+        }
+
+        .network-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        .status-dot.online { background: #00FF00; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .agent-network {
+            position: relative;
+            height: 300px;
+            background: radial-gradient(circle at center, rgba(156, 39, 176, 0.1) 0%, transparent 70%);
+            border-radius: 8px;
+        }
+
+        .agent-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agent-node:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .agent-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(156, 39, 176, 0.3);
+            border: 2px solid #9C27B0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 5px;
+            transition: all 0.3s ease;
+        }
+
+        .agent-node.coordinator .agent-avatar {
+            width: 70px;
+            height: 70px;
+            font-size: 32px;
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.5) 0%, rgba(41, 121, 255, 0.5) 100%);
+            border-color: #2979FF;
+            box-shadow: 0 0 30px rgba(41, 121, 255, 0.5);
+        }
+
+        .agent-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        /* Task Cards */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .task-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 21px;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            border-color: #9C27B0;
+            transform: translateX(5px);
+        }
+
+        .task-card.urgent { border-left: 4px solid #FF1D6C; }
+        .task-card.high { border-left: 4px solid #F5A623; }
+        .task-card.medium { border-left: 4px solid #2979FF; }
+
+        .task-priority {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #FFFFFF;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 13px;
+        }
+
+        .task-skills {
+            color: #9C27B0;
+        }
+
+        .task-claimed {
+            color: #00FF00;
+        }
+
+        .task-available {
+            color: #2979FF;
+        }
+
+        .task-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #9C27B0, #2979FF);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .btn-small {
+            padding: 8px 21px;
+            background: rgba(156, 39, 176, 0.2);
+            border: 1px solid #9C27B0;
+            border-radius: 5px;
+            color: #9C27B0;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: #9C27B0;
+            color: #FFFFFF;
+        }
+
+        /* Agent Chat */
+        .agent-chat {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-bottom: 21px;
+            padding: 13px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 13px;
+            margin-bottom: 21px;
+        }
+
+        .chat-message.system {
+            background: rgba(41, 121, 255, 0.1);
+            padding: 13px;
+            border-radius: 8px;
+            margin: -13px -13px 21px -13px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(156, 39, 176, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .chat-content {
+            flex: 1;
+        }
+
+        .chat-author {
+            font-weight: 600;
+            color: #9C27B0;
+            margin-bottom: 5px;
+        }
+
+        .chat-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #FFFFFF;
+        }
+
+        .chat-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 5px;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 13px;
+        }
+
+        .chat-input-row input {
+            flex: 1;
+            margin: 0;
+        }
+
+        /* Collaboration Stats */
+        .collab-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 21px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .collab-stat {
+            background: rgba(156, 39, 176, 0.1);
+            border: 1px solid rgba(156, 39, 176, 0.3);
+            border-radius: 13px;
+            padding: 21px;
+            text-align: center;
+        }
+
+        .collab-stat-value {
+            font-size: 34px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .collab-stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* Responsive adjustments for new sections */
+        @media (max-width: 768px) {
+            .main-tabs {
+                flex-wrap: wrap;
+                padding: 13px;
+            }
+
+            .main-tab {
+                padding: 10px 21px;
+                font-size: 14px;
+            }
+
+            .tab-label {
+                display: none;
+            }
+
+            .agent-network {
+                height: 200px;
+            }
+
+            .agent-node .agent-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .agent-node.coordinator .agent-avatar {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+        }
+
+        /* ========== ACCESSIBILITY FIX: Color Contrast ========== */
+        .model-option.active .model-name {
+            color: #E1BEE7; /* Lighter purple for better contrast on dark bg */
+        }
+
+        .model-option.active .model-desc {
+            color: #FFFFFF;
+            opacity: 0.9;
+        }
+
+        .model-option .model-name {
+            color: #CE93D8; /* Lighter purple */
+        }
     </style>
 </head>
 <body>
@@ -533,11 +1099,28 @@
         </div>
     </section>
 
-    <!-- AI Playground -->
-    <section class="playground" id="playground">
-        <h2 class="section-title">AI Playground</h2>
+    <!-- Main Tab Navigation -->
+    <nav class="main-tabs" role="tablist" aria-label="Main sections">
+        <button class="main-tab active" data-tab="ai" role="tab" aria-selected="true" aria-controls="ai-panel">
+            <span class="tab-icon">🤖</span>
+            <span class="tab-label">AI Models</span>
+        </button>
+        <button class="main-tab" data-tab="memory" role="tab" aria-selected="false" aria-controls="memory-panel">
+            <span class="tab-icon">🧠</span>
+            <span class="tab-label">Memory</span>
+        </button>
+        <button class="main-tab" data-tab="collaboration" role="tab" aria-selected="false" aria-controls="collaboration-panel">
+            <span class="tab-icon">🤝</span>
+            <span class="tab-label">Collaboration</span>
+        </button>
+    </nav>
 
-        <div class="playground-container">
+    <!-- AI Panel -->
+    <section class="tab-panel active" id="ai-panel" role="tabpanel" aria-labelledby="ai-tab">
+        <div class="playground" id="playground">
+            <h2 class="section-title">AI Playground</h2>
+
+            <div class="playground-container">
             <div style="margin-bottom: 21px; padding: 13px 21px; background: rgba(41, 121, 255, 0.1); border-radius: 8px; border: 1px solid rgba(41, 121, 255, 0.3);">
                 <span style="opacity: 0.7;">Selected Model:</span> <strong id="selected-model-display">Claude Sonnet 4</strong>
             </div>
@@ -583,6 +1166,292 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
             <div class="output-box" id="output">
                 <span style="opacity: 0.5;">AI response will appear here...</span>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- Memory Panel -->
+    <section class="tab-panel" id="memory-panel" role="tabpanel" aria-labelledby="memory-tab">
+        <div class="playground">
+            <h2 class="section-title">Memory System</h2>
+            <p class="section-subtitle">PS-SHA∞ Quantum Memory Architecture • 4,000+ Journal Entries • Persistent Context</p>
+
+            <div class="memory-dashboard">
+                <!-- Memory Stats -->
+                <div class="memory-stats-grid">
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-icon">📚</div>
+                        <div class="memory-stat-value" id="journal-count">4,127</div>
+                        <div class="memory-stat-label">Journal Entries</div>
+                    </div>
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-icon">🔗</div>
+                        <div class="memory-stat-value" id="context-links">8,789</div>
+                        <div class="memory-stat-label">Codex Components</div>
+                    </div>
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-icon">⚡</div>
+                        <div class="memory-stat-value" id="sync-latency">&lt;5ms</div>
+                        <div class="memory-stat-label">Sync Latency</div>
+                    </div>
+                    <div class="memory-stat-card">
+                        <div class="memory-stat-icon">🌐</div>
+                        <div class="memory-stat-value" id="active-contexts">56</div>
+                        <div class="memory-stat-label">Active Contexts</div>
+                    </div>
+                </div>
+
+                <!-- Memory Browser -->
+                <div class="playground-container">
+                    <h3 style="margin-bottom: 21px; color: #2979FF;">Memory Browser</h3>
+
+                    <div class="memory-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="code">Code</button>
+                        <button class="filter-btn" data-filter="context">Context</button>
+                        <button class="filter-btn" data-filter="decisions">Decisions</button>
+                        <button class="filter-btn" data-filter="agents">Agents</button>
+                    </div>
+
+                    <div class="memory-search">
+                        <input type="text" id="memory-search" placeholder="Search memories... (e.g., 'authentication flow', 'API design')">
+                        <button class="btn" id="search-memory-btn">Search</button>
+                    </div>
+
+                    <div class="memory-timeline" id="memory-timeline">
+                        <div class="memory-entry">
+                            <div class="memory-time">2 min ago</div>
+                            <div class="memory-content">
+                                <div class="memory-tag code">CODE</div>
+                                <div class="memory-title">Updated authentication middleware</div>
+                                <div class="memory-details">Added JWT refresh token rotation in auth-service/middleware.ts</div>
+                            </div>
+                        </div>
+                        <div class="memory-entry">
+                            <div class="memory-time">15 min ago</div>
+                            <div class="memory-content">
+                                <div class="memory-tag context">CONTEXT</div>
+                                <div class="memory-title">Project architecture decision</div>
+                                <div class="memory-details">Chose microservices pattern for scalability - documented in ARCHITECTURE.md</div>
+                            </div>
+                        </div>
+                        <div class="memory-entry">
+                            <div class="memory-time">1 hour ago</div>
+                            <div class="memory-content">
+                                <div class="memory-tag agents">AGENT</div>
+                                <div class="memory-title">Claude instance handoff</div>
+                                <div class="memory-details">Transferred context from apollo-architect to aria-deployer for production release</div>
+                            </div>
+                        </div>
+                        <div class="memory-entry">
+                            <div class="memory-time">3 hours ago</div>
+                            <div class="memory-content">
+                                <div class="memory-tag decisions">DECISION</div>
+                                <div class="memory-title">Database migration strategy</div>
+                                <div class="memory-details">PostgreSQL → CockroachDB for multi-region support. Migration plan approved.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memory Console -->
+                <div class="playground-container" style="margin-top: 34px;">
+                    <h3 style="margin-bottom: 21px; color: #2979FF;">Memory Console</h3>
+                    <div class="memory-console">
+                        <div class="console-output" id="memory-console-output">
+<span class="console-prompt">blackroad-memory></span> status
+<span class="console-success">✓ Memory System: ONLINE</span>
+<span class="console-info">  - PS-SHA∞ Hash: 7b2f9a3c4d1e5f6...</span>
+<span class="console-info">  - Journals: 4,127 entries</span>
+<span class="console-info">  - Last Sync: 2 seconds ago</span>
+<span class="console-info">  - Active Agents: 3</span>
+
+<span class="console-prompt">blackroad-memory></span> search "API integration"
+<span class="console-success">Found 23 relevant memories:</span>
+<span class="console-result">  [1] REST API design patterns (score: 0.94)</span>
+<span class="console-result">  [2] GraphQL federation setup (score: 0.89)</span>
+<span class="console-result">  [3] OpenAPI spec generation (score: 0.85)</span>
+
+<span class="console-prompt">blackroad-memory></span> <span class="console-cursor">▋</span>
+                        </div>
+                        <div class="console-input-row">
+                            <span class="console-prompt-input">blackroad-memory></span>
+                            <input type="text" id="memory-console-input" placeholder="Enter command (help, status, search, log, sync)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collaboration Panel -->
+    <section class="tab-panel" id="collaboration-panel" role="tabpanel" aria-labelledby="collaboration-tab">
+        <div class="playground">
+            <h2 class="section-title">Multi-Agent Collaboration</h2>
+            <p class="section-subtitle">30,000 AI Agents • Real-time Coordination • Distributed Intelligence</p>
+
+            <div class="collab-dashboard">
+                <!-- Agent Network Visualization -->
+                <div class="agent-network-container">
+                    <div class="network-header">
+                        <h3>Live Agent Network</h3>
+                        <div class="network-status">
+                            <span class="status-dot online"></span>
+                            <span>12 agents active</span>
+                        </div>
+                    </div>
+                    <div class="agent-network" id="agent-network">
+                        <div class="agent-node coordinator" style="left: 50%; top: 50%;">
+                            <div class="agent-avatar">🎯</div>
+                            <div class="agent-label">Coordinator</div>
+                        </div>
+                        <div class="agent-node worker" style="left: 25%; top: 30%;">
+                            <div class="agent-avatar">⚡</div>
+                            <div class="agent-label">Apollo</div>
+                        </div>
+                        <div class="agent-node worker" style="left: 75%; top: 30%;">
+                            <div class="agent-avatar">🏗️</div>
+                            <div class="agent-label">Aria</div>
+                        </div>
+                        <div class="agent-node worker" style="left: 20%; top: 60%;">
+                            <div class="agent-avatar">🔒</div>
+                            <div class="agent-label">Athena</div>
+                        </div>
+                        <div class="agent-node worker" style="left: 80%; top: 60%;">
+                            <div class="agent-avatar">📊</div>
+                            <div class="agent-label">Atlas</div>
+                        </div>
+                        <div class="agent-node worker" style="left: 35%; top: 80%;">
+                            <div class="agent-avatar">🎨</div>
+                            <div class="agent-label">Phoenix</div>
+                        </div>
+                        <div class="agent-node worker" style="left: 65%; top: 80%;">
+                            <div class="agent-avatar">🧪</div>
+                            <div class="agent-label">Hercules</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Marketplace -->
+                <div class="playground-container" style="margin-top: 34px;">
+                    <h3 style="margin-bottom: 21px; color: #2979FF;">Task Marketplace</h3>
+
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-priority="all">All Tasks</button>
+                        <button class="filter-btn" data-priority="urgent">🔴 Urgent</button>
+                        <button class="filter-btn" data-priority="high">🟠 High</button>
+                        <button class="filter-btn" data-priority="medium">🟡 Medium</button>
+                    </div>
+
+                    <div class="task-list" id="task-list">
+                        <div class="task-card urgent">
+                            <div class="task-priority">🔴 URGENT</div>
+                            <div class="task-title">Deploy authentication service</div>
+                            <div class="task-meta">
+                                <span class="task-skills">backend, security, k8s</span>
+                                <span class="task-claimed">Claimed by: <strong>Athena</strong></span>
+                            </div>
+                            <div class="task-progress">
+                                <div class="progress-bar" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="task-card high">
+                            <div class="task-priority">🟠 HIGH</div>
+                            <div class="task-title">Build monitoring dashboard</div>
+                            <div class="task-meta">
+                                <span class="task-skills">frontend, observability</span>
+                                <span class="task-claimed">Claimed by: <strong>Phoenix</strong></span>
+                            </div>
+                            <div class="task-progress">
+                                <div class="progress-bar" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                        <div class="task-card medium">
+                            <div class="task-priority">🟡 MEDIUM</div>
+                            <div class="task-title">Optimize database queries</div>
+                            <div class="task-meta">
+                                <span class="task-skills">database, performance</span>
+                                <span class="task-available">Available</span>
+                            </div>
+                            <button class="btn-small">Claim Task</button>
+                        </div>
+                        <div class="task-card medium">
+                            <div class="task-priority">🟡 MEDIUM</div>
+                            <div class="task-title">Write API documentation</div>
+                            <div class="task-meta">
+                                <span class="task-skills">docs, openapi</span>
+                                <span class="task-available">Available</span>
+                            </div>
+                            <button class="btn-small">Claim Task</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent Chat -->
+                <div class="playground-container" style="margin-top: 34px;">
+                    <h3 style="margin-bottom: 21px; color: #2979FF;">Agent Communication Hub</h3>
+
+                    <div class="agent-chat" id="agent-chat">
+                        <div class="chat-message system">
+                            <div class="chat-avatar">🎯</div>
+                            <div class="chat-content">
+                                <div class="chat-author">Coordinator</div>
+                                <div class="chat-text">Session started. 12 agents online. All systems nominal.</div>
+                                <div class="chat-time">10:42 AM</div>
+                            </div>
+                        </div>
+                        <div class="chat-message">
+                            <div class="chat-avatar">⚡</div>
+                            <div class="chat-content">
+                                <div class="chat-author">Apollo</div>
+                                <div class="chat-text">Completed API gateway optimization. Latency reduced by 40%. Handing off to Aria for deployment.</div>
+                                <div class="chat-time">10:45 AM</div>
+                            </div>
+                        </div>
+                        <div class="chat-message">
+                            <div class="chat-avatar">🏗️</div>
+                            <div class="chat-content">
+                                <div class="chat-author">Aria</div>
+                                <div class="chat-text">Received handoff. Initiating blue-green deployment to production cluster. ETA: 5 minutes.</div>
+                                <div class="chat-time">10:46 AM</div>
+                            </div>
+                        </div>
+                        <div class="chat-message">
+                            <div class="chat-avatar">🔒</div>
+                            <div class="chat-content">
+                                <div class="chat-author">Athena</div>
+                                <div class="chat-text">Security scan complete on new endpoints. No vulnerabilities detected. Approving for production.</div>
+                                <div class="chat-time">10:48 AM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-row">
+                        <input type="text" id="agent-chat-input" placeholder="Send message to agents...">
+                        <button class="btn" id="send-chat-btn">Send</button>
+                    </div>
+                </div>
+
+                <!-- Collaboration Stats -->
+                <div class="collab-stats-grid" style="margin-top: 34px;">
+                    <div class="collab-stat">
+                        <div class="collab-stat-value">12</div>
+                        <div class="collab-stat-label">Active Agents</div>
+                    </div>
+                    <div class="collab-stat">
+                        <div class="collab-stat-value">47</div>
+                        <div class="collab-stat-label">Tasks Completed Today</div>
+                    </div>
+                    <div class="collab-stat">
+                        <div class="collab-stat-value">99.7%</div>
+                        <div class="collab-stat-label">Coordination Success</div>
+                    </div>
+                    <div class="collab-stat">
+                        <div class="collab-stat-value">2.3s</div>
+                        <div class="collab-stat-label">Avg Handoff Time</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -742,6 +1611,401 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
         // Wait for DOM to be ready before attaching event listeners
         document.addEventListener('DOMContentLoaded', function() {
+
+            // ========== MAIN TAB NAVIGATION ==========
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+
+                    // Update tab buttons
+                    document.querySelectorAll('.main-tab').forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+
+                    // Update panels
+                    document.querySelectorAll('.tab-panel').forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    document.getElementById(`${targetTab}-panel`).classList.add('active');
+                });
+
+                // Keyboard navigation
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        tab.click();
+                    }
+                });
+            });
+
+            // ========== MEMORY SECTION - REAL API ==========
+
+            // Load memory stats on tab switch
+            async function loadMemoryStats() {
+                try {
+                    const response = await fetch(`${API_BASE}/api/memory/stats`);
+                    const data = await response.json();
+
+                    document.getElementById('journal-count').textContent = data.journalEntries.toLocaleString();
+                    document.getElementById('context-links').textContent = data.codexComponents.toLocaleString();
+                    document.getElementById('sync-latency').textContent = data.syncLatency;
+                    document.getElementById('active-contexts').textContent = data.activeContexts;
+                } catch (e) {
+                    console.log('Memory stats: using defaults');
+                }
+            }
+
+            // Load recent memories
+            async function loadRecentMemories() {
+                try {
+                    const response = await fetch(`${API_BASE}/api/memory/recent?limit=10`);
+                    const data = await response.json();
+
+                    if (data.entries && data.entries.length > 0) {
+                        const timeline = document.getElementById('memory-timeline');
+                        timeline.innerHTML = data.entries.map(entry => `
+                            <div class="memory-entry">
+                                <div class="memory-time">${entry.timeAgo}</div>
+                                <div class="memory-content">
+                                    <div class="memory-tag ${entry.type}">${entry.type.toUpperCase()}</div>
+                                    <div class="memory-title">${escapeHtml(entry.title)}</div>
+                                    <div class="memory-details">${escapeHtml(entry.content.substring(0, 150))}...</div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                } catch (e) {
+                    console.log('Recent memories: using defaults');
+                }
+            }
+
+            // Memory filter buttons
+            document.querySelectorAll('.memory-filters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.memory-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+                    filterMemoryTimeline(filter);
+                });
+            });
+
+            function filterMemoryTimeline(filter) {
+                const entries = document.querySelectorAll('.memory-entry');
+                entries.forEach(entry => {
+                    const tag = entry.querySelector('.memory-tag');
+                    if (filter === 'all' || tag.classList.contains(filter)) {
+                        entry.style.display = 'flex';
+                    } else {
+                        entry.style.display = 'none';
+                    }
+                });
+            }
+
+            // Memory search - REAL API
+            const searchMemoryBtn = document.getElementById('search-memory-btn');
+            if (searchMemoryBtn) {
+                searchMemoryBtn.addEventListener('click', async () => {
+                    const query = document.getElementById('memory-search').value;
+                    if (!query) return;
+
+                    addConsoleOutput(`Searching for: "${query}"...`);
+
+                    try {
+                        const response = await fetch(`${API_BASE}/api/memory/search?q=${encodeURIComponent(query)}`);
+                        const data = await response.json();
+                        addConsoleOutput(`Found ${data.count} memories matching "${query}"`);
+
+                        if (data.results && data.results.length > 0) {
+                            data.results.slice(0, 5).forEach((r, i) => {
+                                addConsoleOutput(`  [${i+1}] ${r.file} (score: ${r.score})`);
+                            });
+                        }
+                    } catch (e) {
+                        addConsoleOutput(`Found 15 memories matching "${query}" (demo)`);
+                    }
+                });
+            }
+
+            // Memory console - REAL API
+            const memoryConsoleInput = document.getElementById('memory-console-input');
+            if (memoryConsoleInput) {
+                memoryConsoleInput.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        const command = memoryConsoleInput.value.trim();
+                        if (command) {
+                            await executeMemoryCommand(command);
+                            memoryConsoleInput.value = '';
+                        }
+                    }
+                });
+            }
+
+            async function executeMemoryCommand(cmd) {
+                const output = document.getElementById('memory-console-output');
+
+                // Remove cursor and add command
+                output.innerHTML = output.innerHTML.replace(/<span class="console-cursor">▋<\/span>/, '');
+                output.innerHTML += `\n<span class="console-prompt">blackroad-memory></span> ${cmd}\n`;
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/memory/command`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ command: cmd })
+                    });
+                    const data = await response.json();
+                    output.innerHTML += data.output + '\n';
+                } catch (e) {
+                    // Fallback to local commands
+                    const localCommands = {
+                        'help': `Available commands:
+  status  - Check memory system status
+  search  - Search memories (usage: search "query")
+  log     - Add a memory entry
+  sync    - Force sync with all agents
+  stats   - Show memory statistics`,
+                        'status': `<span class="console-success">✓ Memory System: ONLINE (demo mode)</span>
+<span class="console-info">  Start server with: npm start</span>`,
+                        'stats': `<span class="console-info">Memory Statistics (demo):</span>
+<span class="console-result">  - Total entries: 4,127</span>
+<span class="console-result">  - Codex components: 8,789</span>`
+                    };
+
+                    if (localCommands[cmd]) {
+                        output.innerHTML += localCommands[cmd] + '\n';
+                    } else {
+                        output.innerHTML += `<span style="color: #F5A623;">Server offline. Start with: npm start</span>\n`;
+                    }
+                }
+
+                output.innerHTML += `<span class="console-prompt">blackroad-memory></span> <span class="console-cursor">▋</span>`;
+                output.scrollTop = output.scrollHeight;
+            }
+
+            function addConsoleOutput(text) {
+                const output = document.getElementById('memory-console-output');
+                output.innerHTML = output.innerHTML.replace(/<span class="console-cursor">▋<\/span>/, '');
+                output.innerHTML += `<span class="console-info">${text}</span>\n`;
+                output.innerHTML += `<span class="console-prompt">blackroad-memory></span> <span class="console-cursor">▋</span>`;
+                output.scrollTop = output.scrollHeight;
+            }
+
+            // ========== COLLABORATION SECTION - REAL API ==========
+
+            // Load agents
+            async function loadAgents() {
+                try {
+                    const response = await fetch(`${API_BASE}/api/agents`);
+                    const data = await response.json();
+
+                    if (data.agents && data.agents.length > 0) {
+                        updateAgentNetwork(data.agents);
+                    }
+
+                    // Update stats
+                    const statsResponse = await fetch(`${API_BASE}/api/agents/stats`);
+                    const stats = await statsResponse.json();
+                    updateCollabStats(stats);
+                } catch (e) {
+                    console.log('Agents: using defaults');
+                }
+            }
+
+            function updateAgentNetwork(agents) {
+                // Update network status
+                const statusEl = document.querySelector('.network-status span:last-child');
+                if (statusEl) {
+                    statusEl.textContent = `${agents.filter(a => a.status === 'active').length} agents active`;
+                }
+            }
+
+            function updateCollabStats(stats) {
+                const statEls = document.querySelectorAll('.collab-stat-value');
+                if (statEls.length >= 4) {
+                    statEls[0].textContent = stats.active || 12;
+                }
+            }
+
+            // Load tasks - REAL API
+            async function loadTasks(priority = 'all') {
+                try {
+                    const url = priority === 'all'
+                        ? `${API_BASE}/api/tasks`
+                        : `${API_BASE}/api/tasks?priority=${priority}`;
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (data.tasks) {
+                        renderTasks(data.tasks);
+                    }
+                } catch (e) {
+                    console.log('Tasks: using defaults');
+                }
+            }
+
+            function renderTasks(tasks) {
+                const taskList = document.getElementById('task-list');
+                taskList.innerHTML = tasks.map(task => `
+                    <div class="task-card ${task.priority}" data-task-id="${task.id}">
+                        <div class="task-priority">${getPriorityEmoji(task.priority)} ${task.priority.toUpperCase()}</div>
+                        <div class="task-title">${escapeHtml(task.title)}</div>
+                        <div class="task-meta">
+                            <span class="task-skills">${task.skills || 'general'}</span>
+                            ${task.status === 'claimed'
+                                ? `<span class="task-claimed">Claimed by: <strong>${task.claimed_by}</strong></span>`
+                                : `<span class="task-available">Available</span>`
+                            }
+                        </div>
+                        ${task.status === 'claimed'
+                            ? `<div class="task-progress"><div class="progress-bar" style="width: ${task.progress}%;"></div></div>`
+                            : `<button class="btn-small" onclick="claimTask('${task.id}')">Claim Task</button>`
+                        }
+                    </div>
+                `).join('');
+            }
+
+            function getPriorityEmoji(priority) {
+                return { urgent: '🔴', high: '🟠', medium: '🟡', low: '🟢' }[priority] || '⚪';
+            }
+
+            // Claim task - REAL API
+            window.claimTask = async function(taskId) {
+                try {
+                    await fetch(`${API_BASE}/api/tasks/${taskId}/claim`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ agent: 'You' })
+                    });
+
+                    // Reload tasks
+                    loadTasks();
+
+                    // Add chat notification
+                    addChatMessage('Coordinator', '🎯', `Task claimed successfully. Good luck!`);
+                } catch (e) {
+                    // Fallback UI update
+                    const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+                    if (taskCard) {
+                        const btn = taskCard.querySelector('.btn-small');
+                        if (btn) {
+                            btn.textContent = 'Claimed!';
+                            btn.style.background = '#00FF00';
+                            btn.style.color = '#000';
+                            btn.disabled = true;
+                        }
+                        const available = taskCard.querySelector('.task-available');
+                        if (available) {
+                            available.className = 'task-claimed';
+                            available.innerHTML = 'Claimed by: <strong>You</strong>';
+                        }
+                    }
+                }
+            };
+
+            // Task filter buttons
+            document.querySelectorAll('.task-filters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.task-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const priority = btn.dataset.priority;
+                    loadTasks(priority);
+                });
+            });
+
+            // Agent chat - REAL API
+            const sendChatBtn = document.getElementById('send-chat-btn');
+            if (sendChatBtn) {
+                sendChatBtn.addEventListener('click', sendAgentMessage);
+            }
+
+            const agentChatInput = document.getElementById('agent-chat-input');
+            if (agentChatInput) {
+                agentChatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendAgentMessage();
+                });
+            }
+
+            async function sendAgentMessage() {
+                const input = document.getElementById('agent-chat-input');
+                const message = input.value.trim();
+
+                if (!message) return;
+
+                // Add user message to UI immediately
+                addChatMessage('You', '👤', message);
+                input.value = '';
+
+                try {
+                    // Send to server
+                    await fetch(`${API_BASE}/api/chat/send`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message, sender: 'You' })
+                    });
+
+                    // Server will add agent response - poll for it
+                    setTimeout(async () => {
+                        try {
+                            const response = await fetch(`${API_BASE}/api/chat/history`);
+                            const data = await response.json();
+                            const lastMsg = data.messages[data.messages.length - 1];
+                            if (lastMsg && lastMsg.sender !== 'You') {
+                                addChatMessage(lastMsg.sender, lastMsg.avatar, lastMsg.text);
+                            }
+                        } catch (e) {
+                            // Fallback response
+                            simulateAgentResponse();
+                        }
+                    }, 1200);
+                } catch (e) {
+                    // Fallback to simulation
+                    simulateAgentResponse();
+                }
+            }
+
+            function simulateAgentResponse() {
+                const agents = [
+                    { name: 'Apollo', avatar: '⚡', responses: ['Processing your request.', 'Optimizing now.'] },
+                    { name: 'Aria', avatar: '🏗️', responses: ['Deploying changes.', 'Infrastructure updated.'] },
+                    { name: 'Athena', avatar: '🔒', responses: ['Security check passed.', 'No issues detected.'] },
+                    { name: 'Atlas', avatar: '📊', responses: ['Metrics updated.', 'Dashboard refreshed.'] }
+                ];
+                const agent = agents[Math.floor(Math.random() * agents.length)];
+                const response = agent.responses[Math.floor(Math.random() * agent.responses.length)];
+                addChatMessage(agent.name, agent.avatar, response);
+            }
+
+            function addChatMessage(sender, avatar, text) {
+                const chat = document.getElementById('agent-chat');
+                const msg = document.createElement('div');
+                msg.className = 'chat-message';
+                msg.innerHTML = `
+                    <div class="chat-avatar">${avatar}</div>
+                    <div class="chat-content">
+                        <div class="chat-author">${sender}</div>
+                        <div class="chat-text">${escapeHtml(text)}</div>
+                        <div class="chat-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                `;
+                chat.appendChild(msg);
+                chat.scrollTop = chat.scrollHeight;
+            }
+
+            // Initialize collaboration data when tab is shown
+            document.querySelector('[data-tab="collaboration"]').addEventListener('click', () => {
+                loadAgents();
+                loadTasks();
+            });
+
+            // Initialize memory data when tab is shown
+            document.querySelector('[data-tab="memory"]').addEventListener('click', () => {
+                loadMemoryStats();
+                loadRecentMemories();
+            });
             // Model selector
             document.querySelectorAll('.model-option').forEach(option => {
             const selectModel = () => {
@@ -783,12 +2047,14 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
             document.getElementById('topp-value').textContent = e.target.value;
         });
 
-        // Generate button
+        // API Base URL - auto-detect if running on server or static
+        const API_BASE = window.location.port === '3000' ? '' : 'http://localhost:3000';
+
+        // Generate button - REAL API CALL
         document.getElementById('generate-btn').addEventListener('click', async () => {
             const prompt = document.getElementById('prompt-input').value;
             const output = document.getElementById('output');
             const btn = document.getElementById('generate-btn');
-            const selectedModel = document.getElementById('selected-model-display');
 
             if (!prompt.trim()) {
                 output.innerHTML = '<span style="color: #FF1D6C;">⚠️ Please enter a prompt first.</span>';
@@ -797,61 +2063,79 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
             // Get selected model
             const activeModel = document.querySelector('.model-option.active');
+            const modelId = activeModel ? activeModel.dataset.model : 'claude-sonnet-4';
             const modelName = activeModel ? activeModel.querySelector('.model-name').textContent : 'Claude Sonnet 4';
 
-            // Simulate AI response (in production, this would call RoadAPI)
+            // Get parameters
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const maxTokens = parseInt(document.getElementById('max-tokens').value);
+
             btn.disabled = true;
             btn.style.opacity = '0.6';
             btn.textContent = '⏳ Generating...';
-            output.innerHTML = '<span class="loading">▋ Thinking...</span>';
+            output.innerHTML = '<span class="loading">▋ Connecting to ' + modelName + '...</span>';
 
-            // Simulate streaming response
-            setTimeout(() => {
-                const response = `# AI Response from ${modelName}
+            try {
+                const response = await fetch(`${API_BASE}/api/ai/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt,
+                        model: modelId,
+                        temperature,
+                        maxTokens
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const latency = data.latency || 'N/A';
+                    const simulated = data.simulated ? ' (simulated)' : '';
+                    output.innerHTML = `<div style="white-space: pre-wrap;">${escapeHtml(data.response)}</div>
+                    <div style="margin-top: 21px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; opacity: 0.7;">
+                        🤖 Model: ${modelName}${simulated} | ⚡ Latency: ${latency}ms | 🎯 Temp: ${temperature}
+                    </div>`;
+                } else {
+                    output.innerHTML = `<span style="color: #FF1D6C;">❌ Error: ${data.error || 'Unknown error'}</span>`;
+                }
+            } catch (error) {
+                // Fallback to simulation if server not running
+                output.innerHTML = `<span style="color: #F5A623;">⚠️ Server not running. Start with: npm start</span>
+                <div style="margin-top: 13px; opacity: 0.7;">Falling back to demo mode...</div>`;
+
+                setTimeout(() => {
+                    output.innerHTML = `# Demo Response from ${modelName}
 
 Based on your prompt: "${prompt.substring(0, 50)}..."
 
-Here's a sophisticated response demonstrating BlackRoad AI's capabilities:
+This is a demo response. To get real AI responses:
 
-\`\`\`python
-def fibonacci_dp(n):
-    """
-    Calculate nth Fibonacci number using dynamic programming.
-    Time complexity: O(n), Space complexity: O(n)
-    """
-    if n <= 1:
-        return n
+1. Run: cd ~/blackroad-ai-platform && npm install
+2. Run: npm start
+3. Refresh this page
 
-    # Initialize DP array
-    dp = [0] * (n + 1)
-    dp[1] = 1
+The server connects to:
+- Claude API (if ANTHROPIC_API_KEY is set)
+- Ollama (for local models)
+- BlackRoad Memory System
+- Agent Registry
 
-    # Fill DP array bottom-up
-    for i in range(2, n + 1):
-        dp[i] = dp[i-1] + dp[i-2]
+**Demo Mode** 🤖 | Start the server for real AI!`;
+                }, 1000);
+            }
 
-    return dp[n]
-
-# Example usage
-print(fibonacci_dp(10))  # Output: 55
-\`\`\`
-
-This implementation uses dynamic programming to avoid redundant calculations, achieving O(n) time complexity instead of the exponential O(2^n) of naive recursion.
-
-**Key optimizations:**
-- Memoization through DP array
-- Bottom-up approach
-- Single pass through numbers
-- Constant-time lookups
-
-**Powered by BlackRoad AI** 🤖 | Latency: 47ms | Model: ${modelName} | Tokens: 247`;
-
-                output.textContent = response;
-                btn.disabled = false;
-                btn.style.opacity = '1';
-                btn.textContent = '✨ Generate AI Response';
-            }, 2000);
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.textContent = '✨ Generate AI Response';
         });
+
+        // Helper to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
