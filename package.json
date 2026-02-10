@@ -23,6 +23,8 @@
     "test:analytics": "playwright test tests/new-features.spec.ts -g 'Analytics'",
     "test:settings": "playwright test tests/new-features.spec.ts -g 'Settings'",
     "test:history": "playwright test tests/new-features.spec.ts -g 'History'",
+    "test:integrations": "playwright test tests/integrations-training.spec.ts -g 'Integrations'",
+    "test:training": "playwright test tests/integrations-training.spec.ts -g 'Training'",
     "test:custom-report": "playwright test tests/custom-reporting.spec.ts",
     "test:all": "playwright test --reporter=html,json",
     "test:ci": "playwright test --reporter=github",

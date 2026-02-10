@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlackRoad AI - Sovereign AI Platform</title>
     <style>
+        /* ========== BLACKROAD BRAND COLORS ========== */
+        :root {
+            --br-pink: #FF1D6C;
+            --br-amber: #F5A623;
+            --br-blue: #2979FF;
+            --br-violet: #9C27B0;
+            --br-cyan: #00BCD4;
+            --br-green: #4CAF50;
+            --br-black: #000;
+            --br-dark: #0a0a0a;
+            --br-mid: #1a1a1a;
+            --br-light: #2a2a2a;
+            --br-white: #FFF;
+            --br-gradient: linear-gradient(135deg, #F5A623 0%, #FF1D6C 38.2%, #9C27B0 61.8%, #2979FF 100%);
+            --br-gradient-hover: linear-gradient(135deg, #F5A623 0%, #FF1D6C 25%, #9C27B0 50%, #2979FF 75%, #00BCD4 100%);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,10 +29,10 @@
         }
 
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #000000;
-            color: #FFFFFF;
-            line-height: 1.618;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--br-black);
+            color: var(--br-white);
+            line-height: 1.618; -webkit-font-smoothing: antialiased;
         }
 
         /* Hero Section */
@@ -74,7 +91,7 @@
         h1 {
             font-size: 55px;
             font-weight: 700;
-            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            background: var(--br-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -83,7 +100,7 @@
 
         .subtitle {
             font-size: 24px;
-            opacity: 0.8;
+            color: #FFF;
             margin-bottom: 55px;
         }
 
@@ -97,7 +114,7 @@
 
         .btn {
             padding: 21px 55px;
-            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            background: var(--br-gradient);
             color: #FFFFFF;
             border: none;
             border-radius: 13px;
@@ -117,11 +134,11 @@
         .btn-outline {
             background: transparent;
             border: 2px solid #9C27B0;
-            color: #9C27B0;
+            color: var(--br-pink);
         }
 
         .btn-outline:hover {
-            background: rgba(156, 39, 176, 0.1);
+            background: rgba(255, 29, 108, 0.1);
         }
 
         .hero-stats {
@@ -138,7 +155,7 @@
         .stat-number {
             font-size: 55px;
             font-weight: 700;
-            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            background: var(--br-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -146,7 +163,7 @@
 
         .stat-label {
             font-size: 16px;
-            opacity: 0.7;
+            color: #FFF;
             margin-top: 8px;
         }
 
@@ -162,7 +179,7 @@
             font-weight: 700;
             text-align: center;
             margin-bottom: 89px;
-            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            background: var(--br-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -186,7 +203,7 @@
 
         .model-option {
             padding: 21px;
-            background: rgba(156, 39, 176, 0.1);
+            background: rgba(255, 29, 108, 0.1);
             border: 2px solid rgba(156, 39, 176, 0.3);
             border-radius: 8px;
             cursor: pointer;
@@ -196,8 +213,8 @@
         }
 
         .model-option:hover {
-            border-color: #9C27B0;
-            background: rgba(156, 39, 176, 0.2);
+            border-color: var(--br-pink);
+            background: rgba(255, 29, 108, 0.2);
             transform: translateY(-2px);
         }
 
@@ -207,8 +224,8 @@
         }
 
         .model-option.active {
-            border-color: #9C27B0;
-            background: rgba(156, 39, 176, 0.3);
+            border-color: var(--br-pink);
+            background: rgba(255, 29, 108, 0.3);
             box-shadow: 0 0 20px rgba(156, 39, 176, 0.4);
         }
 
@@ -232,22 +249,22 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 5px;
-            color: #9C27B0;
+            color: var(--br-pink);
         }
 
         .model-desc {
             font-size: 14px;
-            opacity: 0.7;
+            color: #FFF;
         }
 
         textarea, input[type="text"] {
             width: 100%;
             padding: 21px;
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--br-dark);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             color: #FFFFFF;
-            font-family: inherit;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
             font-size: 16px;
             margin-bottom: 21px;
             resize: vertical;
@@ -259,7 +276,7 @@
 
         textarea:focus, input:focus {
             outline: none;
-            border-color: #9C27B0;
+            border-color: var(--br-pink);
         }
 
         .controls {
@@ -277,7 +294,7 @@
 
         .control-label {
             font-size: 14px;
-            opacity: 0.8;
+            color: #FFF;
             font-weight: 600;
         }
 
@@ -296,18 +313,18 @@
             width: 21px;
             height: 21px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            background: var(--br-gradient);
             cursor: pointer;
         }
 
         .output-box {
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--br-dark);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 21px;
             min-height: 200px;
             margin-top: 21px;
-            font-family: 'Monaco', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
             font-size: 14px;
             white-space: pre-wrap;
             line-height: 1.8;
@@ -346,7 +363,7 @@
         }
 
         .feature-card:hover {
-            border-color: #9C27B0;
+            border-color: var(--br-pink);
             transform: translateY(-5px);
             box-shadow: 0 13px 34px rgba(156, 39, 176, 0.2);
         }
@@ -360,13 +377,13 @@
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 13px;
-            color: #2979FF;
+            color: var(--br-blue);
         }
 
         .feature-desc {
             font-size: 16px;
-            opacity: 0.8;
-            line-height: 1.618;
+            color: #FFF;
+            line-height: 1.618; -webkit-font-smoothing: antialiased;
         }
 
         /* Models Section */
@@ -384,7 +401,7 @@
         }
 
         .model-card {
-            background: rgba(156, 39, 176, 0.05);
+            background: rgba(255, 29, 108, 0.05);
             border: 1px solid rgba(156, 39, 176, 0.2);
             border-radius: 13px;
             padding: 34px;
@@ -392,7 +409,7 @@
         }
 
         .model-card:hover {
-            border-color: #9C27B0;
+            border-color: var(--br-pink);
             transform: translateY(-3px);
         }
 
@@ -406,13 +423,13 @@
         .model-title {
             font-size: 24px;
             font-weight: 700;
-            color: #9C27B0;
+            color: var(--br-pink);
         }
 
         .model-badge {
             padding: 5px 13px;
-            background: rgba(0, 255, 0, 0.2);
-            color: #00FF00;
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--br-green);
             border-radius: 5px;
             font-size: 12px;
             font-weight: 600;
@@ -431,12 +448,12 @@
         }
 
         .spec-label {
-            opacity: 0.7;
+            color: #FFF;
         }
 
         .spec-value {
             font-weight: 600;
-            color: #2979FF;
+            color: var(--br-blue);
         }
 
         /* Footer */
@@ -473,17 +490,17 @@
         .footer-links a {
             color: #FFFFFF;
             text-decoration: none;
-            opacity: 0.7;
+            color: #FFF;
             transition: opacity 0.3s ease;
         }
 
         .footer-links a:hover {
             opacity: 1;
-            color: #9C27B0;
+            color: var(--br-pink);
         }
 
         .footer-text {
-            opacity: 0.6;
+            color: #FFF;
             font-size: 14px;
         }
 
@@ -524,13 +541,13 @@
         }
 
         .main-tab:hover {
-            background: rgba(156, 39, 176, 0.2);
+            background: rgba(255, 29, 108, 0.2);
             border-color: rgba(156, 39, 176, 0.5);
         }
 
         .main-tab.active {
             background: linear-gradient(135deg, rgba(156, 39, 176, 0.3) 0%, rgba(41, 121, 255, 0.3) 100%);
-            border-color: #9C27B0;
+            border-color: var(--br-pink);
             box-shadow: 0 0 20px rgba(156, 39, 176, 0.3);
         }
 
@@ -554,7 +571,7 @@
         .section-subtitle {
             text-align: center;
             font-size: 18px;
-            opacity: 0.7;
+            color: #FFF;
             margin-top: -55px;
             margin-bottom: 55px;
         }
@@ -578,7 +595,7 @@
         }
 
         .memory-stat-card:hover {
-            border-color: #2979FF;
+            border-color: var(--br-blue);
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(41, 121, 255, 0.2);
         }
@@ -591,12 +608,12 @@
         .memory-stat-value {
             font-size: 34px;
             font-weight: 700;
-            color: #2979FF;
+            color: var(--br-blue);
         }
 
         .memory-stat-label {
             font-size: 14px;
-            opacity: 0.7;
+            color: #FFF;
             margin-top: 5px;
         }
 
@@ -619,8 +636,8 @@
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: rgba(156, 39, 176, 0.2);
-            border-color: #9C27B0;
+            background: rgba(255, 29, 108, 0.2);
+            border-color: var(--br-pink);
         }
 
         .memory-search {
@@ -649,7 +666,7 @@
         .memory-time {
             min-width: 80px;
             font-size: 12px;
-            color: #9C27B0;
+            color: var(--br-pink);
             font-weight: 600;
         }
 
@@ -666,9 +683,9 @@
             margin-bottom: 5px;
         }
 
-        .memory-tag.code { background: rgba(0, 255, 0, 0.2); color: #00FF00; }
-        .memory-tag.context { background: rgba(41, 121, 255, 0.2); color: #2979FF; }
-        .memory-tag.agents { background: rgba(156, 39, 176, 0.2); color: #9C27B0; }
+        .memory-tag.code { background: rgba(76, 175, 80, 0.2); color: var(--br-green); }
+        .memory-tag.context { background: rgba(41, 121, 255, 0.2); color: var(--br-blue); }
+        .memory-tag.agents { background: rgba(255, 29, 108, 0.2); color: var(--br-pink); }
         .memory-tag.decisions { background: rgba(245, 166, 35, 0.2); color: #F5A623; }
 
         .memory-title {
@@ -679,15 +696,15 @@
 
         .memory-details {
             font-size: 14px;
-            opacity: 0.7;
+            color: #FFF;
         }
 
         /* Memory Console */
         .memory-console {
-            background: #0a0a0a;
+            background: var(--br-dark);
             border: 1px solid rgba(0, 255, 0, 0.3);
             border-radius: 8px;
-            font-family: 'Monaco', 'Menlo', monospace;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
             font-size: 13px;
             overflow: hidden;
         }
@@ -700,9 +717,9 @@
             line-height: 1.6;
         }
 
-        .console-prompt { color: #00FF00; }
-        .console-success { color: #00FF00; }
-        .console-info { color: #2979FF; }
+        .console-prompt { color: var(--br-green); }
+        .console-success { color: var(--br-green); }
+        .console-info { color: var(--br-blue); }
         .console-result { color: #F5A623; }
         .console-cursor { animation: blink 1s infinite; }
 
@@ -710,12 +727,12 @@
             display: flex;
             align-items: center;
             padding: 13px 21px;
-            background: rgba(0, 255, 0, 0.05);
+            background: rgba(76, 175, 80, 0.05);
             border-top: 1px solid rgba(0, 255, 0, 0.2);
         }
 
         .console-prompt-input {
-            color: #00FF00;
+            color: var(--br-green);
             margin-right: 8px;
         }
 
@@ -724,7 +741,7 @@
             background: transparent;
             border: none;
             color: #FFFFFF;
-            font-family: 'Monaco', 'Menlo', monospace;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
             font-size: 13px;
             margin: 0;
             padding: 0;
@@ -753,7 +770,7 @@
         }
 
         .network-header h3 {
-            color: #2979FF;
+            color: var(--br-blue);
             font-size: 18px;
         }
 
@@ -771,7 +788,7 @@
             animation: pulse-dot 2s infinite;
         }
 
-        .status-dot.online { background: #00FF00; }
+        .status-dot.online { background: var(--br-green); }
 
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -800,7 +817,7 @@
         .agent-avatar {
             width: 50px;
             height: 50px;
-            background: rgba(156, 39, 176, 0.3);
+            background: rgba(255, 29, 108, 0.3);
             border: 2px solid #9C27B0;
             border-radius: 50%;
             display: flex;
@@ -816,7 +833,7 @@
             height: 70px;
             font-size: 32px;
             background: linear-gradient(135deg, rgba(156, 39, 176, 0.5) 0%, rgba(41, 121, 255, 0.5) 100%);
-            border-color: #2979FF;
+            border-color: var(--br-blue);
             box-shadow: 0 0 30px rgba(41, 121, 255, 0.5);
         }
 
@@ -842,7 +859,7 @@
         }
 
         .task-card:hover {
-            border-color: #9C27B0;
+            border-color: var(--br-pink);
             transform: translateX(5px);
         }
 
@@ -872,15 +889,15 @@
         }
 
         .task-skills {
-            color: #9C27B0;
+            color: var(--br-pink);
         }
 
         .task-claimed {
-            color: #00FF00;
+            color: var(--br-green);
         }
 
         .task-available {
-            color: #2979FF;
+            color: var(--br-blue);
         }
 
         .task-progress {
@@ -892,17 +909,17 @@
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #9C27B0, #2979FF);
+            background: var(--br-gradient);
             border-radius: 2px;
             transition: width 0.5s ease;
         }
 
         .btn-small {
             padding: 8px 21px;
-            background: rgba(156, 39, 176, 0.2);
+            background: rgba(255, 29, 108, 0.2);
             border: 1px solid #9C27B0;
             border-radius: 5px;
-            color: #9C27B0;
+            color: var(--br-pink);
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -920,7 +937,7 @@
             overflow-y: auto;
             margin-bottom: 21px;
             padding: 13px;
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--br-mid);
             border-radius: 8px;
         }
 
@@ -940,7 +957,7 @@
         .chat-avatar {
             width: 40px;
             height: 40px;
-            background: rgba(156, 39, 176, 0.3);
+            background: rgba(255, 29, 108, 0.3);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -955,7 +972,7 @@
 
         .chat-author {
             font-weight: 600;
-            color: #9C27B0;
+            color: var(--br-pink);
             margin-bottom: 5px;
         }
 
@@ -991,7 +1008,7 @@
         }
 
         .collab-stat {
-            background: rgba(156, 39, 176, 0.1);
+            background: rgba(255, 29, 108, 0.1);
             border: 1px solid rgba(156, 39, 176, 0.3);
             border-radius: 13px;
             padding: 21px;
@@ -1001,7 +1018,7 @@
         .collab-stat-value {
             font-size: 34px;
             font-weight: 700;
-            background: linear-gradient(135deg, #9C27B0 38.2%, #2979FF 61.8%);
+            background: var(--br-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -1009,7 +1026,7 @@
 
         .collab-stat-label {
             font-size: 14px;
-            opacity: 0.7;
+            color: #FFF;
             margin-top: 5px;
         }
 
@@ -1082,29 +1099,29 @@
         }
 
         .metric-icon { font-size: 34px; margin-bottom: 8px; }
-        .metric-value { font-size: 34px; font-weight: 700; color: #2979FF; }
-        .metric-label { font-size: 14px; opacity: 0.7; margin-top: 5px; }
+        .metric-value { font-size: 34px; font-weight: 700; color: var(--br-blue); }
+        .metric-label { font-size: 14px; color: #FFF; margin-top: 5px; }
         .metric-change { font-size: 12px; margin-top: 8px; padding: 4px 8px; border-radius: 4px; display: inline-block; }
-        .metric-change.positive { background: rgba(0, 255, 0, 0.1); color: #00FF00; }
+        .metric-change.positive { background: rgba(76, 175, 80, 0.1); color: var(--br-green); }
         .metric-change.negative { background: rgba(255, 29, 108, 0.1); color: #FF1D6C; }
 
         .chart-container { padding: 21px 0; }
         .chart-bars { display: flex; justify-content: space-around; align-items: flex-end; height: 200px; }
         .chart-bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .chart-bar { width: 40px; background: linear-gradient(180deg, #9C27B0, #2979FF); border-radius: 4px 4px 0 0; transition: height 0.5s ease; min-height: 10px; }
-        .chart-label { margin-top: 8px; font-size: 12px; opacity: 0.7; }
+        .chart-bar { width: 40px; background: var(--br-gradient); border-radius: 4px 4px 0 0; transition: height 0.5s ease; min-height: 10px; }
+        .chart-label { margin-top: 8px; font-size: 12px; color: #FFF; }
 
         .model-usage-list { display: flex; flex-direction: column; gap: 13px; }
         .model-usage-item { display: flex; align-items: center; gap: 13px; }
         .model-usage-item span:first-child { min-width: 120px; font-size: 14px; }
         .model-usage-bar-container { flex: 1; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
-        .model-usage-bar { height: 100%; background: linear-gradient(90deg, #9C27B0, #2979FF); border-radius: 4px; }
-        .model-usage-item span:last-child { min-width: 40px; text-align: right; font-size: 14px; color: #2979FF; }
+        .model-usage-bar { height: 100%; background: var(--br-gradient); border-radius: 4px; }
+        .model-usage-item span:last-child { min-width: 40px; text-align: right; font-size: 14px; color: var(--br-blue); }
 
         .cost-breakdown { display: flex; flex-direction: column; gap: 13px; }
         .cost-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .cost-item.total { border-top: 2px solid #9C27B0; border-bottom: none; padding-top: 13px; margin-top: 8px; font-weight: 700; }
-        .cost-value { color: #2979FF; font-weight: 600; }
+        .cost-value { color: var(--br-blue); font-weight: 600; }
 
         .export-buttons { display: flex; gap: 13px; flex-wrap: wrap; }
 
@@ -1112,21 +1129,21 @@
         .settings-container { max-width: 1000px; margin: 0 auto; }
         .settings-group { margin-bottom: 21px; }
         .settings-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #FFFFFF; }
-        .settings-hint { font-size: 12px; opacity: 0.6; margin-top: 5px; }
+        .settings-hint { font-size: 12px; color: #FFF; margin-top: 5px; }
         .settings-row { display: flex; gap: 34px; flex-wrap: wrap; }
         .settings-row .settings-group { flex: 1; min-width: 200px; }
 
         .api-key-input { display: flex; gap: 8px; }
         .api-key-input input { flex: 1; margin: 0; }
 
-        .settings-select { width: 100%; padding: 13px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #FFFFFF; font-size: 14px; }
-        .settings-select:focus { outline: none; border-color: #9C27B0; }
+        .settings-select { width: 100%; padding: 13px; background: var(--br-dark); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #FFFFFF; font-size: 14px; }
+        .settings-select:focus { outline: none; border-color: var(--br-pink); }
 
-        .settings-input { width: 100%; padding: 13px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #FFFFFF; font-size: 14px; }
+        .settings-input { width: 100%; padding: 13px; background: var(--br-dark); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #FFFFFF; font-size: 14px; }
 
         .theme-options, .color-options { display: flex; gap: 8px; flex-wrap: wrap; }
         .theme-btn { padding: 10px 21px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #FFFFFF; cursor: pointer; transition: all 0.3s ease; }
-        .theme-btn:hover, .theme-btn.active { background: rgba(156, 39, 176, 0.2); border-color: #9C27B0; }
+        .theme-btn:hover, .theme-btn.active { background: rgba(255, 29, 108, 0.2); border-color: var(--br-pink); }
 
         .color-btn { width: 40px; height: 40px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: all 0.3s ease; }
         .color-btn:hover, .color-btn.active { border-color: #FFFFFF; transform: scale(1.1); }
@@ -1140,19 +1157,19 @@
 
         .history-stats-row { display: flex; justify-content: center; gap: 55px; flex-wrap: wrap; }
         .history-stat { text-align: center; }
-        .history-stat-value { display: block; font-size: 34px; font-weight: 700; color: #2979FF; }
-        .history-stat-label { font-size: 14px; opacity: 0.7; }
+        .history-stat-value { display: block; font-size: 34px; font-weight: 700; color: var(--br-blue); }
+        .history-stat-label { font-size: 14px; color: #FFF; }
 
         .history-list { display: flex; flex-direction: column; gap: 13px; }
         .history-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 21px; transition: all 0.3s ease; }
-        .history-item:hover { border-color: #9C27B0; transform: translateX(5px); }
+        .history-item:hover { border-color: var(--br-pink); transform: translateX(5px); }
 
         .history-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
         .history-item-title { font-size: 16px; font-weight: 600; color: #FFFFFF; }
         .history-item-meta { display: flex; gap: 13px; font-size: 12px; }
-        .history-model { color: #9C27B0; background: rgba(156, 39, 176, 0.1); padding: 2px 8px; border-radius: 4px; }
-        .history-time { opacity: 0.6; }
-        .history-item-preview { font-size: 14px; opacity: 0.7; margin-bottom: 13px; }
+        .history-model { color: var(--br-pink); background: rgba(255, 29, 108, 0.1); padding: 2px 8px; border-radius: 4px; }
+        .history-time { color: #FFF; }
+        .history-item-preview { font-size: 14px; color: #FFF; margin-bottom: 13px; }
         .history-item-actions { display: flex; gap: 8px; }
 
         .history-pagination { display: flex; justify-content: center; align-items: center; gap: 21px; margin-top: 21px; padding-top: 21px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
@@ -1492,6 +1509,464 @@
             font-size: 0.75rem;
             color: rgba(255,255,255,0.6);
         }
+
+        /* ========== INTEGRATIONS STYLES ========== */
+        .integration-stat, .training-stat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .integration-tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .integration-tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .integration-tab:hover {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .integration-tab.active {
+            color: #9333ea;
+            border-bottom-color: #9333ea;
+        }
+
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .integration-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .integration-card:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+        }
+
+        .integration-card.connected {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .integration-header {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .integration-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .integration-info {
+            flex: 1;
+        }
+
+        .integration-info h3 {
+            margin: 0 0 0.25rem 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .integration-info p {
+            margin: 0;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+
+        .integration-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.6);
+        }
+
+        .integration-status.connected {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .integration-body {
+            margin-bottom: 1rem;
+        }
+
+        .integration-body p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .integration-features {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(147, 51, 234, 0.2);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .integration-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-primary, .btn-secondary, .btn-danger, .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.9);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .api-doc-card, .sdk-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .api-doc-card:hover, .sdk-card:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+            border-color: rgba(147, 51, 234, 0.3);
+        }
+
+        .api-doc-card h4, .sdk-card h4 {
+            margin: 0.5rem 0 0.25rem 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .api-doc-card p, .sdk-card p {
+            margin: 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        .sdk-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== TRAINING STYLES ========== */
+        .training-job {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .job-header h4 {
+            margin: 0 0 0.25rem 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .job-status {
+            padding: 0.4rem 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .job-status.training {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { color: #FFF; }
+        }
+
+        .job-progress {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9333ea 0%, #3b82f6 100%);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+
+        .job-metrics {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .metric {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .metric-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .model-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .model-card:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+        }
+
+        .model-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .model-card-header h4 {
+            margin: 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .model-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .model-badge.deployed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .model-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        .model-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+
+        .stat-small {
+            text-align: center;
+        }
+
+        .stat-small span {
+            display: block;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-small strong {
+            display: block;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+
+        .model-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .datasets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .dataset-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+
+        .dataset-item:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(147, 51, 234, 0.3);
+        }
+
+        .dataset-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .dataset-info {
+            flex: 1;
+        }
+
+        .dataset-info h4 {
+            margin: 0 0 0.25rem 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+        }
+
+        .dataset-info p {
+            margin: 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        .dataset-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -1558,6 +2033,14 @@
             <span class="tab-icon">📜</span>
             <span class="tab-label">History</span>
         </button>
+        <button class="main-tab" data-tab="integrations" role="tab" aria-selected="false" aria-controls="integrations-panel">
+            <span class="tab-icon">🔌</span>
+            <span class="tab-label">Integrations</span>
+        </button>
+        <button class="main-tab" data-tab="training" role="tab" aria-selected="false" aria-controls="training-panel">
+            <span class="tab-icon">🎓</span>
+            <span class="tab-label">Training</span>
+        </button>
     </nav>
 
     <!-- AI Panel -->
@@ -1567,7 +2050,7 @@
 
             <div class="playground-container">
             <div style="margin-bottom: 21px; padding: 13px 21px; background: rgba(41, 121, 255, 0.1); border-radius: 8px; border: 1px solid rgba(41, 121, 255, 0.3);">
-                <span style="opacity: 0.7;">Selected Model:</span> <strong id="selected-model-display">Claude Sonnet 4</strong>
+                <span style="color: #FFF;">Selected Model:</span> <strong id="selected-model-display">Claude Sonnet 4</strong>
             </div>
             <div class="model-selector">
                 <div class="model-option active" data-model="claude-sonnet-4" tabindex="0" role="button" aria-pressed="true">
@@ -1649,7 +2132,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
                 <!-- Memory Browser -->
                 <div class="playground-container">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">Memory Browser</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Memory Browser</h3>
 
                     <div class="memory-filters">
                         <button class="filter-btn active" data-filter="all">All</button>
@@ -1702,7 +2185,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
                 <!-- Memory Console -->
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">Memory Console</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Memory Console</h3>
                     <div class="memory-console">
                         <div class="console-output" id="memory-console-output">
 <span class="console-prompt">blackroad-memory></span> status
@@ -1780,7 +2263,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
                 <!-- Task Marketplace -->
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">Task Marketplace</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Task Marketplace</h3>
 
                     <div class="task-filters">
                         <button class="filter-btn active" data-priority="all">All Tasks</button>
@@ -1835,7 +2318,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
 
                 <!-- Agent Chat -->
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">Agent Communication Hub</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Agent Communication Hub</h3>
 
                     <div class="agent-chat" id="agent-chat">
                         <div class="chat-message system">
@@ -1917,7 +2400,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                     <div class="metric-card"><div class="metric-icon">⚡</div><div class="metric-value" id="avg-latency">234ms</div><div class="metric-label">Avg Latency</div><div class="metric-change positive">-5% this week</div></div>
                 </div>
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">Usage Over Time</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Usage Over Time</h3>
                     <div class="chart-container"><div class="chart-bars">
                         <div class="chart-bar-group"><div class="chart-bar" style="height: 45%;"></div><div class="chart-label">Mon</div></div>
                         <div class="chart-bar-group"><div class="chart-bar" style="height: 62%;"></div><div class="chart-label">Tue</div></div>
@@ -1930,7 +2413,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                 </div>
                 <div class="analytics-row" style="margin-top: 34px; display: flex; gap: 21px;">
                     <div class="playground-container" style="flex: 1;">
-                        <h3 style="margin-bottom: 21px; color: #2979FF;">Model Usage</h3>
+                        <h3 style="margin-bottom: 21px; color: var(--br-blue);">Model Usage</h3>
                         <div class="model-usage-list">
                             <div class="model-usage-item"><span>Claude Sonnet 4</span><div class="model-usage-bar-container"><div class="model-usage-bar" style="width: 65%;"></div></div><span>65%</span></div>
                             <div class="model-usage-item"><span>Llama 3 70B</span><div class="model-usage-bar-container"><div class="model-usage-bar" style="width: 20%;"></div></div><span>20%</span></div>
@@ -1939,7 +2422,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                         </div>
                     </div>
                     <div class="playground-container" style="flex: 1;">
-                        <h3 style="margin-bottom: 21px; color: #2979FF;">Cost Breakdown</h3>
+                        <h3 style="margin-bottom: 21px; color: var(--br-blue);">Cost Breakdown</h3>
                         <div class="cost-breakdown">
                             <div class="cost-item"><span>Input Tokens</span><span class="cost-value">$18.45</span></div>
                             <div class="cost-item"><span>Output Tokens</span><span class="cost-value">$24.78</span></div>
@@ -1950,7 +2433,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                     </div>
                 </div>
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">Export Analytics</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Export Analytics</h3>
                     <div class="export-buttons"><button class="btn" onclick="exportAnalytics('csv')">📄 Export CSV</button><button class="btn btn-outline" onclick="exportAnalytics('json')">📋 Export JSON</button><button class="btn btn-outline" onclick="exportAnalytics('pdf')">📑 Generate Report</button></div>
                 </div>
             </div>
@@ -1964,13 +2447,13 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
             <p class="section-subtitle">Configure Your BlackRoad AI Experience</p>
             <div class="settings-container">
                 <div class="playground-container">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">🔑 API Configuration</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">🔑 API Configuration</h3>
                     <div class="settings-group"><label class="settings-label">Anthropic API Key</label><div class="api-key-input"><input type="password" id="anthropic-key" placeholder="sk-ant-..."><button class="btn-small" onclick="toggleKeyVisibility('anthropic-key')">👁️</button><button class="btn-small" onclick="testApiKey('anthropic')">Test</button></div><div class="settings-hint">Required for Claude models</div></div>
                     <div class="settings-group"><label class="settings-label">OpenAI API Key</label><div class="api-key-input"><input type="password" id="openai-key" placeholder="sk-..."><button class="btn-small" onclick="toggleKeyVisibility('openai-key')">👁️</button><button class="btn-small" onclick="testApiKey('openai')">Test</button></div><div class="settings-hint">Required for GPT models</div></div>
                     <div class="settings-group"><label class="settings-label">Ollama Endpoint</label><div class="api-key-input"><input type="text" id="ollama-endpoint" value="http://localhost:11434"><button class="btn-small" onclick="testApiKey('ollama')">Test</button></div><div class="settings-hint">Local Ollama server</div></div>
                 </div>
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">🤖 Default Model Settings</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">🤖 Default Model Settings</h3>
                     <div class="settings-row">
                         <div class="settings-group"><label class="settings-label">Default Model</label><select id="default-model" class="settings-select"><option value="claude-sonnet-4" selected>Claude Sonnet 4</option><option value="llama-3-70b">Llama 3 70B</option><option value="mistral-large">Mistral Large</option></select></div>
                         <div class="settings-group"><label class="settings-label">Default Temperature: <span id="default-temp-value">0.7</span></label><input type="range" id="default-temp" min="0" max="2" step="0.1" value="0.7" class="slider"></div>
@@ -1978,17 +2461,17 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                     </div>
                 </div>
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">🎨 Appearance</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">🎨 Appearance</h3>
                     <div class="settings-row">
                         <div class="settings-group"><label class="settings-label">Theme</label><div class="theme-options"><button class="theme-btn active" data-theme="dark">🌙 Dark</button><button class="theme-btn" data-theme="light">☀️ Light</button><button class="theme-btn" data-theme="system">💻 System</button></div></div>
-                        <div class="settings-group"><label class="settings-label">Accent Color</label><div class="color-options"><button class="color-btn active" style="background: #9C27B0;"></button><button class="color-btn" style="background: #2979FF;"></button><button class="color-btn" style="background: #FF1D6C;"></button><button class="color-btn" style="background: #00FF00;"></button></div></div>
+                        <div class="settings-group"><label class="settings-label">Accent Color</label><div class="color-options"><button class="color-btn active" style="background: #9C27B0;"></button><button class="color-btn" style="background: #2979FF;"></button><button class="color-btn" style="background: #FF1D6C;"></button><button class="color-btn" style="background: var(--br-green);"></button></div></div>
                     </div>
                     <div class="settings-group"><label><input type="checkbox" id="show-token-count" checked> Show token count in responses</label></div>
                     <div class="settings-group"><label><input type="checkbox" id="auto-scroll" checked> Auto-scroll to new content</label></div>
                     <div class="settings-group"><label><input type="checkbox" id="sound-effects"> Enable sound effects</label></div>
                 </div>
                 <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: #2979FF;">🔒 Memory & Privacy</h3>
+                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">🔒 Memory & Privacy</h3>
                     <div class="settings-group"><label><input type="checkbox" id="enable-memory" checked> Enable Memory System</label><div class="settings-hint">Store context for future sessions</div></div>
                     <div class="settings-group"><label><input type="checkbox" id="enable-history" checked> Save Conversation History</label></div>
                     <div class="settings-actions" style="margin-top: 21px;"><button class="btn btn-outline" onclick="clearHistory()" style="color: #FF1D6C; border-color: #FF1D6C;">🗑️ Clear All History</button><button class="btn btn-outline" onclick="exportData()">📤 Export My Data</button></div>
@@ -2021,7 +2504,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                     </div>
                     <div class="history-pagination"><button class="btn-small" disabled>← Previous</button><span>Page 1 of 13</span><button class="btn-small">Next →</button></div>
                 </div>
-                <div class="playground-container" style="margin-top: 34px;"><h3 style="margin-bottom: 21px; color: #2979FF;">Export History</h3><div class="export-buttons"><button class="btn" onclick="exportHistory('json')">📋 Export JSON</button><button class="btn btn-outline" onclick="exportHistory('md')">📝 Export Markdown</button><button class="btn btn-outline" onclick="exportHistory('txt')">📄 Export Text</button></div></div>
+                <div class="playground-container" style="margin-top: 34px;"><h3 style="margin-bottom: 21px; color: var(--br-blue);">Export History</h3><div class="export-buttons"><button class="btn" onclick="exportHistory('json')">📋 Export JSON</button><button class="btn btn-outline" onclick="exportHistory('md')">📝 Export Markdown</button><button class="btn btn-outline" onclick="exportHistory('txt')">📄 Export Text</button></div></div>
             </div>
         </div>
     </section>
@@ -2238,7 +2721,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
             <!-- Daily Activity Chart (ASCII) -->
             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
                 <h3 style="margin-bottom: 1.5rem;">Daily Activity (Last 7 Days)</h3>
-                <div class="ascii-chart" id="activity-chart" style="font-family: 'Monaco', monospace; font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.8);">
+                <div class="ascii-chart" id="activity-chart" style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.8);">
                     <pre>Requests                                                          
 2000 ┤                                               ╭─────╮    
 1800 ┤                                       ╭───────╯     │    
@@ -2538,6 +3021,500 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                         <div class="saved-prompt-tags">
                             <span class="tag">Creative</span>
                             <span class="tag">Used 15 times</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Panel -->
+    <section class="tab-panel" id="integrations-panel" role="tabpanel" aria-labelledby="integrations-tab">
+        <div class="playground">
+            <h2 style="margin-bottom: 2rem;">🔌 Integrations Hub</h2>
+            
+            <!-- Quick Stats -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="integration-stat">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Connected</div>
+                </div>
+                <div class="integration-stat">
+                    <div class="stat-icon">🔗</div>
+                    <div class="stat-number">48</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="integration-stat">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-number">2.4K</div>
+                    <div class="stat-label">API Calls Today</div>
+                </div>
+            </div>
+
+            <!-- Integration Categories -->
+            <div style="margin-bottom: 2rem;">
+                <div class="integration-tabs">
+                    <button class="integration-tab active" onclick="showIntegrationCategory('all')">All</button>
+                    <button class="integration-tab" onclick="showIntegrationCategory('connected')">Connected</button>
+                    <button class="integration-tab" onclick="showIntegrationCategory('popular')">Popular</button>
+                    <button class="integration-tab" onclick="showIntegrationCategory('webhooks')">Webhooks</button>
+                </div>
+            </div>
+
+            <!-- Integration Cards Grid -->
+            <div class="integrations-grid">
+                <!-- Slack Integration -->
+                <div class="integration-card connected" data-category="connected popular">
+                    <div class="integration-header">
+                        <div class="integration-logo" style="background: #4A154B;">
+                            <span style="font-size: 2rem;">💬</span>
+                        </div>
+                        <div class="integration-info">
+                            <h3>Slack</h3>
+                            <p>Team communication</p>
+                        </div>
+                        <div class="integration-status connected">✓ Connected</div>
+                    </div>
+                    <div class="integration-body">
+                        <p>Send AI responses directly to Slack channels. Get notifications for completed tasks.</p>
+                        <div class="integration-features">
+                            <span class="feature-tag">Notifications</span>
+                            <span class="feature-tag">Commands</span>
+                            <span class="feature-tag">Bot</span>
+                        </div>
+                    </div>
+                    <div class="integration-actions">
+                        <button class="btn-secondary" onclick="configureIntegration('slack')">Configure</button>
+                        <button class="btn-danger" onclick="disconnectIntegration('slack')">Disconnect</button>
+                    </div>
+                </div>
+
+                <!-- GitHub Integration -->
+                <div class="integration-card connected" data-category="connected popular">
+                    <div class="integration-header">
+                        <div class="integration-logo" style="background: #24292e;">
+                            <span style="font-size: 2rem;">🐙</span>
+                        </div>
+                        <div class="integration-info">
+                            <h3>GitHub</h3>
+                            <p>Code collaboration</p>
+                        </div>
+                        <div class="integration-status connected">✓ Connected</div>
+                    </div>
+                    <div class="integration-body">
+                        <p>Generate code reviews, create issues, and automate PR descriptions with AI.</p>
+                        <div class="integration-features">
+                            <span class="feature-tag">Code Review</span>
+                            <span class="feature-tag">Auto-PR</span>
+                            <span class="feature-tag">Issues</span>
+                        </div>
+                    </div>
+                    <div class="integration-actions">
+                        <button class="btn-secondary" onclick="configureIntegration('github')">Configure</button>
+                        <button class="btn-danger" onclick="disconnectIntegration('github')">Disconnect</button>
+                    </div>
+                </div>
+
+                <!-- Notion Integration -->
+                <div class="integration-card" data-category="popular">
+                    <div class="integration-header">
+                        <div class="integration-logo" style="background: #FFFFFF;">
+                            <span style="font-size: 2rem;">📝</span>
+                        </div>
+                        <div class="integration-info">
+                            <h3>Notion</h3>
+                            <p>Knowledge management</p>
+                        </div>
+                        <div class="integration-status">Not connected</div>
+                    </div>
+                    <div class="integration-body">
+                        <p>Sync AI conversations to Notion databases. Auto-generate documentation.</p>
+                        <div class="integration-features">
+                            <span class="feature-tag">Sync</span>
+                            <span class="feature-tag">Docs</span>
+                            <span class="feature-tag">Database</span>
+                        </div>
+                    </div>
+                    <div class="integration-actions">
+                        <button class="btn-primary" onclick="connectIntegration('notion')">Connect</button>
+                    </div>
+                </div>
+
+                <!-- Zapier Integration -->
+                <div class="integration-card" data-category="popular">
+                    <div class="integration-header">
+                        <div class="integration-logo" style="background: #FF4A00;">
+                            <span style="font-size: 2rem;">⚡</span>
+                        </div>
+                        <div class="integration-info">
+                            <h3>Zapier</h3>
+                            <p>Workflow automation</p>
+                        </div>
+                        <div class="integration-status">Not connected</div>
+                    </div>
+                    <div class="integration-body">
+                        <p>Connect to 5,000+ apps. Create powerful automation workflows with AI.</p>
+                        <div class="integration-features">
+                            <span class="feature-tag">5K+ Apps</span>
+                            <span class="feature-tag">Automation</span>
+                            <span class="feature-tag">Workflows</span>
+                        </div>
+                    </div>
+                    <div class="integration-actions">
+                        <button class="btn-primary" onclick="connectIntegration('zapier')">Connect</button>
+                    </div>
+                </div>
+
+                <!-- Discord Integration -->
+                <div class="integration-card" data-category="popular">
+                    <div class="integration-header">
+                        <div class="integration-logo" style="background: #5865F2;">
+                            <span style="font-size: 2rem;">🎮</span>
+                        </div>
+                        <div class="integration-info">
+                            <h3>Discord</h3>
+                            <p>Community chat</p>
+                        </div>
+                        <div class="integration-status">Not connected</div>
+                    </div>
+                    <div class="integration-body">
+                        <p>Add AI bot to Discord servers. Respond to commands and moderate channels.</p>
+                        <div class="integration-features">
+                            <span class="feature-tag">Bot</span>
+                            <span class="feature-tag">Moderation</span>
+                            <span class="feature-tag">Commands</span>
+                        </div>
+                    </div>
+                    <div class="integration-actions">
+                        <button class="btn-primary" onclick="connectIntegration('discord')">Connect</button>
+                    </div>
+                </div>
+
+                <!-- Custom Webhook -->
+                <div class="integration-card" data-category="webhooks">
+                    <div class="integration-header">
+                        <div class="integration-logo" style="background: #9333ea;">
+                            <span style="font-size: 2rem;">🪝</span>
+                        </div>
+                        <div class="integration-info">
+                            <h3>Custom Webhook</h3>
+                            <p>HTTP callbacks</p>
+                        </div>
+                        <div class="integration-status">Not configured</div>
+                    </div>
+                    <div class="integration-body">
+                        <p>Send AI responses to any HTTP endpoint. Full customization and flexibility.</p>
+                        <div class="integration-features">
+                            <span class="feature-tag">HTTP POST</span>
+                            <span class="feature-tag">Custom</span>
+                            <span class="feature-tag">Flexible</span>
+                        </div>
+                    </div>
+                    <div class="integration-actions">
+                        <button class="btn-primary" onclick="setupWebhook()">Setup Webhook</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Documentation Section -->
+            <div style="margin-top: 3rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">📚 API Documentation</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div class="api-doc-card" onclick="window.open('/api/docs', '_blank')">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📖</div>
+                        <h4>REST API</h4>
+                        <p>Complete API reference with examples</p>
+                    </div>
+                    <div class="api-doc-card" onclick="window.open('/api/graphql', '_blank')">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔷</div>
+                        <h4>GraphQL</h4>
+                        <p>Query exactly what you need</p>
+                    </div>
+                    <div class="api-doc-card" onclick="window.open('/websockets', '_blank')">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+                        <h4>WebSockets</h4>
+                        <p>Real-time streaming connections</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SDK Downloads -->
+            <div style="margin-top: 2rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">💾 SDK Downloads</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="sdk-card">
+                        <div class="sdk-icon">🐍</div>
+                        <h4>Python SDK</h4>
+                        <p>v2.4.0</p>
+                        <button class="btn-small" onclick="downloadSDK('python')">Download</button>
+                    </div>
+                    <div class="sdk-card">
+                        <div class="sdk-icon">📦</div>
+                        <h4>Node.js SDK</h4>
+                        <p>v3.1.2</p>
+                        <button class="btn-small" onclick="downloadSDK('node')">Download</button>
+                    </div>
+                    <div class="sdk-card">
+                        <div class="sdk-icon">🔷</div>
+                        <h4>Go SDK</h4>
+                        <p>v1.8.0</p>
+                        <button class="btn-small" onclick="downloadSDK('go')">Download</button>
+                    </div>
+                    <div class="sdk-card">
+                        <div class="sdk-icon">💎</div>
+                        <h4>Ruby SDK</h4>
+                        <p>v2.0.1</p>
+                        <button class="btn-small" onclick="downloadSDK('ruby')">Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Panel -->
+    <section class="tab-panel" id="training-panel" role="tabpanel" aria-labelledby="training-tab">
+        <div class="playground">
+            <h2 style="margin-bottom: 2rem;">🎓 Training Studio</h2>
+            
+            <!-- Training Stats -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="training-stat">
+                    <div class="stat-icon">🤖</div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Fine-tuned Models</div>
+                </div>
+                <div class="training-stat">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-number">124K</div>
+                    <div class="stat-label">Training Examples</div>
+                </div>
+                <div class="training-stat">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="training-stat">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-number">94.2%</div>
+                    <div class="stat-label">Avg Accuracy</div>
+                </div>
+            </div>
+
+            <!-- Active Training Jobs -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">🔄 Active Training Jobs</h3>
+                
+                <div class="training-job">
+                    <div class="job-header">
+                        <div>
+                            <h4>customer-support-v3</h4>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Claude-3-Opus base model</p>
+                        </div>
+                        <span class="job-status training">Training</span>
+                    </div>
+                    <div class="job-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 67%;"></div>
+                        </div>
+                        <span class="progress-text">67% - Epoch 3/5</span>
+                    </div>
+                    <div class="job-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Loss:</span>
+                            <span class="metric-value">0.234</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Accuracy:</span>
+                            <span class="metric-value">92.8%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Time remaining:</span>
+                            <span class="metric-value">~2h 14m</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn-small" onclick="viewTrainingLogs('customer-support-v3')">View Logs</button>
+                        <button class="btn-small btn-danger" onclick="stopTraining('customer-support-v3')">Stop</button>
+                    </div>
+                </div>
+
+                <div class="training-job">
+                    <div class="job-header">
+                        <div>
+                            <h4>code-generator-specialist</h4>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">GPT-4o base model</p>
+                        </div>
+                        <span class="job-status training">Training</span>
+                    </div>
+                    <div class="job-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 23%;"></div>
+                        </div>
+                        <span class="progress-text">23% - Epoch 1/3</span>
+                    </div>
+                    <div class="job-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Loss:</span>
+                            <span class="metric-value">0.812</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Accuracy:</span>
+                            <span class="metric-value">78.4%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Time remaining:</span>
+                            <span class="metric-value">~5h 42m</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn-small" onclick="viewTrainingLogs('code-generator-specialist')">View Logs</button>
+                        <button class="btn-small btn-danger" onclick="stopTraining('code-generator-specialist')">Stop</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Your Fine-tuned Models -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>🤖 Your Fine-tuned Models</h3>
+                    <button class="btn-primary" onclick="startNewTraining()">+ New Training Job</button>
+                </div>
+                
+                <div class="models-grid">
+                    <div class="model-card trained">
+                        <div class="model-card-header">
+                            <h4>customer-support-v2</h4>
+                            <span class="model-badge deployed">Deployed</span>
+                        </div>
+                        <div class="model-meta">
+                            <span>📊 Base: Claude-3-Opus</span>
+                            <span>📅 Trained: Feb 8, 2026</span>
+                        </div>
+                        <div class="model-stats">
+                            <div class="stat-small">
+                                <span>Accuracy</span>
+                                <strong>95.6%</strong>
+                            </div>
+                            <div class="stat-small">
+                                <span>F1 Score</span>
+                                <strong>0.94</strong>
+                            </div>
+                            <div class="stat-small">
+                                <span>Examples</span>
+                                <strong>42K</strong>
+                            </div>
+                        </div>
+                        <div class="model-actions">
+                            <button class="btn-small" onclick="useModel('customer-support-v2')">Use Model</button>
+                            <button class="btn-small" onclick="viewModelDetails('customer-support-v2')">Details</button>
+                        </div>
+                    </div>
+
+                    <div class="model-card trained">
+                        <div class="model-card-header">
+                            <h4>legal-document-analyzer</h4>
+                            <span class="model-badge">Ready</span>
+                        </div>
+                        <div class="model-meta">
+                            <span>📊 Base: Claude-3.5-Sonnet</span>
+                            <span>📅 Trained: Feb 5, 2026</span>
+                        </div>
+                        <div class="model-stats">
+                            <div class="stat-small">
+                                <span>Accuracy</span>
+                                <strong>93.2%</strong>
+                            </div>
+                            <div class="stat-small">
+                                <span>F1 Score</span>
+                                <strong>0.91</strong>
+                            </div>
+                            <div class="stat-small">
+                                <span>Examples</span>
+                                <strong>18K</strong>
+                            </div>
+                        </div>
+                        <div class="model-actions">
+                            <button class="btn-small" onclick="useModel('legal-document-analyzer')">Use Model</button>
+                            <button class="btn-small" onclick="viewModelDetails('legal-document-analyzer')">Details</button>
+                        </div>
+                    </div>
+
+                    <div class="model-card trained">
+                        <div class="model-card-header">
+                            <h4>email-responder-pro</h4>
+                            <span class="model-badge">Ready</span>
+                        </div>
+                        <div class="model-meta">
+                            <span>📊 Base: GPT-4o</span>
+                            <span>📅 Trained: Jan 28, 2026</span>
+                        </div>
+                        <div class="model-stats">
+                            <div class="stat-small">
+                                <span>Accuracy</span>
+                                <strong>96.8%</strong>
+                            </div>
+                            <div class="stat-small">
+                                <span>F1 Score</span>
+                                <strong>0.96</strong>
+                            </div>
+                            <div class="stat-small">
+                                <span>Examples</span>
+                                <strong>64K</strong>
+                            </div>
+                        </div>
+                        <div class="model-actions">
+                            <button class="btn-small" onclick="useModel('email-responder-pro')">Use Model</button>
+                            <button class="btn-small" onclick="viewModelDetails('email-responder-pro')">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datasets -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>📁 Training Datasets</h3>
+                    <button class="btn-primary" onclick="uploadDataset()">+ Upload Dataset</button>
+                </div>
+                
+                <div class="datasets-list">
+                    <div class="dataset-item">
+                        <div class="dataset-icon">📊</div>
+                        <div class="dataset-info">
+                            <h4>customer-conversations-2026.jsonl</h4>
+                            <p>42,847 examples • 128 MB • Uploaded Feb 7, 2026</p>
+                        </div>
+                        <div class="dataset-actions">
+                            <button class="btn-small" onclick="previewDataset('customer-conversations-2026')">Preview</button>
+                            <button class="btn-small" onclick="downloadDataset('customer-conversations-2026')">Download</button>
+                            <button class="btn-small btn-danger" onclick="deleteDataset('customer-conversations-2026')">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="dataset-item">
+                        <div class="dataset-icon">📊</div>
+                        <div class="dataset-info">
+                            <h4>legal-documents-annotated.csv</h4>
+                            <p>18,234 examples • 64 MB • Uploaded Feb 3, 2026</p>
+                        </div>
+                        <div class="dataset-actions">
+                            <button class="btn-small" onclick="previewDataset('legal-documents-annotated')">Preview</button>
+                            <button class="btn-small" onclick="downloadDataset('legal-documents-annotated')">Download</button>
+                            <button class="btn-small btn-danger" onclick="deleteDataset('legal-documents-annotated')">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="dataset-item">
+                        <div class="dataset-icon">📊</div>
+                        <div class="dataset-info">
+                            <h4>email-response-pairs.json</h4>
+                            <p>64,192 examples • 256 MB • Uploaded Jan 25, 2026</p>
+                        </div>
+                        <div class="dataset-actions">
+                            <button class="btn-small" onclick="previewDataset('email-response-pairs')">Preview</button>
+                            <button class="btn-small" onclick="downloadDataset('email-response-pairs')">Download</button>
+                            <button class="btn-small btn-danger" onclick="deleteDataset('email-response-pairs')">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -2850,7 +3827,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                         const btn = taskCard.querySelector('.btn-small');
                         if (btn) {
                             btn.textContent = 'Claimed!';
-                            btn.style.background = '#00FF00';
+                            btn.style.background = 'var(--br-green)';
                             btn.style.color = '#000';
                             btn.disabled = true;
                         }
@@ -3292,7 +4269,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
                     const latency = data.latency || 'N/A';
                     const simulated = data.simulated ? ' (simulated)' : '';
                     output.innerHTML = `<div style="white-space: pre-wrap;">${escapeHtml(data.response)}</div>
-                    <div style="margin-top: 21px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; opacity: 0.7;">
+                    <div style="margin-top: 21px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: #FFF;">
                         🤖 Model: ${modelName}${simulated} | ⚡ Latency: ${latency}ms | 🎯 Temp: ${temperature}
                     </div>`;
                 } else {
@@ -3301,7 +4278,7 @@ Example: Write a Python function that calculates the Fibonacci sequence using dy
             } catch (error) {
                 // Fallback to simulation if server not running
                 output.innerHTML = `<span style="color: #F5A623;">⚠️ Server not running. Start with: npm start</span>
-                <div style="margin-top: 13px; opacity: 0.7;">Falling back to demo mode...</div>`;
+                <div style="margin-top: 13px; color: #FFF;">Falling back to demo mode...</div>`;
 
                 setTimeout(() => {
                     output.innerHTML = `# Demo Response from ${modelName}
@@ -3482,6 +4459,100 @@ The server connects to:
                         promptInput.focus();
                     }
                 }, 300);
+            }
+        }
+
+        // ========== INTEGRATIONS FUNCTIONS ==========
+        
+        function showIntegrationCategory(category) {
+            // Update active tab
+            document.querySelectorAll('.integration-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter cards
+            const cards = document.querySelectorAll('.integration-card');
+            cards.forEach(card => {
+                const categories = card.dataset.category || '';
+                if (category === 'all' || categories.includes(category)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function configureIntegration(name) {
+            alert(`⚙️ Opening configuration for ${name}...\n\nThis would show a modal with integration settings.`);
+        }
+
+        function disconnectIntegration(name) {
+            if (confirm(`Disconnect ${name}?\n\nThis will stop all data syncing and webhooks.`)) {
+                alert(`✅ Disconnected from ${name}`);
+            }
+        }
+
+        function connectIntegration(name) {
+            alert(`🔌 Connecting to ${name}...\n\nThis would start OAuth flow or show API key input.`);
+        }
+
+        function setupWebhook() {
+            alert(`🪝 Setting up custom webhook...\n\nEnter your HTTP endpoint URL and configure:\n- Request method (POST/PUT/PATCH)\n- Headers and authentication\n- Payload format (JSON/XML)\n- Retry logic`);
+        }
+
+        function downloadSDK(language) {
+            const sdks = {
+                'python': 'blackroad-ai-python-v2.4.0.tar.gz',
+                'node': 'blackroad-ai-node-v3.1.2.tgz',
+                'go': 'blackroad-ai-go-v1.8.0.tar.gz',
+                'ruby': 'blackroad-ai-ruby-v2.0.1.gem'
+            };
+            
+            alert(`📦 Downloading ${language.toUpperCase()} SDK...\n\nFile: ${sdks[language]}\n\nInstall instructions included!`);
+        }
+
+        // ========== TRAINING FUNCTIONS ==========
+        
+        function viewTrainingLogs(jobName) {
+            alert(`📋 Training Logs: ${jobName}\n\n[2026-02-10 12:45:23] Starting training...\n[2026-02-10 12:45:25] Loading dataset (42K examples)\n[2026-02-10 12:45:30] Epoch 1/5 - Loss: 1.234\n[2026-02-10 12:52:14] Epoch 2/5 - Loss: 0.567\n[2026-02-10 12:59:03] Epoch 3/5 - Loss: 0.234\n[2026-02-10 13:05:48] Training in progress...`);
+        }
+
+        function stopTraining(jobName) {
+            if (confirm(`⚠️ Stop training: ${jobName}?\n\nThis will halt the training job. Progress will be saved.`)) {
+                alert(`✅ Training stopped: ${jobName}\n\nCheckpoint saved at Epoch 3/5`);
+            }
+        }
+
+        function startNewTraining() {
+            alert(`🎓 Start New Training Job\n\nWizard would guide you through:\n\n1. Select base model\n2. Upload or select dataset\n3. Configure hyperparameters\n4. Set training schedule\n5. Review and launch`);
+        }
+
+        function useModel(modelName) {
+            alert(`✨ Using model: ${modelName}\n\nSwitching to AI Models tab and selecting this custom model...`);
+            
+            // Switch to AI tab
+            const aiTab = document.querySelector('[data-tab="ai"]');
+            if (aiTab) aiTab.click();
+        }
+
+        function viewModelDetails(modelName) {
+            alert(`📊 Model Details: ${modelName}\n\n🎯 Performance Metrics:\n- Accuracy: 95.6%\n- Precision: 0.94\n- Recall: 0.96\n- F1 Score: 0.95\n\n📈 Training Info:\n- Base Model: Claude-3-Opus\n- Training Time: 4h 23m\n- Total Examples: 42,000\n- Epochs: 5\n- Learning Rate: 2e-5\n\n💰 Cost:\n- Training: $124.50\n- Inference: $0.02/1K tokens`);
+        }
+
+        function uploadDataset() {
+            alert(`📁 Upload Training Dataset\n\nSupported formats:\n- JSONL (recommended)\n- CSV\n- JSON\n- Parquet\n\nRequirements:\n- Min 1,000 examples\n- Max 1M examples\n- Proper formatting\n- Balanced labels`);
+        }
+
+        function previewDataset(datasetName) {
+            alert(`👁️ Dataset Preview: ${datasetName}\n\nShowing first 3 examples:\n\n1. {"input": "How do I reset my password?", "output": "Click Forgot Password..."}\n\n2. {"input": "What are your hours?", "output": "We're open 24/7..."}\n\n3. {"input": "Track my order #12345", "output": "Your order is..."}`);
+        }
+
+        function downloadDataset(datasetName) {
+            alert(`📥 Downloading: ${datasetName}\n\nPreparing download... This may take a moment for large datasets.`);
+        }
+
+        function deleteDataset(datasetName) {
+            if (confirm(`⚠️ Delete dataset: ${datasetName}?\n\nThis action cannot be undone!`)) {
+                alert(`✅ Dataset deleted: ${datasetName}`);
             }
         }
 
