@@ -13,6 +13,7 @@ const { execSync, exec } = require('child_process');
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const Anthropic = require('@anthropic-ai/sdk');
+const AgentMemory = require('./agent-memory');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -65,6 +66,9 @@ function initTaskDB() {
     `);
 }
 initTaskDB();
+
+// Agent Memory System
+const agentMemory = new AgentMemory();
 
 // ==================== ANTHROPIC CLIENT ====================
 
@@ -162,6 +166,170 @@ app.post('/api/ai/generate', async (req, res) => {
     } catch (error) {
         console.error('AI generation error:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Generate AI response with memory (enhanced endpoint)
+app.post('/api/ai/chat', async (req, res) => {
+    const { prompt, model, conversationId, temperature = 0.7, maxTokens = 2048, includeContext = true } = req.body;
+
+    if (!prompt) {
+        return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    try {
+        let conversation;
+        let context = [];
+
+        // Get or create conversation
+        if (conversationId) {
+            conversation = await agentMemory.getConversation(conversationId);
+            if (!conversation) {
+                return res.status(404).json({ error: 'Conversation not found' });
+            }
+            // Get context if requested
+            if (includeContext) {
+                context = await agentMemory.getContext(conversationId, 10);
+            }
+        } else {
+            // Create new conversation
+            const title = prompt.substring(0, 50) + (prompt.length > 50 ? '...' : '');
+            conversation = await agentMemory.createConversation(model, title);
+        }
+
+        // Save user message
+        await agentMemory.addMessage(conversation.id, 'user', prompt);
+
+        // Build messages array with context
+        const messages = [];
+        if (includeContext && context.length > 0) {
+            messages.push(...context.map(msg => ({
+                role: msg.role,
+                content: msg.content
+            })));
+        }
+        messages.push({ role: 'user', content: prompt });
+
+        let responseText = '';
+        let tokens = null;
+        let cost = null;
+
+        // Try Claude API first
+        if (anthropic && (model === 'claude-sonnet-4' || model === 'claude-opus-4')) {
+            try {
+                const modelId = model === 'claude-opus-4' ? 'claude-opus-4-20250514' : 'claude-sonnet-4-20250514';
+
+                const response = await anthropic.messages.create({
+                    model: modelId,
+                    max_tokens: maxTokens,
+                    temperature: temperature,
+                    messages: messages
+                });
+
+                responseText = response.content[0].text;
+                tokens = response.usage.input_tokens + response.usage.output_tokens;
+                // Estimate cost (approximate)
+                cost = model === 'claude-opus-4' 
+                    ? (response.usage.input_tokens * 0.015 / 1000 + response.usage.output_tokens * 0.075 / 1000)
+                    : (response.usage.input_tokens * 0.003 / 1000 + response.usage.output_tokens * 0.015 / 1000);
+
+            } catch (claudeError) {
+                console.log('Claude API error, falling back to simulation:', claudeError.message);
+                responseText = generateSimulatedResponse(prompt, model);
+            }
+        } else if (model === 'llama-3-70b' || model === 'mistral-large' || model === 'mixtral-8x7b') {
+            // Try Ollama
+            try {
+                const ollamaModel = {
+                    'llama-3-70b': 'llama3:70b',
+                    'mistral-large': 'mistral:latest',
+                    'mixtral-8x7b': 'mixtral:latest'
+                }[model] || 'llama3:latest';
+
+                const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: ollamaModel,
+                        prompt: messages.map(m => `${m.role}: ${m.content}`).join('\n\n'),
+                        stream: false,
+                        options: { temperature }
+                    })
+                });
+
+                if (ollamaResponse.ok) {
+                    const data = await ollamaResponse.json();
+                    responseText = data.response;
+                } else {
+                    responseText = generateSimulatedResponse(prompt, model);
+                }
+            } catch (ollamaError) {
+                console.log('Ollama not available, falling back to simulation');
+                responseText = generateSimulatedResponse(prompt, model);
+            }
+        } else {
+            // Simulation mode
+            responseText = generateSimulatedResponse(prompt, model);
+        }
+
+        // Save assistant message with metadata
+        const assistantMsg = await agentMemory.addMessage(
+            conversation.id, 
+            'assistant', 
+            responseText, 
+            model, 
+            tokens, 
+            cost
+        );
+
+        res.json({
+            success: true,
+            conversationId: conversation.id,
+            message: {
+                id: assistantMsg.id,
+                role: 'assistant',
+                content: responseText,
+                model: model,
+                tokens: tokens,
+                cost: cost
+            },
+            context: context.length,
+            latency: Date.now() - req.startTime
+        });
+
+    } catch (error) {
+        console.error('AI chat error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Stream AI response (for future enhancement)
+app.post('/api/ai/stream', async (req, res) => {
+    const { prompt, model, conversationId, temperature = 0.7 } = req.body;
+
+    if (!prompt) {
+        return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    try {
+        // For now, send simulated streaming
+        const response = generateSimulatedResponse(prompt, model);
+        const words = response.split(' ');
+
+        for (let i = 0; i < words.length; i++) {
+            res.write(`data: ${JSON.stringify({ token: words[i] + ' ', done: false })}\n\n`);
+            await new Promise(resolve => setTimeout(resolve, 50)); // Simulate typing
+        }
+
+        res.write(`data: ${JSON.stringify({ token: '', done: true })}\n\n`);
+        res.end();
+    } catch (error) {
+        res.write(`data: ${JSON.stringify({ error: error.message, done: true })}\n\n`);
+        res.end();
     }
 });
 
@@ -374,6 +542,97 @@ app.post('/api/memory/log', (req, res) => {
         }
 
         res.json({ success: true, message: 'Memory logged successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== ENHANCED MEMORY ENDPOINTS (Agent Memory System) ====================
+
+// Get conversation by ID
+app.get('/api/conversations/:id', async (req, res) => {
+    try {
+        const conversation = await agentMemory.getConversation(req.params.id);
+        if (!conversation) {
+            return res.status(404).json({ error: 'Conversation not found' });
+        }
+        res.json(conversation);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get recent conversations
+app.get('/api/conversations', async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+        const conversations = await agentMemory.getRecentConversations(limit);
+        res.json({ conversations });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Create new conversation
+app.post('/api/conversations', async (req, res) => {
+    try {
+        const { model, title, metadata } = req.body;
+        if (!model) {
+            return res.status(400).json({ error: 'Model is required' });
+        }
+        const conversation = await agentMemory.createConversation(model, title, metadata || {});
+        res.json(conversation);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Search messages
+app.get('/api/messages/search', async (req, res) => {
+    try {
+        const { q, limit } = req.query;
+        if (!q) {
+            return res.status(400).json({ error: 'Query parameter q is required' });
+        }
+        const messages = await agentMemory.searchMessages(q, parseInt(limit) || 20);
+        res.json({ query: q, count: messages.length, messages });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get agent memory stats
+app.get('/api/memory/agent-stats', async (req, res) => {
+    try {
+        const stats = await agentMemory.getStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Save agent state
+app.post('/api/agents/:id/state', async (req, res) => {
+    try {
+        const { state, context } = req.body;
+        if (!state) {
+            return res.status(400).json({ error: 'State is required' });
+        }
+        const result = await agentMemory.saveAgentState(req.params.id, state, context || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get agent state
+app.get('/api/agents/:id/state', async (req, res) => {
+    try {
+        const state = await agentMemory.getAgentState(req.params.id);
+        if (!state) {
+            return res.status(404).json({ error: 'Agent state not found' });
+        }
+        res.json(state);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
