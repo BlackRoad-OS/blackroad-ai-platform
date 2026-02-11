@@ -22,7 +22,77 @@
             --br-white: #FFF;
             --br-gradient: linear-gradient(135deg, #F5A623 0%, #FF1D6C 38.2%, #9C27B0 61.8%, #2979FF 100%);
             --br-gradient-hover: linear-gradient(135deg, #F5A623 0%, #FF1D6C 25%, #9C27B0 50%, #2979FF 75%, #00BCD4 100%);
+            
+            /* ========== THEME SYSTEM ========== */
+            /* Default: Dark Purple Theme */
+            --theme-bg-primary: #000000;
+            --theme-bg-secondary: #0a0a0a;
+            --theme-bg-tertiary: #1a1a1a;
+            --theme-text-primary: #ffffff;
+            --theme-text-secondary: rgba(255, 255, 255, 0.7);
+            --theme-text-muted: rgba(255, 255, 255, 0.5);
+            --theme-accent: #9333ea;
+            --theme-accent-hover: #a855f7;
+            --theme-border: rgba(147, 51, 234, 0.3);
+            --theme-shadow: rgba(147, 51, 234, 0.2);
+            
+            /* Transition speed */
+            --theme-transition: 0.3s ease;
         }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --theme-bg-primary: #ffffff;
+            --theme-bg-secondary: #f5f5f5;
+            --theme-bg-tertiary: #e5e5e5;
+            --theme-text-primary: #1a1a1a;
+            --theme-text-secondary: rgba(0, 0, 0, 0.7);
+            --theme-text-muted: rgba(0, 0, 0, 0.5);
+            --theme-accent: #9333ea;
+            --theme-accent-hover: #a855f7;
+            --theme-border: rgba(147, 51, 234, 0.3);
+            --theme-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ocean Blue Theme */
+        [data-theme-color="ocean"] {
+            --theme-accent: #2979FF;
+            --theme-accent-hover: #3b8bff;
+            --theme-border: rgba(41, 121, 255, 0.3);
+            --theme-shadow: rgba(41, 121, 255, 0.2);
+        }
+
+        /* Forest Green Theme */
+        [data-theme-color="forest"] {
+            --theme-accent: #4CAF50;
+            --theme-accent-hover: #66bb6a;
+            --theme-border: rgba(76, 175, 80, 0.3);
+            --theme-shadow: rgba(76, 175, 80, 0.2);
+        }
+
+        /* Crimson Red Theme */
+        [data-theme-color="crimson"] {
+            --theme-accent: #FF1D6C;
+            --theme-accent-hover: #ff3d82;
+            --theme-border: rgba(255, 29, 108, 0.3);
+            --theme-shadow: rgba(255, 29, 108, 0.2);
+        }
+
+        /* Sunset Orange Theme */
+        [data-theme-color="sunset"] {
+            --theme-accent: #F5A623;
+            --theme-accent-hover: #ffb84d;
+            --theme-border: rgba(245, 166, 35, 0.3);
+            --theme-shadow: rgba(245, 166, 35, 0.2);
+        }
+
+        /* Apply theme transitions to all elements */
+        * {
+            transition: background-color var(--theme-transition), 
+                        color var(--theme-transition),
+                        border-color var(--theme-transition);
+        }
+
 
         * {
             margin: 0;
@@ -2663,6 +2733,150 @@
             color: rgba(255, 255, 255, 0.6);
             line-height: 1.4;
         }
+
+        /* ==================== THEME SWITCHER ==================== */
+        .theme-switcher-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--theme-accent);
+            border: 3px solid var(--theme-accent-hover);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--theme-shadow);
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switcher-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 6px 30px var(--theme-shadow);
+        }
+
+        .theme-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 320px;
+            background: var(--theme-bg-secondary);
+            border: 2px solid var(--theme-border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .theme-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .theme-panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--theme-text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-section {
+            margin-bottom: 20px;
+        }
+
+        .theme-section-label {
+            font-size: 12px;
+            color: var(--theme-text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .theme-mode-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .theme-mode-btn {
+            padding: 12px;
+            background: var(--theme-bg-tertiary);
+            border: 2px solid var(--theme-border);
+            border-radius: 10px;
+            color: var(--theme-text-primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .theme-mode-btn:hover {
+            background: var(--theme-bg-primary);
+            border-color: var(--theme-accent);
+            transform: translateY(-2px);
+        }
+
+        .theme-mode-btn.active {
+            background: var(--theme-accent);
+            border-color: var(--theme-accent-hover);
+            color: white;
+        }
+
+        .theme-color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .theme-color-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .theme-color-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-color-btn.active {
+            border-color: white;
+            box-shadow: 0 0 0 2px var(--theme-accent);
+        }
+
+        .theme-color-btn.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .theme-color-btn.purple { background: #9333ea; }
+        .theme-color-btn.ocean { background: #2979FF; }
+        .theme-color-btn.forest { background: #4CAF50; }
+        .theme-color-btn.crimson { background: #FF1D6C; }
+        .theme-color-btn.sunset { background: #F5A623; }
 
         .search-clear {
             position: absolute;
@@ -8338,6 +8552,182 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
             console.log('📊 Analytics system initialized');
         })();
 
+        // ==================== THEME SYSTEM ====================
+        
+        (function() {
+            let currentTheme = 'dark';
+            let currentColor = 'purple';
+            let autoMode = false;
+
+            // Load saved preferences
+            function loadTheme() {
+                const saved = localStorage.getItem('blackroad-theme');
+                if (saved) {
+                    try {
+                        const prefs = JSON.parse(saved);
+                        currentTheme = prefs.mode || 'dark';
+                        currentColor = prefs.color || 'purple';
+                        autoMode = prefs.auto || false;
+                    } catch (e) {
+                        console.error('Failed to load theme:', e);
+                    }
+                }
+
+                applyTheme();
+                updateUI();
+            }
+
+            // Save preferences
+            function saveTheme() {
+                localStorage.setItem('blackroad-theme', JSON.stringify({
+                    mode: currentTheme,
+                    color: currentColor,
+                    auto: autoMode
+                }));
+            }
+
+            // Apply theme to document
+            function applyTheme() {
+                const html = document.documentElement;
+                
+                // Apply theme mode
+                if (currentTheme === 'light') {
+                    html.setAttribute('data-theme', 'light');
+                } else {
+                    html.removeAttribute('data-theme');
+                }
+
+                // Apply color scheme
+                html.setAttribute('data-theme-color', currentColor);
+
+                // Update theme button emoji
+                const btn = document.getElementById('theme-switcher-btn');
+                if (btn) {
+                    if (currentTheme === 'light') {
+                        btn.textContent = '☀️';
+                    } else {
+                        btn.textContent = '🌙';
+                    }
+                }
+            }
+
+            // Update UI button states
+            function updateUI() {
+                // Update mode buttons
+                document.querySelectorAll('.theme-mode-btn').forEach(btn => {
+                    const mode = btn.dataset.mode;
+                    if (mode === currentTheme || (autoMode && mode === 'auto')) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Update color buttons
+                document.querySelectorAll('.theme-color-btn').forEach(btn => {
+                    const color = btn.dataset.color;
+                    if (color === currentColor) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            // Toggle theme panel
+            window.toggleThemePanel = function() {
+                const panel = document.getElementById('theme-panel');
+                panel.classList.toggle('active');
+            };
+
+            // Set theme mode
+            window.setThemeMode = function(mode) {
+                if (mode === 'auto') {
+                    autoMode = true;
+                    // Check system preference
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    currentTheme = prefersDark ? 'dark' : 'light';
+                } else {
+                    autoMode = false;
+                    currentTheme = mode;
+                }
+                
+                applyTheme();
+                updateUI();
+                saveTheme();
+                showNotification(`🎨 ${mode === 'auto' ? 'Auto' : mode === 'light' ? 'Light' : 'Dark'} mode activated!`);
+            };
+
+            // Set color scheme
+            window.setColorScheme = function(color) {
+                currentColor = color;
+                applyTheme();
+                updateUI();
+                saveTheme();
+                
+                const colorNames = {
+                    purple: 'Purple Haze',
+                    ocean: 'Ocean Blue',
+                    forest: 'Forest Green',
+                    crimson: 'Crimson Red',
+                    sunset: 'Sunset Orange'
+                };
+                
+                showNotification(`🎨 ${colorNames[color]} theme activated!`);
+            };
+
+            // Event listeners
+            document.getElementById('theme-switcher-btn')?.addEventListener('click', toggleThemePanel);
+
+            document.querySelectorAll('.theme-mode-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setThemeMode(this.dataset.mode);
+                });
+            });
+
+            document.querySelectorAll('.theme-color-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setColorScheme(this.dataset.color);
+                });
+            });
+
+            // Close panel when clicking outside
+            document.addEventListener('click', function(e) {
+                const panel = document.getElementById('theme-panel');
+                const btn = document.getElementById('theme-switcher-btn');
+                
+                if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                    panel.classList.remove('active');
+                }
+            });
+
+            // Watch for system theme changes (auto mode)
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (autoMode) {
+                    currentTheme = e.matches ? 'dark' : 'light';
+                    applyTheme();
+                    showNotification('🔄 Theme updated to match system');
+                }
+            });
+
+            // Keyboard shortcut: Ctrl/Cmd + Shift + T for theme switcher
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+                    e.preventDefault();
+                    toggleThemePanel();
+                }
+            });
+
+            // Initialize
+            loadTheme();
+
+            console.log('🎨 Theme system initialized:', {
+                currentTheme,
+                currentColor,
+                autoMode
+            });
+        })();
+
         // ==================== VISUAL EFFECTS ====================
         
         // Particle effect
@@ -8826,5 +9216,45 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
         loadAgents();
 
     </script>
+
+    <!-- Theme Switcher -->
+    <button class="theme-switcher-btn" id="theme-switcher-btn" title="Change theme">
+        🎨
+    </button>
+
+    <div class="theme-panel" id="theme-panel">
+        <div class="theme-panel-title">
+            🎨 Customize Theme
+        </div>
+
+        <!-- Theme Mode -->
+        <div class="theme-section">
+            <div class="theme-section-label">Mode</div>
+            <div class="theme-mode-grid">
+                <button class="theme-mode-btn" data-mode="light">
+                    ☀️ Light
+                </button>
+                <button class="theme-mode-btn active" data-mode="dark">
+                    🌙 Dark
+                </button>
+                <button class="theme-mode-btn" data-mode="auto">
+                    🔄 Auto
+                </button>
+            </div>
+        </div>
+
+        <!-- Color Scheme -->
+        <div class="theme-section">
+            <div class="theme-section-label">Color Scheme</div>
+            <div class="theme-color-grid">
+                <button class="theme-color-btn purple active" data-color="purple" title="Purple Haze"></button>
+                <button class="theme-color-btn ocean" data-color="ocean" title="Ocean Blue"></button>
+                <button class="theme-color-btn forest" data-color="forest" title="Forest Green"></button>
+                <button class="theme-color-btn crimson" data-color="crimson" title="Crimson Red"></button>
+                <button class="theme-color-btn sunset" data-color="sunset" title="Sunset Orange"></button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
