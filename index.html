@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlackRoad AI - Sovereign AI Platform</title>
+    <!-- Chart.js for Analytics Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         /* ========== BLACKROAD BRAND COLORS ========== */
         :root {
@@ -2621,6 +2623,47 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
+        /* ==================== ANALYTICS INSIGHTS ==================== */
+        .insight-card {
+            background: rgba(147, 51, 234, 0.1);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            background: rgba(147, 51, 234, 0.15);
+            border-color: rgba(147, 51, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .insight-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .insight-title {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .insight-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .insight-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+        }
+
         .search-clear {
             position: absolute;
             right: 8px;
@@ -4256,52 +4299,86 @@ end
     <!-- Analytics Panel -->
     <section class="tab-panel" id="analytics-panel" role="tabpanel" aria-labelledby="analytics-tab">
         <div class="playground">
-            <h2 class="section-title">Analytics Dashboard</h2>
+            <h2 class="section-title">📊 Analytics Dashboard</h2>
             <p class="section-subtitle">Real-time Usage Metrics • Cost Tracking • Performance Insights</p>
 
             <div class="analytics-dashboard">
+                <!-- Metrics Cards -->
                 <div class="analytics-metrics-grid">
-                    <div class="metric-card"><div class="metric-icon">📊</div><div class="metric-value" id="total-requests">1,247</div><div class="metric-label">Total Requests</div><div class="metric-change positive">+12% this week</div></div>
-                    <div class="metric-card"><div class="metric-icon">🎯</div><div class="metric-value" id="total-tokens">2.4M</div><div class="metric-label">Tokens Used</div><div class="metric-change positive">+8% this week</div></div>
-                    <div class="metric-card"><div class="metric-icon">💰</div><div class="metric-value" id="total-cost">$47.23</div><div class="metric-label">Total Cost</div><div class="metric-change negative">+15% this week</div></div>
-                    <div class="metric-card"><div class="metric-icon">⚡</div><div class="metric-value" id="avg-latency">234ms</div><div class="metric-label">Avg Latency</div><div class="metric-change positive">-5% this week</div></div>
-                </div>
-                <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Usage Over Time</h3>
-                    <div class="chart-container"><div class="chart-bars">
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 45%;"></div><div class="chart-label">Mon</div></div>
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 62%;"></div><div class="chart-label">Tue</div></div>
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 78%;"></div><div class="chart-label">Wed</div></div>
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 55%;"></div><div class="chart-label">Thu</div></div>
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 89%;"></div><div class="chart-label">Fri</div></div>
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 34%;"></div><div class="chart-label">Sat</div></div>
-                        <div class="chart-bar-group"><div class="chart-bar" style="height: 28%;"></div><div class="chart-label">Sun</div></div>
-                    </div></div>
-                </div>
-                <div class="analytics-row" style="margin-top: 34px; display: flex; gap: 21px;">
-                    <div class="playground-container" style="flex: 1;">
-                        <h3 style="margin-bottom: 21px; color: var(--br-blue);">Model Usage</h3>
-                        <div class="model-usage-list">
-                            <div class="model-usage-item"><span>Claude Sonnet 4</span><div class="model-usage-bar-container"><div class="model-usage-bar" style="width: 65%;"></div></div><span>65%</span></div>
-                            <div class="model-usage-item"><span>Llama 3 70B</span><div class="model-usage-bar-container"><div class="model-usage-bar" style="width: 20%;"></div></div><span>20%</span></div>
-                            <div class="model-usage-item"><span>Mistral Large</span><div class="model-usage-bar-container"><div class="model-usage-bar" style="width: 10%;"></div></div><span>10%</span></div>
-                            <div class="model-usage-item"><span>GPT-4 Turbo</span><div class="model-usage-bar-container"><div class="model-usage-bar" style="width: 5%;"></div></div><span>5%</span></div>
-                        </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💬</div>
+                        <div class="metric-value" id="metric-conversations">0</div>
+                        <div class="metric-label">Conversations</div>
+                        <div class="metric-change" id="change-conversations">Loading...</div>
                     </div>
-                    <div class="playground-container" style="flex: 1;">
-                        <h3 style="margin-bottom: 21px; color: var(--br-blue);">Cost Breakdown</h3>
-                        <div class="cost-breakdown">
-                            <div class="cost-item"><span>Input Tokens</span><span class="cost-value">$18.45</span></div>
-                            <div class="cost-item"><span>Output Tokens</span><span class="cost-value">$24.78</span></div>
-                            <div class="cost-item"><span>Memory Storage</span><span class="cost-value">$2.50</span></div>
-                            <div class="cost-item"><span>Agent Compute</span><span class="cost-value">$1.50</span></div>
-                            <div class="cost-item total"><span>Total This Month</span><span class="cost-value">$47.23</span></div>
-                        </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📨</div>
+                        <div class="metric-value" id="metric-messages">0</div>
+                        <div class="metric-label">Messages</div>
+                        <div class="metric-change" id="change-messages">Loading...</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🪙</div>
+                        <div class="metric-value" id="metric-tokens">0</div>
+                        <div class="metric-label">Tokens Used</div>
+                        <div class="metric-change" id="change-tokens">Loading...</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💰</div>
+                        <div class="metric-value" id="metric-cost">$0.00</div>
+                        <div class="metric-label">Estimated Cost</div>
+                        <div class="metric-change" id="change-cost">Loading...</div>
                     </div>
                 </div>
-                <div class="playground-container" style="margin-top: 34px;">
-                    <h3 style="margin-bottom: 21px; color: var(--br-blue);">Export Analytics</h3>
-                    <div class="export-buttons"><button class="btn" onclick="exportAnalytics('csv')">📄 Export CSV</button><button class="btn btn-outline" onclick="exportAnalytics('json')">📋 Export JSON</button><button class="btn btn-outline" onclick="exportAnalytics('pdf')">📑 Generate Report</button></div>
+
+                <!-- Charts Row 1 -->
+                <div class="analytics-row" style="margin-top: 30px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                    <div class="playground-container">
+                        <h3 style="margin-bottom: 15px; color: var(--br-blue);">📈 Messages Over Time</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="messages-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="playground-container">
+                        <h3 style="margin-bottom: 15px; color: var(--br-blue);">🎯 Model Distribution</h3>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="model-pie-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 2 -->
+                <div class="analytics-row" style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="playground-container">
+                        <h3 style="margin-bottom: 15px; color: var(--br-blue);">⚡ Response Times</h3>
+                        <div style="position: relative; height: 250px;">
+                            <canvas id="latency-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="playground-container">
+                        <h3 style="margin-bottom: 15px; color: var(--br-blue);">💰 Cost Breakdown</h3>
+                        <div style="position: relative; height: 250px;">
+                            <canvas id="cost-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Section -->
+                <div class="playground-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: var(--br-blue);">💡 Insights & Trends</h3>
+                    <div id="insights-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <!-- Insights will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="playground-container" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px; color: var(--br-blue);">📤 Export Analytics</h3>
+                    <div class="export-buttons">
+                        <button class="btn" onclick="exportAnalytics('csv')">📄 Export CSV</button>
+                        <button class="btn btn-outline" onclick="exportAnalytics('json')">📋 Export JSON</button>
+                        <button class="btn btn-outline" onclick="refreshAnalytics()">🔄 Refresh Data</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -7803,6 +7880,462 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
                 availableAgents: Object.keys(agents).length,
                 selectedAgents: selectedAgents.length
             });
+        })();
+
+        // ==================== ANALYTICS DASHBOARD ====================
+        
+        (function() {
+            let analyticsData = {
+                conversations: [],
+                messages: [],
+                tokens: 0,
+                cost: 0
+            };
+
+            let charts = {};
+
+            // Model pricing (per 1M tokens)
+            const pricing = {
+                'claude-sonnet-4': { input: 3, output: 15 },
+                'claude-opus-4': { input: 15, output: 75 },
+                'llama-3-70b': { input: 0.5, output: 0.5 },
+                'mistral-large': { input: 2, output: 6 }
+            };
+
+            // Initialize analytics
+            async function initAnalytics() {
+                try {
+                    // Fetch data from API
+                    const [convResponse, statsResponse] = await Promise.all([
+                        fetch(`${API_BASE}/api/conversations`),
+                        fetch(`${API_BASE}/api/memory/agent-stats`)
+                    ]);
+
+                    if (!convResponse.ok || !statsResponse.ok) {
+                        throw new Error('Failed to fetch analytics data');
+                    }
+
+                    const conversations = await convResponse.json();
+                    const stats = await statsResponse.json();
+
+                    analyticsData.conversations = Array.isArray(conversations) ? conversations : [];
+                    analyticsData.totalConversations = stats.total_conversations || 0;
+                    analyticsData.totalMessages = stats.total_messages || 0;
+
+                    // Fetch detailed conversation data
+                    const detailedConvs = await Promise.all(
+                        analyticsData.conversations.slice(0, 50).map(conv => 
+                            fetch(`${API_BASE}/api/conversations/${conv.id}`)
+                                .then(r => r.json())
+                                .catch(() => null)
+                        )
+                    );
+
+                    analyticsData.messages = detailedConvs
+                        .filter(c => c && c.messages)
+                        .flatMap(c => c.messages || []);
+
+                    // Calculate totals
+                    calculateAnalytics();
+                    
+                    // Render everything
+                    renderMetrics();
+                    renderCharts();
+                    renderInsights();
+
+                } catch (error) {
+                    console.error('Analytics init error:', error);
+                    showNotification('⚠️ Analytics data unavailable');
+                }
+            }
+
+            function calculateAnalytics() {
+                // Calculate token usage and cost
+                let totalTokens = 0;
+                let totalCost = 0;
+
+                analyticsData.messages.forEach(msg => {
+                    const tokens = msg.tokens || Math.floor(msg.content.length / 4);
+                    totalTokens += tokens;
+
+                    const model = msg.model || 'claude-sonnet-4';
+                    const modelPricing = pricing[model] || pricing['claude-sonnet-4'];
+                    const tokenPrice = msg.role === 'user' ? modelPricing.input : modelPricing.output;
+                    totalCost += (tokens / 1000000) * tokenPrice;
+                });
+
+                analyticsData.tokens = totalTokens;
+                analyticsData.cost = totalCost;
+            }
+
+            function renderMetrics() {
+                document.getElementById('metric-conversations').textContent = 
+                    analyticsData.totalConversations || 0;
+                
+                document.getElementById('metric-messages').textContent = 
+                    analyticsData.totalMessages || 0;
+                
+                document.getElementById('metric-tokens').textContent = 
+                    formatNumber(analyticsData.tokens);
+                
+                document.getElementById('metric-cost').textContent = 
+                    '$' + analyticsData.cost.toFixed(2);
+
+                // Update change indicators
+                document.getElementById('change-conversations').textContent = 
+                    `${analyticsData.totalConversations} total`;
+                document.getElementById('change-messages').textContent = 
+                    `${analyticsData.totalMessages} total`;
+                document.getElementById('change-tokens').textContent = 
+                    `${formatNumber(analyticsData.tokens)} total`;
+                document.getElementById('change-cost').textContent = 
+                    `$${analyticsData.cost.toFixed(2)} total`;
+            }
+
+            function renderCharts() {
+                createMessagesChart();
+                createModelPieChart();
+                createLatencyChart();
+                createCostChart();
+            }
+
+            function createMessagesChart() {
+                const ctx = document.getElementById('messages-chart');
+                if (!ctx) return;
+
+                // Group messages by date
+                const messagesByDate = {};
+                const last7Days = [];
+                const today = new Date();
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    last7Days.push(dateStr);
+                    messagesByDate[dateStr] = 0;
+                }
+
+                analyticsData.messages.forEach(msg => {
+                    const date = new Date(msg.created_at * 1000);
+                    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    if (messagesByDate[dateStr] !== undefined) {
+                        messagesByDate[dateStr]++;
+                    }
+                });
+
+                if (charts.messages) charts.messages.destroy();
+                
+                charts.messages = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: last7Days,
+                        datasets: [{
+                            label: 'Messages',
+                            data: last7Days.map(date => messagesByDate[date]),
+                            borderColor: 'rgba(147, 51, 234, 1)',
+                            backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: 'rgba(255,255,255,0.7)' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'rgba(255,255,255,0.7)' },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createModelPieChart() {
+                const ctx = document.getElementById('model-pie-chart');
+                if (!ctx) return;
+
+                // Count model usage
+                const modelCounts = {};
+                analyticsData.messages.forEach(msg => {
+                    if (msg.role === 'assistant') {
+                        const model = msg.model || 'unknown';
+                        modelCounts[model] = (modelCounts[model] || 0) + 1;
+                    }
+                });
+
+                const labels = Object.keys(modelCounts);
+                const data = Object.values(modelCounts);
+                const colors = [
+                    'rgba(147, 51, 234, 0.8)',
+                    'rgba(245, 166, 35, 0.8)',
+                    'rgba(41, 121, 255, 0.8)',
+                    'rgba(76, 175, 80, 0.8)',
+                    'rgba(244, 67, 54, 0.8)'
+                ];
+
+                if (charts.modelPie) charts.modelPie.destroy();
+                
+                charts.modelPie = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors.slice(0, labels.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: 'rgba(255,255,255,0.9)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createLatencyChart() {
+                const ctx = document.getElementById('latency-chart');
+                if (!ctx) return;
+
+                // Simulated latency data (would come from actual metrics)
+                const models = ['Claude Sonnet', 'Claude Opus', 'Llama 3', 'Mistral'];
+                const latencies = [1200, 2400, 3500, 1800];
+
+                if (charts.latency) charts.latency.destroy();
+                
+                charts.latency = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: models,
+                        datasets: [{
+                            label: 'Avg Response Time (ms)',
+                            data: latencies,
+                            backgroundColor: 'rgba(41, 121, 255, 0.7)',
+                            borderColor: 'rgba(41, 121, 255, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: 'rgba(255,255,255,0.7)' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'rgba(255,255,255,0.7)' },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createCostChart() {
+                const ctx = document.getElementById('cost-chart');
+                if (!ctx) return;
+
+                // Calculate cost per model
+                const modelCosts = {};
+                analyticsData.messages.forEach(msg => {
+                    if (msg.role === 'assistant') {
+                        const model = msg.model || 'claude-sonnet-4';
+                        const tokens = msg.tokens || Math.floor(msg.content.length / 4);
+                        const modelPricing = pricing[model] || pricing['claude-sonnet-4'];
+                        const cost = (tokens / 1000000) * modelPricing.output;
+                        
+                        modelCosts[model] = (modelCosts[model] || 0) + cost;
+                    }
+                });
+
+                const labels = Object.keys(modelCosts);
+                const data = Object.values(modelCosts);
+
+                if (charts.cost) charts.cost.destroy();
+                
+                charts.cost = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Cost ($)',
+                            data: data,
+                            backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                            borderColor: 'rgba(76, 175, 80, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { 
+                                    color: 'rgba(255,255,255,0.7)',
+                                    callback: value => '$' + value.toFixed(2)
+                                },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'rgba(255,255,255,0.7)' },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function renderInsights() {
+                const container = document.getElementById('insights-container');
+                if (!container) return;
+
+                const insights = [
+                    {
+                        icon: '🔥',
+                        title: 'Most Active Day',
+                        value: getMostActiveDay(),
+                        description: 'Peak usage day this week'
+                    },
+                    {
+                        icon: '💬',
+                        title: 'Avg Conversation Length',
+                        value: getAvgConversationLength(),
+                        description: 'Average messages per conversation'
+                    },
+                    {
+                        icon: '⚡',
+                        title: 'Fastest Model',
+                        value: 'Claude Sonnet',
+                        description: '~1.2s average response'
+                    },
+                    {
+                        icon: '💎',
+                        title: 'Most Used Model',
+                        value: getMostUsedModel(),
+                        description: 'Your preferred AI assistant'
+                    }
+                ];
+
+                container.innerHTML = insights.map(insight => `
+                    <div class="insight-card">
+                        <div class="insight-icon">${insight.icon}</div>
+                        <div class="insight-title">${insight.title}</div>
+                        <div class="insight-value">${insight.value}</div>
+                        <div class="insight-description">${insight.description}</div>
+                    </div>
+                `).join('');
+            }
+
+            function getMostActiveDay() {
+                const dayCount = {};
+                analyticsData.messages.forEach(msg => {
+                    const day = new Date(msg.created_at * 1000).toLocaleDateString('en-US', { weekday: 'short' });
+                    dayCount[day] = (dayCount[day] || 0) + 1;
+                });
+                
+                const maxDay = Object.entries(dayCount).sort((a, b) => b[1] - a[1])[0];
+                return maxDay ? maxDay[0] : 'N/A';
+            }
+
+            function getAvgConversationLength() {
+                if (analyticsData.conversations.length === 0) return '0';
+                const totalMessages = analyticsData.totalMessages || 0;
+                const avgLength = Math.round(totalMessages / analyticsData.conversations.length);
+                return avgLength + ' msgs';
+            }
+
+            function getMostUsedModel() {
+                const modelCounts = {};
+                analyticsData.messages.forEach(msg => {
+                    if (msg.role === 'assistant') {
+                        const model = msg.model || 'unknown';
+                        modelCounts[model] = (modelCounts[model] || 0) + 1;
+                    }
+                });
+                
+                const maxModel = Object.entries(modelCounts).sort((a, b) => b[1] - a[1])[0];
+                return maxModel ? maxModel[0] : 'N/A';
+            }
+
+            function formatNumber(num) {
+                if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+                if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+                return num.toString();
+            }
+
+            window.refreshAnalytics = async function() {
+                showNotification('🔄 Refreshing analytics...');
+                await initAnalytics();
+                showNotification('✅ Analytics refreshed!');
+            };
+
+            window.exportAnalytics = function(format) {
+                const data = {
+                    conversations: analyticsData.totalConversations,
+                    messages: analyticsData.totalMessages,
+                    tokens: analyticsData.tokens,
+                    cost: analyticsData.cost,
+                    timestamp: new Date().toISOString()
+                };
+
+                if (format === 'json') {
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `analytics_${Date.now()}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showNotification('📋 Exported JSON!');
+                } else if (format === 'csv') {
+                    const csv = `Metric,Value\nConversations,${data.conversations}\nMessages,${data.messages}\nTokens,${data.tokens}\nCost,$${data.cost.toFixed(2)}`;
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `analytics_${Date.now()}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showNotification('📄 Exported CSV!');
+                }
+            };
+
+            // Initialize when analytics tab is shown
+            document.addEventListener('DOMContentLoaded', function() {
+                const analyticsTab = document.querySelector('[data-tab="analytics"]');
+                if (analyticsTab) {
+                    analyticsTab.addEventListener('click', function() {
+                        if (!charts.messages) {
+                            setTimeout(initAnalytics, 300);
+                        }
+                    });
+                }
+            });
+
+            console.log('📊 Analytics system initialized');
         })();
 
         // ==================== VISUAL EFFECTS ====================
