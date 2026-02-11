@@ -4121,6 +4121,294 @@
             box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
         }
 
+        /* ======================================== */
+        /* ⏰ CODE TIME TRAVEL SYSTEM */
+        /* ======================================== */
+        
+        .time-travel-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-secondary);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 9999;
+            display: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+        
+        .time-travel-panel.active {
+            display: block;
+            animation: slideInUp 0.3s ease;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .time-travel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .time-travel-header h3 {
+            margin: 0;
+            color: var(--accent-secondary);
+            font-size: 20px;
+        }
+        
+        .time-travel-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .time-travel-close:hover {
+            background: rgba(255, 68, 68, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        .timeline-container {
+            margin-bottom: 20px;
+        }
+        
+        .timeline-slider {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .timeline-track {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 4px;
+            transition: width 0.2s ease;
+        }
+        
+        .timeline-thumb {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: var(--accent-secondary);
+            border: 3px solid #fff;
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.5);
+        }
+        
+        .timeline-thumb:active {
+            cursor: grabbing;
+        }
+        
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .snapshot-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .snapshot-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .snapshot-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent-secondary);
+            transform: translateX(5px);
+        }
+        
+        .snapshot-item.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--accent-secondary);
+        }
+        
+        .snapshot-info {
+            flex: 1;
+        }
+        
+        .snapshot-time {
+            color: var(--accent-secondary);
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .snapshot-desc {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .snapshot-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .snapshot-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .snapshot-btn-restore {
+            background: var(--accent-secondary);
+            color: #000;
+        }
+        
+        .snapshot-btn-restore:hover {
+            background: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+        
+        .snapshot-btn-delete {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        
+        .snapshot-btn-delete:hover {
+            background: var(--error-color);
+            color: #000;
+        }
+        
+        .time-travel-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .time-travel-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .time-travel-btn-primary {
+            background: var(--accent-secondary);
+            color: #000;
+        }
+        
+        .time-travel-btn-primary:hover {
+            background: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+        
+        .time-travel-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .time-travel-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-secondary);
+        }
+        
+        .time-travel-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid var(--accent-secondary);
+            border-radius: 10px;
+            color: var(--accent-secondary);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 9998;
+            backdrop-filter: blur(5px);
+        }
+        
+        .time-travel-toggle-btn:hover {
+            background: var(--accent-secondary);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .diff-viewer {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .diff-line {
+            padding: 2px 5px;
+            margin: 2px 0;
+        }
+        
+        .diff-addition {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success-color);
+        }
+        
+        .diff-deletion {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--error-color);
+        }
+        
+        .diff-change {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--warning-color);
+        }
+
         .celebration-icon {
             font-size: 80px;
             margin-bottom: 20px;
@@ -4332,6 +4620,56 @@
                     💾 Save
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Time Travel Toggle Button -->
+    <button class="time-travel-toggle-btn" onclick="toggleTimeTravel()">
+        ⏰ Time Travel
+    </button>
+
+    <!-- Time Travel Panel -->
+    <div class="time-travel-panel" id="timeTravelPanel">
+        <div class="time-travel-header">
+            <h3>⏰ Code Time Travel</h3>
+            <button class="time-travel-close" onclick="toggleTimeTravel()">×</button>
+        </div>
+        
+        <!-- Timeline Scrubber -->
+        <div class="timeline-container">
+            <div class="timeline-slider" id="timelineSlider">
+                <div class="timeline-track" id="timelineTrack"></div>
+                <div class="timeline-thumb" id="timelineThumb"></div>
+            </div>
+            <div class="timeline-labels">
+                <span id="timelineStart">No history</span>
+                <span id="timelineCurrent">Current</span>
+            </div>
+        </div>
+        
+        <!-- Snapshot List -->
+        <div class="snapshot-list" id="snapshotList">
+            <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                No snapshots yet. Code will be auto-saved every 30 seconds.
+            </p>
+        </div>
+        
+        <!-- Actions -->
+        <div class="time-travel-actions">
+            <button class="time-travel-btn time-travel-btn-primary" onclick="saveSnapshot('Manual Save')">
+                💾 Save Now
+            </button>
+            <button class="time-travel-btn time-travel-btn-secondary" onclick="showDiff()">
+                📊 Show Diff
+            </button>
+            <button class="time-travel-btn time-travel-btn-secondary" onclick="clearHistory()">
+                🗑️ Clear History
+            </button>
+        </div>
+        
+        <!-- Diff Viewer -->
+        <div class="diff-viewer" id="diffViewer" style="display: none;">
+            <!-- Diff content appears here -->
         </div>
     </div>
 
@@ -10281,6 +10619,319 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
 
         // Initialize themes on load
         loadThemes();
+
+        // =====================
+        // END THEME SYSTEM
+        // =====================
+
+        // =====================
+        // ⏰ TIME TRAVEL SYSTEM
+        // =====================
+
+        let codeSnapshots = [];
+        let currentSnapshotIndex = -1;
+        let autoSaveInterval = null;
+        const userId = 'default';
+
+        // Initialize time travel
+        async function initTimeTravel() {
+            // Load existing history
+            await loadHistory();
+            
+            // Start auto-save (every 30 seconds)
+            autoSaveInterval = setInterval(() => {
+                const code = document.getElementById('code-input')?.value;
+                if (code && code.trim()) {
+                    saveSnapshot('Auto-save');
+                }
+            }, 30000);
+            
+            // Setup timeline slider
+            setupTimelineSlider();
+        }
+
+        // Load history from server
+        async function loadHistory() {
+            try {
+                const response = await fetch(`/api/history/${userId}`);
+                const data = await response.json();
+                codeSnapshots = data.snapshots || [];
+                currentSnapshotIndex = codeSnapshots.length - 1;
+                renderSnapshotList();
+                updateTimeline();
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+
+        // Save a snapshot
+        async function saveSnapshot(description = 'Manual save') {
+            const code = document.getElementById('code-input')?.value;
+            const language = document.getElementById('language-select')?.value || 'javascript';
+            
+            if (!code || !code.trim()) {
+                showNotification('⚠️ No code to save', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/history/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        code,
+                        language,
+                        description
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    codeSnapshots.push(result.snapshot);
+                    currentSnapshotIndex = codeSnapshots.length - 1;
+                    renderSnapshotList();
+                    updateTimeline();
+                    showNotification(`💾 Saved snapshot!`, 'success');
+                }
+            } catch (error) {
+                console.error('Failed to save snapshot:', error);
+                showNotification('❌ Failed to save snapshot', 'error');
+            }
+        }
+
+        // Render snapshot list
+        function renderSnapshotList() {
+            const list = document.getElementById('snapshotList');
+            
+            if (codeSnapshots.length === 0) {
+                list.innerHTML = `
+                    <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                        No snapshots yet. Code will be auto-saved every 30 seconds.
+                    </p>
+                `;
+                return;
+            }
+            
+            list.innerHTML = codeSnapshots.slice().reverse().map((snapshot, revIndex) => {
+                const index = codeSnapshots.length - 1 - revIndex;
+                const isActive = index === currentSnapshotIndex;
+                const date = new Date(snapshot.timestamp);
+                const timeStr = date.toLocaleTimeString();
+                
+                return `
+                    <div class="snapshot-item ${isActive ? 'active' : ''}" onclick="selectSnapshot(${index})">
+                        <div class="snapshot-info">
+                            <div class="snapshot-time">${timeStr}</div>
+                            <div class="snapshot-desc">${snapshot.description} • ${snapshot.language}</div>
+                        </div>
+                        <div class="snapshot-actions">
+                            <button class="snapshot-btn snapshot-btn-restore" onclick="event.stopPropagation(); restoreSnapshot(${index})">
+                                ⏪ Restore
+                            </button>
+                            <button class="snapshot-btn snapshot-btn-delete" onclick="event.stopPropagation(); deleteSnapshot('${snapshot.id}')">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Select a snapshot (preview)
+        function selectSnapshot(index) {
+            currentSnapshotIndex = index;
+            renderSnapshotList();
+            updateTimeline();
+        }
+
+        // Restore a snapshot
+        function restoreSnapshot(index) {
+            const snapshot = codeSnapshots[index];
+            if (!snapshot) return;
+            
+            const codeInput = document.getElementById('code-input');
+            const langSelect = document.getElementById('language-select');
+            
+            if (codeInput) codeInput.value = snapshot.code;
+            if (langSelect) langSelect.value = snapshot.language;
+            
+            currentSnapshotIndex = index;
+            showNotification(`⏪ Restored snapshot from ${new Date(snapshot.timestamp).toLocaleTimeString()}`, 'success');
+        }
+
+        // Delete a snapshot
+        async function deleteSnapshot(snapshotId) {
+            if (!confirm('Delete this snapshot?')) return;
+            
+            try {
+                const response = await fetch(`/api/history/snapshot/${userId}/${snapshotId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    await loadHistory();
+                    showNotification('🗑️ Snapshot deleted', 'success');
+                }
+            } catch (error) {
+                console.error('Failed to delete snapshot:', error);
+                showNotification('❌ Failed to delete snapshot', 'error');
+            }
+        }
+
+        // Clear all history
+        async function clearHistory() {
+            if (!confirm('Clear ALL history? This cannot be undone!')) return;
+            
+            try {
+                const response = await fetch(`/api/history/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    codeSnapshots = [];
+                    currentSnapshotIndex = -1;
+                    renderSnapshotList();
+                    updateTimeline();
+                    showNotification('🗑️ History cleared', 'success');
+                }
+            } catch (error) {
+                console.error('Failed to clear history:', error);
+                showNotification('❌ Failed to clear history', 'error');
+            }
+        }
+
+        // Show diff between snapshots
+        async function showDiff() {
+            if (codeSnapshots.length < 2) {
+                showNotification('⚠️ Need at least 2 snapshots to compare', 'error');
+                return;
+            }
+            
+            const fromIndex = Math.max(0, currentSnapshotIndex - 1);
+            const toIndex = currentSnapshotIndex >= 0 ? currentSnapshotIndex : codeSnapshots.length - 1;
+            
+            const fromSnapshot = codeSnapshots[fromIndex];
+            const toSnapshot = codeSnapshots[toIndex];
+            
+            try {
+                const response = await fetch('/api/history/diff', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        fromSnapshotId: fromSnapshot.id,
+                        toSnapshotId: toSnapshot.id
+                    })
+                });
+                
+                const result = await response.json();
+                renderDiff(result);
+            } catch (error) {
+                console.error('Failed to compute diff:', error);
+                showNotification('❌ Failed to compute diff', 'error');
+            }
+        }
+
+        // Render diff visualization
+        function renderDiff(diffData) {
+            const viewer = document.getElementById('diffViewer');
+            const { diff, summary } = diffData;
+            
+            let html = `
+                <div style="margin-bottom: 10px; color: var(--text-secondary);">
+                    <strong>Changes:</strong> 
+                    <span style="color: var(--success-color)">+${summary.additions} additions</span>, 
+                    <span style="color: var(--error-color)">-${summary.deletions} deletions</span>, 
+                    <span style="color: var(--warning-color)">${summary.changes} changes</span>
+                </div>
+            `;
+            
+            // Show additions
+            diff.additions.forEach(add => {
+                html += `<div class="diff-line diff-addition">+ Line ${add.line}: ${add.content}</div>`;
+            });
+            
+            // Show deletions
+            diff.deletions.forEach(del => {
+                html += `<div class="diff-line diff-deletion">- Line ${del.line}: ${del.content}</div>`;
+            });
+            
+            // Show changes
+            diff.changes.forEach(change => {
+                html += `<div class="diff-line diff-change">~ Line ${change.line}: ${change.from} → ${change.to}</div>`;
+            });
+            
+            viewer.innerHTML = html;
+            viewer.style.display = 'block';
+        }
+
+        // Setup timeline slider
+        function setupTimelineSlider() {
+            const slider = document.getElementById('timelineSlider');
+            const thumb = document.getElementById('timelineThumb');
+            
+            let isDragging = false;
+            
+            thumb.addEventListener('mousedown', () => isDragging = true);
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging || codeSnapshots.length === 0) return;
+                
+                const rect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                const percentage = x / rect.width;
+                const index = Math.round(percentage * (codeSnapshots.length - 1));
+                
+                selectSnapshot(index);
+            });
+            
+            document.addEventListener('mouseup', () => isDragging = false);
+        }
+
+        // Update timeline visuals
+        function updateTimeline() {
+            if (codeSnapshots.length === 0) {
+                document.getElementById('timelineTrack').style.width = '0%';
+                document.getElementById('timelineThumb').style.left = '0%';
+                document.getElementById('timelineStart').textContent = 'No history';
+                return;
+            }
+            
+            const percentage = (currentSnapshotIndex / (codeSnapshots.length - 1)) * 100;
+            document.getElementById('timelineTrack').style.width = `${percentage}%`;
+            document.getElementById('timelineThumb').style.left = `${percentage}%`;
+            
+            const firstTime = new Date(codeSnapshots[0].timestamp).toLocaleTimeString();
+            document.getElementById('timelineStart').textContent = firstTime;
+        }
+
+        // Toggle time travel panel
+        function toggleTimeTravel() {
+            const panel = document.getElementById('timeTravelPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Hook into code execution to auto-save
+        const originalRunCode = window.runCode;
+        if (originalRunCode) {
+            window.runCode = async function() {
+                await originalRunCode();
+                saveSnapshot('After execution');
+            };
+        }
+
+        // Initialize
+        initTimeTravel();
+
+        // =====================
+        // END TIME TRAVEL SYSTEM
+        // =====================
 
         // =====================
         // END THEME SYSTEM

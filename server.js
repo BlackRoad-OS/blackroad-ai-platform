@@ -3072,4 +3072,177 @@ app.get('/api/theme/custom/:userId', (req, res) => {
     });
 });
 
+// ============================================================================
+// ⏰ CODE TIME TRAVEL SYSTEM
+// ============================================================================
+
+// Code history storage
+const codeHistory = new Map(); // userId -> array of snapshots
+
+// Get code history for a user
+app.get('/api/history/:userId', (req, res) => {
+    const { userId } = req.params;
+    const history = codeHistory.get(userId) || [];
+    
+    res.json({
+        snapshots: history,
+        count: history.length
+    });
+});
+
+// Save a code snapshot
+app.post('/api/history/save', (req, res) => {
+    try {
+        const { userId = 'default', code, language, description } = req.body;
+        
+        if (!code) {
+            return res.status(400).json({ error: 'Code is required' });
+        }
+        
+        // Get or create history array
+        if (!codeHistory.has(userId)) {
+            codeHistory.set(userId, []);
+        }
+        
+        const history = codeHistory.get(userId);
+        
+        // Create snapshot
+        const snapshot = {
+            id: `snap-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            code,
+            language: language || 'javascript',
+            description: description || 'Auto-saved',
+            timestamp: Date.now(),
+            date: new Date().toISOString()
+        };
+        
+        // Add to history (keep last 50)
+        history.push(snapshot);
+        if (history.length > 50) {
+            history.shift(); // Remove oldest
+        }
+        
+        res.json({
+            success: true,
+            snapshot,
+            totalSnapshots: history.length
+        });
+    } catch (error) {
+        console.error('Error saving snapshot:', error);
+        res.status(500).json({ error: 'Failed to save snapshot' });
+    }
+});
+
+// Get a specific snapshot
+app.get('/api/history/snapshot/:userId/:snapshotId', (req, res) => {
+    const { userId, snapshotId } = req.params;
+    const history = codeHistory.get(userId) || [];
+    
+    const snapshot = history.find(s => s.id === snapshotId);
+    
+    if (!snapshot) {
+        return res.status(404).json({ error: 'Snapshot not found' });
+    }
+    
+    res.json({ snapshot });
+});
+
+// Delete a snapshot
+app.delete('/api/history/snapshot/:userId/:snapshotId', (req, res) => {
+    try {
+        const { userId, snapshotId } = req.params;
+        const history = codeHistory.get(userId) || [];
+        
+        const index = history.findIndex(s => s.id === snapshotId);
+        
+        if (index === -1) {
+            return res.status(404).json({ error: 'Snapshot not found' });
+        }
+        
+        history.splice(index, 1);
+        
+        res.json({
+            success: true,
+            message: 'Snapshot deleted',
+            remainingSnapshots: history.length
+        });
+    } catch (error) {
+        console.error('Error deleting snapshot:', error);
+        res.status(500).json({ error: 'Failed to delete snapshot' });
+    }
+});
+
+// Clear all history for a user
+app.delete('/api/history/:userId', (req, res) => {
+    const { userId } = req.params;
+    codeHistory.set(userId, []);
+    
+    res.json({
+        success: true,
+        message: 'History cleared'
+    });
+});
+
+// Get diff between two snapshots
+app.post('/api/history/diff', (req, res) => {
+    try {
+        const { userId, fromSnapshotId, toSnapshotId } = req.body;
+        const history = codeHistory.get(userId) || [];
+        
+        const fromSnapshot = history.find(s => s.id === fromSnapshotId);
+        const toSnapshot = history.find(s => s.id === toSnapshotId);
+        
+        if (!fromSnapshot || !toSnapshot) {
+            return res.status(404).json({ error: 'Snapshot not found' });
+        }
+        
+        // Simple line-based diff
+        const fromLines = fromSnapshot.code.split('\n');
+        const toLines = toSnapshot.code.split('\n');
+        
+        const diff = {
+            additions: [],
+            deletions: [],
+            changes: []
+        };
+        
+        // Find additions and changes
+        toLines.forEach((line, index) => {
+            if (index >= fromLines.length) {
+                diff.additions.push({ line: index + 1, content: line });
+            } else if (line !== fromLines[index]) {
+                diff.changes.push({
+                    line: index + 1,
+                    from: fromLines[index],
+                    to: line
+                });
+            }
+        });
+        
+        // Find deletions
+        if (fromLines.length > toLines.length) {
+            for (let i = toLines.length; i < fromLines.length; i++) {
+                diff.deletions.push({
+                    line: i + 1,
+                    content: fromLines[i]
+                });
+            }
+        }
+        
+        res.json({
+            from: fromSnapshot,
+            to: toSnapshot,
+            diff,
+            summary: {
+                additions: diff.additions.length,
+                deletions: diff.deletions.length,
+                changes: diff.changes.length
+            }
+        });
+    } catch (error) {
+        console.error('Error computing diff:', error);
+        res.status(500).json({ error: 'Failed to compute diff' });
+    }
+});
+
 module.exports = app;
