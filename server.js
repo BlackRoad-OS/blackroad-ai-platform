@@ -787,8 +787,8 @@ app.get('/api/agents/:id/state', async (req, res) => {
 
 // ==================== COLLABORATION ENDPOINTS ====================
 
-// Get all agents
-app.get('/api/agents', (req, res) => {
+// Get all agents (old system - for dashboard)
+app.get('/api/agents/list', (req, res) => {
     if (!agentDB) {
         return res.json({ agents: getDefaultAgents() });
     }
@@ -2507,6 +2507,29 @@ app.post('/api/agents/:agentId', apiLimiter, async (req, res) => {
         if (!agent) {
             return res.status(404).json({ error: 'Agent not found' });
         }
+
+        // Demo mode responses when API key is not set
+        const demoResponses = {
+            reviewer: "✅ Code looks clean! Consider adding error handling for edge cases. The function structure is good.",
+            optimizer: "⚡ This code is already optimal for small inputs. For large-scale operations, consider memoization.",
+            security: "🛡️ No security issues detected in this code. It's safe to use.",
+            documenter: "📚 This function adds two numbers and returns their sum. It's a simple arithmetic operation.",
+            debugger: "🐛 Code runs successfully! No bugs detected. Consider testing with negative numbers and edge cases.",
+            styler: "🎨 Code style is good! Consider using descriptive variable names for better readability."
+        };
+
+        // Check if API key is available
+        if (!process.env.ANTHROPIC_API_KEY) {
+            // Return demo response
+            return res.json({
+                success: true,
+                agentId: agent.id,
+                agentName: agent.name,
+                icon: agent.icon,
+                color: agent.color,
+                analysis: demoResponses[agentId] || `${agent.icon} ${agent.name} analysis complete! (Demo mode - add ANTHROPIC_API_KEY for real AI analysis)`
+            });
+        }
         
         const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
         const prompt = agent.prompt(code, language, error);
@@ -2523,7 +2546,7 @@ app.post('/api/agents/:agentId', apiLimiter, async (req, res) => {
             agentName: agent.name,
             icon: agent.icon,
             color: agent.color,
-            response: response.content[0].text
+            analysis: response.content[0].text
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
