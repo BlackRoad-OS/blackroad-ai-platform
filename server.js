@@ -2374,4 +2374,172 @@ app.get('/api/gamification/achievements', (req, res) => {
     res.json({ achievements });
 });
 
+// ==================== AI AGENT ARMY ====================
+
+// AI Agent definitions
+const agents = [
+    {
+        id: 'reviewer',
+        name: 'Code Reviewer Bot',
+        icon: '🤖',
+        color: '#9333ea',
+        prompt: (code, language) => `Review this ${language} code and provide concise feedback (max 3 points):
+
+${code}
+
+Focus on: code quality, best practices, potential bugs. Be encouraging but honest.`
+    },
+    {
+        id: 'optimizer',
+        name: 'Optimization Bot',
+        icon: '⚡',
+        color: '#f59e0b',
+        prompt: (code, language) => `Analyze this ${language} code for performance issues:
+
+${code}
+
+Suggest 1-2 specific optimizations. Be brief.`
+    },
+    {
+        id: 'security',
+        name: 'Security Bot',
+        icon: '🛡️',
+        color: '#ef4444',
+        prompt: (code, language) => `Scan this ${language} code for security vulnerabilities:
+
+${code}
+
+List any security concerns (SQL injection, XSS, etc.). If safe, say "No security issues detected."`
+    },
+    {
+        id: 'documenter',
+        name: 'Documentation Bot',
+        icon: '📚',
+        color: '#3b82f6',
+        prompt: (code, language) => `Generate a brief docstring/comment for this ${language} code:
+
+${code}
+
+Write 2-3 lines explaining what this code does.`
+    },
+    {
+        id: 'debugger',
+        name: 'Debug Bot',
+        icon: '🐛',
+        color: '#ec4899',
+        prompt: (code, language, error) => `Help debug this ${language} code:
+
+CODE:
+${code}
+
+ERROR:
+${error || 'No error provided'}
+
+${error ? 'Explain the error and suggest a fix.' : 'Suggest potential edge cases or bugs.'}`
+    },
+    {
+        id: 'styler',
+        name: 'Style Bot',
+        icon: '🎨',
+        color: '#10b981',
+        prompt: (code, language) => `Check code style for this ${language} code:
+
+${code}
+
+Suggest 1-2 style improvements (naming, formatting, idioms). Be brief.`
+    }
+];
+
+// Run all agents on code
+app.post('/api/agents/analyze', apiLimiter, async (req, res) => {
+    try {
+        const { code, language, error } = req.body;
+        
+        if (!code) {
+            return res.status(400).json({ error: 'Code is required' });
+        }
+        
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const results = [];
+        
+        // Run each agent
+        for (const agent of agents) {
+            try {
+                const prompt = agent.prompt(code, language, error);
+                
+                const response = await anthropic.messages.create({
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 300,
+                    messages: [{ role: 'user', content: prompt }]
+                });
+                
+                results.push({
+                    agentId: agent.id,
+                    agentName: agent.name,
+                    icon: agent.icon,
+                    color: agent.color,
+                    response: response.content[0].text
+                });
+            } catch (error) {
+                results.push({
+                    agentId: agent.id,
+                    agentName: agent.name,
+                    icon: agent.icon,
+                    color: agent.color,
+                    response: `Error: ${error.message}`
+                });
+            }
+        }
+        
+        res.json({ success: true, agents: results });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Run single agent
+app.post('/api/agents/:agentId', apiLimiter, async (req, res) => {
+    try {
+        const { agentId } = req.params;
+        const { code, language, error } = req.body;
+        
+        const agent = agents.find(a => a.id === agentId);
+        if (!agent) {
+            return res.status(404).json({ error: 'Agent not found' });
+        }
+        
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const prompt = agent.prompt(code, language, error);
+        
+        const response = await anthropic.messages.create({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 300,
+            messages: [{ role: 'user', content: prompt }]
+        });
+        
+        res.json({
+            success: true,
+            agentId: agent.id,
+            agentName: agent.name,
+            icon: agent.icon,
+            color: agent.color,
+            response: response.content[0].text
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get all agents
+app.get('/api/agents', (req, res) => {
+    res.json({
+        agents: agents.map(a => ({
+            id: a.id,
+            name: a.name,
+            icon: a.icon,
+            color: a.color
+        }))
+    });
+});
+
 module.exports = app;

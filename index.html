@@ -2051,6 +2051,7 @@
             padding: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .conversation-item:hover {
@@ -2059,9 +2060,85 @@
             transform: translateX(4px);
         }
 
+        .conversation-item:hover .conversation-actions {
+            opacity: 1;
+        }
+
         .conversation-item.active {
             background: rgba(147, 51, 234, 0.2);
             border-color: rgba(147, 51, 234, 0.8);
+        }
+
+        .conversation-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .export-btn {
+            background: rgba(147, 51, 234, 0.4);
+            border: 1px solid rgba(147, 51, 234, 0.6);
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .export-btn:hover {
+            background: rgba(147, 51, 234, 0.6);
+            transform: scale(1.05);
+        }
+
+        .export-menu {
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background: rgba(20, 20, 30, 0.98);
+            border: 1px solid rgba(147, 51, 234, 0.6);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .export-menu.active {
+            display: block;
+        }
+
+        .export-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .export-option:hover {
+            background: rgba(147, 51, 234, 0.3);
+        }
+
+        .export-all-btn {
+            background: var(--br-gradient);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 10px;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .export-all-btn:hover {
+            transform: translateY(-2px);
         }
 
         .conversation-title {
@@ -2717,6 +2794,158 @@
             }
         }
 
+        /* ==================== AI AGENT ARMY STYLES ==================== */
+        
+        /* Agent Panel */
+        .agents-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .agents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .agents-title {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--br-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .agents-toggle {
+            cursor: pointer;
+            font-size: 24px;
+            user-select: none;
+        }
+
+        .agent-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(147, 51, 234, 0.3);
+        }
+
+        .agent-card.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .agent-icon {
+            font-size: 32px;
+            animation: agentPulse 2s infinite;
+        }
+
+        @keyframes agentPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .agent-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .agent-response {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .agent-response.empty {
+            opacity: 0.5;
+            font-style: italic;
+        }
+
+        /* Agent typing animation */
+        .agent-typing {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .agent-typing span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--br-purple);
+            animation: typingDot 1.4s infinite;
+        }
+
+        .agent-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .agent-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingDot {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Agent run button */
+        .run-agents-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .run-agents-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .run-agents-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
@@ -3042,6 +3271,18 @@ console.log('Fibonacci(10):', fibonacci(10));
                         <button class="btn btn-outline" id="install-pip-btn" style="flex: 1;">Install pip packages</button>
                     </div>
                     <div id="package-output" style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 12px; display: none; max-height: 200px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- AI Agent Army -->
+                <div class="agents-panel" id="agents-panel">
+                    <div class="agents-header">
+                        <div class="agents-title">🤖 AI Agent Army</div>
+                        <div class="agents-toggle" id="agents-toggle">▼</div>
+                    </div>
+                    <button class="run-agents-btn" id="run-agents-btn">🚀 Analyze with 6 AI Bots</button>
+                    <div class="agent-cards" id="agent-cards">
+                        <!-- Agents will be added dynamically -->
+                    </div>
                 </div>
 
                 <!-- Sample Code -->
@@ -6820,6 +7061,151 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
             output.classList.add('executing');
             setTimeout(() => output.classList.remove('executing'), 2000);
         });
+
+        // =====================
+        // AI AGENT ARMY SYSTEM
+        // =====================
+
+        let allAgents = [];
+        let lastExecutedCode = '';
+        let isAgentsCollapsed = false;
+
+        // Fetch all available agents
+        async function loadAgents() {
+            try {
+                const response = await fetch('/api/agents');
+                const agents = await response.json();
+                allAgents = agents;
+                renderAgentCards(agents);
+            } catch (error) {
+                console.error('Failed to load agents:', error);
+            }
+        }
+
+        // Render agent cards
+        function renderAgentCards(agents) {
+            const container = document.getElementById('agent-cards');
+            container.innerHTML = agents.map(agent => `
+                <div class="agent-card" id="agent-${agent.id}">
+                    <div class="agent-header">
+                        <div class="agent-icon">${agent.icon}</div>
+                        <div class="agent-name">${agent.name}</div>
+                        <div class="agent-status" id="status-${agent.id}">idle</div>
+                    </div>
+                    <div class="agent-response" id="response-${agent.id}">
+                        <span style="opacity: 0.5; font-style: italic;">Click "Analyze" to see ${agent.name}'s insights...</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Run all agents on the current code
+        async function runAgents() {
+            const code = document.getElementById('code-input').value.trim();
+            const language = document.getElementById('language-select').value;
+            
+            if (!code) {
+                alert('⚠️ Please write some code first!');
+                return;
+            }
+
+            // Show agents panel
+            document.getElementById('agents-panel').style.display = 'block';
+            const btn = document.getElementById('run-agents-btn');
+            btn.disabled = true;
+            btn.textContent = '🔄 Analyzing with 6 AI Bots...';
+
+            lastExecutedCode = code;
+
+            // Run each agent sequentially with animation
+            for (const agent of allAgents) {
+                const statusEl = document.getElementById(`status-${agent.id}`);
+                const responseEl = document.getElementById(`response-${agent.id}`);
+                
+                // Update status
+                statusEl.textContent = 'analyzing...';
+                statusEl.style.color = '#FFA500';
+                responseEl.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+
+                try {
+                    const response = await fetch(`/api/agents/${agent.id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code, language })
+                    });
+
+                    const result = await response.json();
+
+                    // Animate typing effect
+                    await typeResponse(responseEl, result.analysis);
+
+                    // Update status
+                    statusEl.textContent = 'complete';
+                    statusEl.style.color = '#00FF88';
+
+                } catch (error) {
+                    responseEl.textContent = `❌ Error: ${error.message}`;
+                    statusEl.textContent = 'error';
+                    statusEl.style.color = '#FF3366';
+                }
+
+                // Small delay between agents
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+
+            // Re-enable button
+            btn.disabled = false;
+            btn.textContent = '🚀 Analyze with 6 AI Bots';
+        }
+
+        // Typing animation effect
+        async function typeResponse(element, text) {
+            element.innerHTML = '';
+            const words = text.split(' ');
+            
+            for (let i = 0; i < words.length; i++) {
+                element.textContent += (i > 0 ? ' ' : '') + words[i];
+                // Faster typing for better UX
+                if (i % 3 === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            }
+        }
+
+        // Toggle agents panel collapse
+        function toggleAgents() {
+            isAgentsCollapsed = !isAgentsCollapsed;
+            const cards = document.getElementById('agent-cards');
+            const toggle = document.getElementById('agents-toggle');
+            
+            if (isAgentsCollapsed) {
+                cards.style.display = 'none';
+                toggle.textContent = '▶';
+            } else {
+                cards.style.display = 'grid';
+                toggle.textContent = '▼';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('run-agents-btn')?.addEventListener('click', runAgents);
+        document.getElementById('agents-toggle')?.addEventListener('click', toggleAgents);
+
+        // Auto-run agents after code execution (optional - shows panel after first run)
+        const originalRunCodeForAgents = window.runCode;
+        let firstRunForAgents = true;
+        window.runCode = async function() {
+            await originalRunCodeForAgents();
+            
+            if (firstRunForAgents) {
+                // Show agents panel after first execution
+                document.getElementById('agents-panel').style.display = 'block';
+                firstRunForAgents = false;
+            }
+        };
+
+        // Initialize agents on load
+        loadAgents();
 
     </script>
 </body>
