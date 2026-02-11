@@ -2565,4 +2565,204 @@ app.get('/api/agents', (req, res) => {
     });
 });
 
+// ==================== DAILY CHALLENGES & MISSIONS ====================
+
+// Challenge database with 50+ coding challenges
+const challenges = [
+    // EASY Challenges (Beginner friendly)
+    { id: 1, difficulty: 'easy', title: 'Hello World', description: 'Print "Hello, World!" to the console', hint: 'Use console.log() in JavaScript or print() in Python', xp: 10, languages: ['javascript', 'python', 'ruby'] },
+    { id: 2, difficulty: 'easy', title: 'Sum Two Numbers', description: 'Write a function that adds two numbers', hint: 'Create a function that takes two parameters', xp: 15, languages: ['javascript', 'python', 'go'] },
+    { id: 3, difficulty: 'easy', title: 'Even or Odd', description: 'Check if a number is even or odd', hint: 'Use the modulo operator (%)', xp: 15, languages: ['javascript', 'python', 'ruby'] },
+    { id: 4, difficulty: 'easy', title: 'Reverse a String', description: 'Reverse any string', hint: 'Try converting to array first', xp: 20, languages: ['javascript', 'python'] },
+    { id: 5, difficulty: 'easy', title: 'Find Maximum', description: 'Find the largest number in an array', hint: 'Loop through and compare', xp: 20, languages: ['javascript', 'python', 'go'] },
+    { id: 6, difficulty: 'easy', title: 'Count Vowels', description: 'Count vowels in a string', hint: 'Check if each character is a, e, i, o, or u', xp: 25, languages: ['javascript', 'python'] },
+    { id: 7, difficulty: 'easy', title: 'FizzBuzz First 10', description: 'Print FizzBuzz for numbers 1-10', hint: 'Use modulo to check divisibility', xp: 25, languages: ['javascript', 'python', 'ruby'] },
+    { id: 8, difficulty: 'easy', title: 'Array Sum', description: 'Sum all numbers in an array', hint: 'Use a loop or reduce', xp: 20, languages: ['javascript', 'python', 'go'] },
+    { id: 9, difficulty: 'easy', title: 'Palindrome Check', description: 'Check if a word is a palindrome', hint: 'Compare string with its reverse', xp: 30, languages: ['javascript', 'python'] },
+    { id: 10, difficulty: 'easy', title: 'Temperature Converter', description: 'Convert Celsius to Fahrenheit', hint: 'Formula: (C × 9/5) + 32', xp: 20, languages: ['javascript', 'python', 'go'] },
+    
+    // MEDIUM Challenges
+    { id: 11, difficulty: 'medium', title: 'Fibonacci Sequence', description: 'Generate first 10 Fibonacci numbers', hint: 'Each number is sum of previous two', xp: 40, languages: ['javascript', 'python', 'go'] },
+    { id: 12, difficulty: 'medium', title: 'Prime Number Checker', description: 'Check if a number is prime', hint: 'Test divisibility up to square root', xp: 45, languages: ['javascript', 'python', 'go'] },
+    { id: 13, difficulty: 'medium', title: 'Array Deduplication', description: 'Remove duplicates from array', hint: 'Use Set or filter', xp: 40, languages: ['javascript', 'python'] },
+    { id: 14, difficulty: 'medium', title: 'Anagram Detector', description: 'Check if two words are anagrams', hint: 'Sort letters and compare', xp: 45, languages: ['javascript', 'python'] },
+    { id: 15, difficulty: 'medium', title: 'Binary Search', description: 'Implement binary search algorithm', hint: 'Divide array in half each time', xp: 50, languages: ['javascript', 'python', 'go'] },
+    { id: 16, difficulty: 'medium', title: 'Factorial Calculator', description: 'Calculate factorial recursively', hint: 'n! = n × (n-1)!', xp: 40, languages: ['javascript', 'python', 'go'] },
+    { id: 17, difficulty: 'medium', title: 'Two Sum Problem', description: 'Find two numbers that add to target', hint: 'Use a hash map for O(n) solution', xp: 50, languages: ['javascript', 'python'] },
+    { id: 18, difficulty: 'medium', title: 'Word Counter', description: 'Count word frequency in text', hint: 'Split by spaces and use object/dict', xp: 45, languages: ['javascript', 'python'] },
+    { id: 19, difficulty: 'medium', title: 'Merge Sorted Arrays', description: 'Merge two sorted arrays into one', hint: 'Use two pointers', xp: 50, languages: ['javascript', 'python', 'go'] },
+    { id: 20, difficulty: 'medium', title: 'Valid Parentheses', description: 'Check if brackets are balanced', hint: 'Use a stack', xp: 50, languages: ['javascript', 'python'] },
+    
+    // HARD Challenges
+    { id: 21, difficulty: 'hard', title: 'Longest Substring', description: 'Find longest substring without repeating chars', hint: 'Sliding window technique', xp: 75, languages: ['javascript', 'python'] },
+    { id: 22, difficulty: 'hard', title: 'LRU Cache', description: 'Implement Least Recently Used cache', hint: 'Use Map and doubly linked list', xp: 100, languages: ['javascript', 'python'] },
+    { id: 23, difficulty: 'hard', title: 'Permutations', description: 'Generate all permutations of string', hint: 'Recursive backtracking', xp: 80, languages: ['javascript', 'python'] },
+    { id: 24, difficulty: 'hard', title: 'Median of Two Sorted Arrays', description: 'Find median efficiently', hint: 'Binary search approach', xp: 100, languages: ['javascript', 'python', 'go'] },
+    { id: 25, difficulty: 'hard', title: 'N-Queens Problem', description: 'Solve 4-Queens puzzle', hint: 'Backtracking algorithm', xp: 100, languages: ['javascript', 'python'] },
+    { id: 26, difficulty: 'hard', title: 'Word Ladder', description: 'Transform one word to another', hint: 'BFS with word graph', xp: 90, languages: ['javascript', 'python'] },
+    { id: 27, difficulty: 'hard', title: 'Regular Expression', description: 'Implement basic regex matcher', hint: 'Dynamic programming', xp: 100, languages: ['javascript', 'python'] },
+    { id: 28, difficulty: 'hard', title: 'Sudoku Solver', description: 'Solve a Sudoku puzzle', hint: 'Backtracking with constraints', xp: 100, languages: ['javascript', 'python'] },
+    { id: 29, difficulty: 'hard', title: 'Serialize Binary Tree', description: 'Serialize and deserialize tree', hint: 'Level-order traversal', xp: 85, languages: ['javascript', 'python'] },
+    { id: 30, difficulty: 'hard', title: 'Trapping Rain Water', description: 'Calculate trapped water volume', hint: 'Two pointer technique', xp: 90, languages: ['javascript', 'python', 'go'] },
+];
+
+// User challenge progress tracking
+const userChallenges = new Map(); // userId -> { daily, streak, completedChallenges, weeklyMissions }
+
+// Get daily challenge (rotates based on date)
+function getDailyChallenge() {
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+    const challengeIndex = dayOfYear % challenges.length;
+    return challenges[challengeIndex];
+}
+
+// Get user challenge data
+function getUserChallengeData(userId) {
+    if (!userChallenges.has(userId)) {
+        userChallenges.set(userId, {
+            streak: 0,
+            lastCompletedDate: null,
+            completedChallenges: [],
+            weeklyProgress: {
+                challenges: 0,
+                difficultiesTried: new Set(),
+                languagesUsed: new Set(),
+                weekStart: getWeekStart()
+            }
+        });
+    }
+    return userChallenges.get(userId);
+}
+
+// Get start of current week (Monday)
+function getWeekStart() {
+    const now = new Date();
+    const day = now.getDay();
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(now.setDate(diff)).toISOString().split('T')[0];
+}
+
+// API: Get today's daily challenge
+app.get('/api/challenges/daily', (req, res) => {
+    const dailyChallenge = getDailyChallenge();
+    const userId = req.query.userId || 'default';
+    const userData = getUserChallengeData(userId);
+    
+    res.json({
+        challenge: dailyChallenge,
+        streak: userData.streak,
+        completed: userData.completedChallenges.includes(dailyChallenge.id),
+        weeklyProgress: {
+            challenges: userData.weeklyProgress.challenges,
+            target: 5
+        }
+    });
+});
+
+// API: Complete a challenge
+app.post('/api/challenges/complete', (req, res) => {
+    const { userId = 'default', challengeId, language } = req.body;
+    const userData = getUserChallengeData(userId);
+    const challenge = challenges.find(c => c.id === challengeId);
+    
+    if (!challenge) {
+        return res.status(404).json({ error: 'Challenge not found' });
+    }
+    
+    // Check if already completed today
+    if (userData.completedChallenges.includes(challengeId)) {
+        return res.json({ 
+            success: false, 
+            message: 'Challenge already completed today',
+            streak: userData.streak 
+        });
+    }
+    
+    // Mark as completed
+    userData.completedChallenges.push(challengeId);
+    
+    // Update streak
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    
+    if (!userData.lastCompletedDate) {
+        userData.streak = 1;
+    } else if (userData.lastCompletedDate === yesterday) {
+        userData.streak += 1;
+    } else if (userData.lastCompletedDate !== today) {
+        userData.streak = 1; // Reset streak
+    }
+    
+    userData.lastCompletedDate = today;
+    
+    // Update weekly progress
+    if (userData.weeklyProgress.weekStart !== getWeekStart()) {
+        // New week, reset progress
+        userData.weeklyProgress = {
+            challenges: 0,
+            difficultiesTried: new Set(),
+            languagesUsed: new Set(),
+            weekStart: getWeekStart()
+        };
+    }
+    
+    userData.weeklyProgress.challenges += 1;
+    userData.weeklyProgress.difficultiesTried.add(challenge.difficulty);
+    if (language) userData.weeklyProgress.languagesUsed.add(language);
+    
+    // Calculate bonus XP
+    let bonusXP = 0;
+    if (userData.streak >= 7) bonusXP += 50;
+    if (userData.streak >= 30) bonusXP += 100;
+    if (userData.weeklyProgress.challenges >= 5) bonusXP += 75;
+    
+    res.json({
+        success: true,
+        challenge: challenge,
+        xpEarned: challenge.xp + bonusXP,
+        streak: userData.streak,
+        newStreak: userData.streak === 1 && userData.completedChallenges.length > 1,
+        streakMilestone: userData.streak % 7 === 0 && userData.streak > 0,
+        weeklyComplete: userData.weeklyProgress.challenges >= 5
+    });
+});
+
+// API: Get all challenges (filtered)
+app.get('/api/challenges/all', (req, res) => {
+    const { difficulty, language } = req.query;
+    let filtered = challenges;
+    
+    if (difficulty) {
+        filtered = filtered.filter(c => c.difficulty === difficulty);
+    }
+    
+    if (language) {
+        filtered = filtered.filter(c => c.languages.includes(language));
+    }
+    
+    res.json({ challenges: filtered });
+});
+
+// API: Get user stats
+app.get('/api/challenges/stats', (req, res) => {
+    const userId = req.query.userId || 'default';
+    const userData = getUserChallengeData(userId);
+    
+    res.json({
+        streak: userData.streak,
+        totalCompleted: userData.completedChallenges.length,
+        weeklyProgress: {
+            challenges: userData.weeklyProgress.challenges,
+            target: 5,
+            percentage: Math.min(100, (userData.weeklyProgress.challenges / 5) * 100)
+        },
+        streakMilestones: {
+            week: userData.streak >= 7,
+            month: userData.streak >= 30,
+            legend: userData.streak >= 100
+        }
+    });
+});
+
 module.exports = app;

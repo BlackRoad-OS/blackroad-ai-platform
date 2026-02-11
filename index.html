@@ -3632,6 +3632,244 @@
             cursor: not-allowed;
         }
 
+        /* ===== DAILY CHALLENGES ===== */
+        .daily-challenge-panel {
+            margin-top: 34px;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .challenge-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--br-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 107, 0, 0.2);
+            border-radius: 20px;
+            border: 2px solid #ff6b00;
+        }
+
+        .streak-fire {
+            font-size: 24px;
+            animation: fireFlicker 0.5s infinite alternate;
+        }
+
+        @keyframes fireFlicker {
+            0% { transform: scale(1) rotate(-2deg); filter: brightness(1); }
+            100% { transform: scale(1.1) rotate(2deg); filter: brightness(1.2); }
+        }
+
+        .streak-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6b00;
+        }
+
+        .challenge-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .challenge-difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .difficulty-easy {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .difficulty-medium {
+            background: rgba(255, 168, 0, 0.2);
+            color: #ffa800;
+            border: 1px solid #ffa800;
+        }
+
+        .difficulty-hard {
+            background: rgba(255, 51, 102, 0.2);
+            color: #ff3366;
+            border: 1px solid #ff3366;
+        }
+
+        .challenge-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .challenge-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .challenge-hint {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .challenge-xp {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            color: var(--br-blue);
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .complete-challenge-btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            color: #000;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .complete-challenge-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .complete-challenge-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .complete-challenge-btn.completed {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3) 0%, rgba(0, 212, 255, 0.3) 100%);
+            color: #00ff88;
+            border: 2px solid #00ff88;
+        }
+
+        .weekly-missions {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .missions-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mission-progress {
+            margin-bottom: 12px;
+        }
+
+        .mission-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88 0%, #00d4ff 100%);
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .challenge-celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            z-index: 10000;
+            min-width: 300px;
+            animation: celebrationPop 0.5s ease;
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .celebration-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: celebrationBounce 0.6s infinite alternate;
+        }
+
+        @keyframes celebrationBounce {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .celebration-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .celebration-xp {
+            font-size: 24px;
+            color: var(--br-blue);
+            font-weight: 600;
+        }
+
     </style>
 </head>
 <body>
@@ -4089,6 +4327,48 @@ console.log('Fibonacci(10):', fibonacci(10));
                     <button class="run-agents-btn" id="run-agents-btn">🚀 Analyze with 6 AI Bots</button>
                     <div class="agent-cards" id="agent-cards">
                         <!-- Agents will be added dynamically -->
+                    </div>
+                </div>
+
+                <!-- Daily Challenge -->
+                <div class="daily-challenge-panel" id="daily-challenge-panel">
+                    <div class="challenge-header">
+                        <div class="challenge-title">
+                            🎯 Daily Challenge
+                        </div>
+                        <div class="streak-display" id="streak-display">
+                            <span class="streak-fire">🔥</span>
+                            <span class="streak-number" id="streak-number">0</span>
+                            <span style="color: rgba(255, 255, 255, 0.8); font-size: 14px;">day streak</span>
+                        </div>
+                    </div>
+
+                    <div class="challenge-card" id="challenge-card">
+                        <span class="challenge-difficulty difficulty-easy" id="challenge-difficulty">Easy</span>
+                        <div class="challenge-name" id="challenge-name">Loading...</div>
+                        <div class="challenge-description" id="challenge-description">Fetching today's challenge...</div>
+                        <div class="challenge-hint" id="challenge-hint">💡 Hint: Coming soon...</div>
+                        <div class="challenge-xp" id="challenge-xp">
+                            <span>⭐</span>
+                            <span id="xp-amount">0</span>
+                            <span>XP</span>
+                        </div>
+                        <button class="complete-challenge-btn" id="complete-challenge-btn">✅ Complete Challenge</button>
+                    </div>
+
+                    <div class="weekly-missions">
+                        <div class="missions-title">
+                            🎮 Weekly Mission
+                        </div>
+                        <div class="mission-progress">
+                            <div class="mission-label">
+                                <span>Complete 5 Challenges</span>
+                                <span id="weekly-count">0/5</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="weekly-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -9214,6 +9494,168 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
 
         // Initialize agents on load
         loadAgents();
+
+        // =====================
+        // DAILY CHALLENGES SYSTEM
+        // =====================
+
+        let currentChallenge = null;
+        let userChallengeData = null;
+
+        // Load today's daily challenge
+        async function loadDailyChallenge() {
+            try {
+                const response = await fetch('/api/challenges/daily?userId=default');
+                const data = await response.json();
+                
+                currentChallenge = data.challenge;
+                userChallengeData = data;
+                
+                // Update UI
+                document.getElementById('challenge-difficulty').textContent = currentChallenge.difficulty.toUpperCase();
+                document.getElementById('challenge-difficulty').className = `challenge-difficulty difficulty-${currentChallenge.difficulty}`;
+                document.getElementById('challenge-name').textContent = currentChallenge.title;
+                document.getElementById('challenge-description').textContent = currentChallenge.description;
+                document.getElementById('challenge-hint').textContent = `💡 Hint: ${currentChallenge.hint}`;
+                document.getElementById('xp-amount').textContent = currentChallenge.xp;
+                
+                // Update streak
+                document.getElementById('streak-number').textContent = data.streak;
+                
+                // Update weekly progress
+                updateWeeklyProgress(data.weeklyProgress);
+                
+                // Update button state
+                const btn = document.getElementById('complete-challenge-btn');
+                if (data.completed) {
+                    btn.textContent = '✅ Completed Today!';
+                    btn.classList.add('completed');
+                    btn.disabled = true;
+                } else {
+                    btn.textContent = '✅ Complete Challenge';
+                    btn.classList.remove('completed');
+                    btn.disabled = false;
+                }
+                
+            } catch (error) {
+                console.error('Failed to load daily challenge:', error);
+            }
+        }
+
+        // Update weekly progress bar
+        function updateWeeklyProgress(progress) {
+            const percentage = (progress.challenges / progress.target) * 100;
+            document.getElementById('weekly-count').textContent = `${progress.challenges}/${progress.target}`;
+            document.getElementById('weekly-progress').style.width = `${Math.min(100, percentage)}%`;
+        }
+
+        // Complete a challenge
+        async function completeChallenge() {
+            if (!currentChallenge) return;
+            
+            const code = document.getElementById('code-input').value.trim();
+            if (!code) {
+                alert('⚠️ Please write some code first!');
+                return;
+            }
+            
+            const language = document.getElementById('language-select').value;
+            
+            try {
+                const response = await fetch('/api/challenges/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: 'default',
+                        challengeId: currentChallenge.id,
+                        language: language
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show celebration
+                    showChallengeCelebration(result);
+                    
+                    // Update button
+                    const btn = document.getElementById('complete-challenge-btn');
+                    btn.textContent = '✅ Completed Today!';
+                    btn.classList.add('completed');
+                    btn.disabled = true;
+                    
+                    // Update streak
+                    document.getElementById('streak-number').textContent = result.streak;
+                    
+                    // Award XP to gamification system
+                    if (window.trackExecution) {
+                        window.trackExecution(language, 0, true); // Trigger XP gain
+                    }
+                    
+                    // Reload challenge data
+                    setTimeout(() => loadDailyChallenge(), 1000);
+                } else {
+                    alert(result.message || 'Challenge already completed!');
+                }
+                
+            } catch (error) {
+                console.error('Failed to complete challenge:', error);
+                alert('❌ Error completing challenge. Please try again!');
+            }
+        }
+
+        // Show celebration modal
+        function showChallengeCelebration(result) {
+            const celebration = document.createElement('div');
+            celebration.className = 'challenge-celebration';
+            
+            let icon = '🎉';
+            let message = 'Challenge Complete!';
+            
+            if (result.newStreak) {
+                icon = '🔥';
+                message = 'New Streak Started!';
+            } else if (result.streakMilestone) {
+                icon = '🏆';
+                message = `${result.streak} Day Streak!`;
+            } else if (result.weeklyComplete) {
+                icon = '⭐';
+                message = 'Weekly Mission Complete!';
+            }
+            
+            celebration.innerHTML = `
+                <div class="celebration-icon">${icon}</div>
+                <div class="celebration-text">${message}</div>
+                <div class="celebration-xp">+${result.xpEarned} XP</div>
+            `;
+            
+            document.body.appendChild(celebration);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                celebration.style.animation = 'none';
+                celebration.style.opacity = '0';
+                setTimeout(() => celebration.remove(), 300);
+            }, 3000);
+        }
+
+        // Event listener
+        document.getElementById('complete-challenge-btn')?.addEventListener('click', completeChallenge);
+
+        // Load challenge on page load
+        loadDailyChallenge();
+
+        // Show daily challenge panel after first execution
+        const originalRunCodeForChallenges = window.runCode;
+        let firstRunForChallenges = true;
+        window.runCode = async function() {
+            await originalRunCodeForChallenges();
+            
+            if (firstRunForChallenges) {
+                document.getElementById('daily-challenge-panel').style.display = 'block';
+                firstRunForChallenges = false;
+            }
+        };
 
     </script>
 
