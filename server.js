@@ -2765,4 +2765,311 @@ app.get('/api/challenges/stats', (req, res) => {
     });
 });
 
+// ============================================================================
+// 🎨 CUSTOM THEMES & SKINS SYSTEM
+// ============================================================================
+
+// Pre-built themes database
+const themes = {
+    dracula: {
+        name: 'Dracula',
+        background: '#282a36',
+        foreground: '#f8f8f2',
+        accent: '#bd93f9',
+        secondary: '#ff79c6',
+        success: '#50fa7b',
+        warning: '#ffb86c',
+        error: '#ff5555',
+        panel: 'rgba(68, 71, 90, 0.8)',
+        border: '#6272a4'
+    },
+    nord: {
+        name: 'Nord',
+        background: '#2e3440',
+        foreground: '#eceff4',
+        accent: '#88c0d0',
+        secondary: '#81a1c1',
+        success: '#a3be8c',
+        warning: '#ebcb8b',
+        error: '#bf616a',
+        panel: 'rgba(59, 66, 82, 0.8)',
+        border: '#4c566a'
+    },
+    monokai: {
+        name: 'Monokai',
+        background: '#272822',
+        foreground: '#f8f8f2',
+        accent: '#66d9ef',
+        secondary: '#a6e22e',
+        success: '#a6e22e',
+        warning: '#e6db74',
+        error: '#f92672',
+        panel: 'rgba(39, 40, 34, 0.9)',
+        border: '#75715e'
+    },
+    'solarized-dark': {
+        name: 'Solarized Dark',
+        background: '#002b36',
+        foreground: '#839496',
+        accent: '#268bd2',
+        secondary: '#2aa198',
+        success: '#859900',
+        warning: '#b58900',
+        error: '#dc322f',
+        panel: 'rgba(0, 43, 54, 0.85)',
+        border: '#073642'
+    },
+    'solarized-light': {
+        name: 'Solarized Light',
+        background: '#fdf6e3',
+        foreground: '#657b83',
+        accent: '#268bd2',
+        secondary: '#2aa198',
+        success: '#859900',
+        warning: '#b58900',
+        error: '#dc322f',
+        panel: 'rgba(253, 246, 227, 0.9)',
+        border: '#eee8d5'
+    },
+    gruvbox: {
+        name: 'Gruvbox',
+        background: '#282828',
+        foreground: '#ebdbb2',
+        accent: '#83a598',
+        secondary: '#d3869b',
+        success: '#b8bb26',
+        warning: '#fabd2f',
+        error: '#fb4934',
+        panel: 'rgba(40, 40, 40, 0.9)',
+        border: '#504945'
+    },
+    'tokyo-night': {
+        name: 'Tokyo Night',
+        background: '#1a1b26',
+        foreground: '#a9b1d6',
+        accent: '#7aa2f7',
+        secondary: '#bb9af7',
+        success: '#9ece6a',
+        warning: '#e0af68',
+        error: '#f7768e',
+        panel: 'rgba(26, 27, 38, 0.9)',
+        border: '#414868'
+    },
+    'one-dark': {
+        name: 'One Dark',
+        background: '#282c34',
+        foreground: '#abb2bf',
+        accent: '#61afef',
+        secondary: '#c678dd',
+        success: '#98c379',
+        warning: '#e5c07b',
+        error: '#e06c75',
+        panel: 'rgba(40, 44, 52, 0.9)',
+        border: '#3e4451'
+    },
+    'github-dark': {
+        name: 'GitHub Dark',
+        background: '#0d1117',
+        foreground: '#c9d1d9',
+        accent: '#58a6ff',
+        secondary: '#8b949e',
+        success: '#3fb950',
+        warning: '#d29922',
+        error: '#f85149',
+        panel: 'rgba(13, 17, 23, 0.9)',
+        border: '#30363d'
+    },
+    'github-light': {
+        name: 'GitHub Light',
+        background: '#ffffff',
+        foreground: '#24292f',
+        accent: '#0969da',
+        secondary: '#6e7781',
+        success: '#1a7f37',
+        warning: '#9a6700',
+        error: '#cf222e',
+        panel: 'rgba(255, 255, 255, 0.9)',
+        border: '#d0d7de'
+    },
+    cyberpunk: {
+        name: 'Cyberpunk',
+        background: '#0a0e27',
+        foreground: '#00ff9f',
+        accent: '#ff006e',
+        secondary: '#ffbe0b',
+        success: '#00ff9f',
+        warning: '#ffbe0b',
+        error: '#ff006e',
+        panel: 'rgba(10, 14, 39, 0.85)',
+        border: '#8338ec'
+    },
+    neon: {
+        name: 'Neon',
+        background: '#000000',
+        foreground: '#00ff00',
+        accent: '#ff00ff',
+        secondary: '#00ffff',
+        success: '#00ff00',
+        warning: '#ffff00',
+        error: '#ff0000',
+        panel: 'rgba(0, 0, 0, 0.8)',
+        border: '#ff00ff'
+    },
+    sunset: {
+        name: 'Sunset',
+        background: '#1a1625',
+        foreground: '#f8f8f2',
+        accent: '#ff6b9d',
+        secondary: '#ffa07a',
+        success: '#c3e88d',
+        warning: '#ffcb6b',
+        error: '#ff5370',
+        panel: 'rgba(26, 22, 37, 0.9)',
+        border: '#7c3f58'
+    },
+    forest: {
+        name: 'Forest',
+        background: '#1b2b1b',
+        foreground: '#d4e4d4',
+        accent: '#4ec9b0',
+        secondary: '#569cd6',
+        success: '#6a9955',
+        warning: '#dcdcaa',
+        error: '#f48771',
+        panel: 'rgba(27, 43, 27, 0.9)',
+        border: '#3a5a3a'
+    },
+    ocean: {
+        name: 'Ocean',
+        background: '#001f3f',
+        foreground: '#b8d7e8',
+        accent: '#39cccc',
+        secondary: '#7fdbff',
+        success: '#2ecc40',
+        warning: '#ffdc00',
+        error: '#ff4136',
+        panel: 'rgba(0, 31, 63, 0.9)',
+        border: '#0074d9'
+    },
+    'material-dark': {
+        name: 'Material Dark',
+        background: '#263238',
+        foreground: '#eeffff',
+        accent: '#80cbc4',
+        secondary: '#c792ea',
+        success: '#c3e88d',
+        warning: '#ffcb6b',
+        error: '#f07178',
+        panel: 'rgba(38, 50, 56, 0.9)',
+        border: '#37474f'
+    },
+    'material-light': {
+        name: 'Material Light',
+        background: '#fafafa',
+        foreground: '#263238',
+        accent: '#00897b',
+        secondary: '#7c4dff',
+        success: '#91b859',
+        warning: '#ffb62c',
+        error: '#e53935',
+        panel: 'rgba(250, 250, 250, 0.9)',
+        border: '#cfd8dc'
+    },
+    'high-contrast': {
+        name: 'High Contrast',
+        background: '#000000',
+        foreground: '#ffffff',
+        accent: '#00ffff',
+        secondary: '#ffff00',
+        success: '#00ff00',
+        warning: '#ffff00',
+        error: '#ff0000',
+        panel: 'rgba(0, 0, 0, 0.95)',
+        border: '#ffffff'
+    },
+    midnight: {
+        name: 'Midnight',
+        background: '#0f111a',
+        foreground: '#d6deeb',
+        accent: '#82aaff',
+        secondary: '#c792ea',
+        success: '#addb67',
+        warning: '#ffcb8b',
+        error: '#ff5874',
+        panel: 'rgba(15, 17, 26, 0.9)',
+        border: '#1d3b53'
+    },
+    pastel: {
+        name: 'Pastel',
+        background: '#fef9f3',
+        foreground: '#5e5e5e',
+        accent: '#a8c7fa',
+        secondary: '#f3aacb',
+        success: '#b5ead7',
+        warning: '#ffe5b4',
+        error: '#ff9aa2',
+        panel: 'rgba(254, 249, 243, 0.9)',
+        border: '#e0d5c7'
+    }
+};
+
+// User theme storage
+const userThemes = new Map();
+
+// Get all available themes
+app.get('/api/themes', (req, res) => {
+    res.json({
+        themes: Object.keys(themes).map(id => ({
+            id,
+            ...themes[id]
+        }))
+    });
+});
+
+// Save custom theme
+app.post('/api/theme/save', (req, res) => {
+    try {
+        const { userId = 'anonymous', theme } = req.body;
+        
+        if (!theme || !theme.name) {
+            return res.status(400).json({ error: 'Invalid theme data' });
+        }
+        
+        // Store custom theme
+        if (!userThemes.has(userId)) {
+            userThemes.set(userId, []);
+        }
+        
+        const customThemes = userThemes.get(userId);
+        const themeId = theme.id || `custom-${Date.now()}`;
+        
+        // Update or add theme
+        const existingIndex = customThemes.findIndex(t => t.id === themeId);
+        if (existingIndex >= 0) {
+            customThemes[existingIndex] = { id: themeId, ...theme };
+        } else {
+            customThemes.push({ id: themeId, ...theme });
+        }
+        
+        res.json({ 
+            success: true, 
+            themeId,
+            message: 'Theme saved successfully' 
+        });
+    } catch (error) {
+        console.error('Error saving theme:', error);
+        res.status(500).json({ error: 'Failed to save theme' });
+    }
+});
+
+// Load user's custom themes
+app.get('/api/theme/custom/:userId', (req, res) => {
+    const { userId } = req.params;
+    const customThemes = userThemes.get(userId) || [];
+    
+    res.json({
+        themes: customThemes
+    });
+});
+
 module.exports = app;

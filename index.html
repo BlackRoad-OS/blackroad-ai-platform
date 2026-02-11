@@ -3846,6 +3846,281 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
 
+        /* ======================================== */
+        /* 🎨 CUSTOM THEMES & SKINS SYSTEM */
+        /* ======================================== */
+        
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: rgba(10, 14, 39, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --accent-primary: #00ff88;
+            --accent-secondary: #00d4ff;
+            --success-color: #00ff88;
+            --warning-color: #ffd700;
+            --error-color: #ff4444;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .theme-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 350px;
+            max-height: 600px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-primary);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 9999;
+            display: none;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+        }
+        
+        .theme-panel.active {
+            display: block;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .theme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .theme-header h3 {
+            margin: 0;
+            color: var(--accent-primary);
+            font-size: 20px;
+        }
+        
+        .theme-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-close:hover {
+            background: rgba(255, 68, 68, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        .theme-mode-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .mode-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .mode-btn:hover:not(.active) {
+            border-color: var(--accent-primary);
+            background: rgba(0, 255, 136, 0.1);
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .theme-card {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .theme-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2);
+        }
+        
+        .theme-card.active {
+            border-color: var(--accent-primary);
+            background: rgba(0, 255, 136, 0.1);
+        }
+        
+        .theme-name {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .theme-preview {
+            display: flex;
+            gap: 4px;
+            height: 30px;
+        }
+        
+        .color-swatch {
+            flex: 1;
+            border-radius: 4px;
+        }
+        
+        .custom-theme-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .custom-theme-section h4 {
+            color: var(--accent-secondary);
+            margin: 0 0 15px 0;
+            font-size: 16px;
+        }
+        
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .color-picker-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .color-picker-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .color-picker-input {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .color-picker-input input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            background: none;
+        }
+        
+        .color-picker-input input[type="text"] {
+            flex: 1;
+            padding: 5px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .theme-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .theme-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-btn-primary {
+            background: var(--accent-primary);
+            color: #000;
+        }
+        
+        .theme-btn-primary:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .theme-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .theme-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-primary);
+        }
+        
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--accent-primary);
+            border-radius: 10px;
+            color: var(--accent-primary);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 9998;
+            backdrop-filter: blur(5px);
+        }
+        
+        .theme-toggle-btn:hover {
+            background: var(--accent-primary);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
         .celebration-icon {
             font-size: 80px;
             margin-bottom: 20px;
@@ -3971,6 +4246,94 @@
             <span class="tab-label">Training</span>
         </button>
     </nav>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()">
+        🎨 Themes
+    </button>
+
+    <!-- Theme Panel -->
+    <div class="theme-panel" id="themePanel">
+        <div class="theme-header">
+            <h3>🎨 Custom Themes</h3>
+            <button class="theme-close" onclick="toggleThemePanel()">×</button>
+        </div>
+        
+        <!-- Mode Switcher -->
+        <div class="theme-mode-switcher">
+            <button class="mode-btn active" data-mode="dark" onclick="switchMode('dark')">
+                🌙 Dark
+            </button>
+            <button class="mode-btn" data-mode="light" onclick="switchMode('light')">
+                ☀️ Light
+            </button>
+            <button class="mode-btn" data-mode="auto" onclick="switchMode('auto')">
+                🔄 Auto
+            </button>
+        </div>
+        
+        <!-- Theme Grid -->
+        <div class="theme-grid" id="themeGrid">
+            <!-- Themes loaded dynamically -->
+        </div>
+        
+        <!-- Custom Theme Creator -->
+        <div class="custom-theme-section">
+            <h4>✨ Create Custom Theme</h4>
+            <div class="color-picker-group">
+                <div class="color-picker-item">
+                    <label class="color-picker-label">Background</label>
+                    <div class="color-picker-input">
+                        <input type="color" id="customBg" value="#0a0e27">
+                        <input type="text" id="customBgText" value="#0a0e27">
+                    </div>
+                </div>
+                <div class="color-picker-item">
+                    <label class="color-picker-label">Foreground</label>
+                    <div class="color-picker-input">
+                        <input type="color" id="customFg" value="#ffffff">
+                        <input type="text" id="customFgText" value="#ffffff">
+                    </div>
+                </div>
+                <div class="color-picker-item">
+                    <label class="color-picker-label">Accent</label>
+                    <div class="color-picker-input">
+                        <input type="color" id="customAccent" value="#00ff88">
+                        <input type="text" id="customAccentText" value="#00ff88">
+                    </div>
+                </div>
+                <div class="color-picker-item">
+                    <label class="color-picker-label">Secondary</label>
+                    <div class="color-picker-input">
+                        <input type="color" id="customSecondary" value="#00d4ff">
+                        <input type="text" id="customSecondaryText" value="#00d4ff">
+                    </div>
+                </div>
+                <div class="color-picker-item">
+                    <label class="color-picker-label">Success</label>
+                    <div class="color-picker-input">
+                        <input type="color" id="customSuccess" value="#00ff88">
+                        <input type="text" id="customSuccessText" value="#00ff88">
+                    </div>
+                </div>
+                <div class="color-picker-item">
+                    <label class="color-picker-label">Error</label>
+                    <div class="color-picker-input">
+                        <input type="color" id="customError" value="#ff4444">
+                        <input type="text" id="customErrorText" value="#ff4444">
+                    </div>
+                </div>
+            </div>
+            <div class="theme-actions">
+                <button class="theme-btn theme-btn-primary" onclick="applyCustomTheme()">
+                    Apply Theme
+                </button>
+                <button class="theme-btn theme-btn-secondary" onclick="saveCustomTheme()">
+                    💾 Save
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- AI Panel -->
     <section class="tab-panel active" id="ai-panel" role="tabpanel" aria-labelledby="ai-tab">
@@ -9697,6 +10060,232 @@ puts "Fibonacci(10): #{fibonacci(10)}"`);
             </div>
         </div>
     </div>
+
+    <script>
+        // =====================
+        // 🎨 THEME SYSTEM
+        // =====================
+
+        let availableThemes = [];
+        let currentTheme = null;
+        let currentMode = 'dark';
+
+        // Load themes from server
+        async function loadThemes() {
+            try {
+                const response = await fetch('/api/themes');
+                const data = await response.json();
+                availableThemes = data.themes;
+                renderThemeGrid();
+                
+                // Load saved theme from localStorage
+                const savedTheme = localStorage.getItem('selectedTheme');
+                const savedMode = localStorage.getItem('themeMode') || 'dark';
+                
+                if (savedTheme) {
+                    const theme = availableThemes.find(t => t.id === savedTheme);
+                    if (theme) {
+                        applyTheme(theme);
+                    }
+                }
+                
+                currentMode = savedMode;
+                updateModeButtons();
+            } catch (error) {
+                console.error('Failed to load themes:', error);
+            }
+        }
+
+        // Render theme grid
+        function renderThemeGrid() {
+            const grid = document.getElementById('themeGrid');
+            grid.innerHTML = availableThemes.map(theme => `
+                <div class="theme-card ${currentTheme?.id === theme.id ? 'active' : ''}" 
+                     onclick="applyTheme(${JSON.stringify(theme).replace(/"/g, '&quot;')})">
+                    <div class="theme-name">${theme.name}</div>
+                    <div class="theme-preview">
+                        <div class="color-swatch" style="background: ${theme.background}"></div>
+                        <div class="color-swatch" style="background: ${theme.accent}"></div>
+                        <div class="color-swatch" style="background: ${theme.secondary}"></div>
+                        <div class="color-swatch" style="background: ${theme.success}"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Apply theme to page
+        function applyTheme(theme) {
+            currentTheme = theme;
+            
+            // Update CSS variables
+            document.documentElement.style.setProperty('--bg-primary', theme.background);
+            document.documentElement.style.setProperty('--bg-secondary', theme.panel);
+            document.documentElement.style.setProperty('--text-primary', theme.foreground);
+            document.documentElement.style.setProperty('--accent-primary', theme.accent);
+            document.documentElement.style.setProperty('--accent-secondary', theme.secondary);
+            document.documentElement.style.setProperty('--success-color', theme.success);
+            document.documentElement.style.setProperty('--warning-color', theme.warning);
+            document.documentElement.style.setProperty('--error-color', theme.error);
+            document.documentElement.style.setProperty('--border-color', theme.border);
+            
+            // Update body background
+            document.body.style.background = theme.background;
+            
+            // Save to localStorage
+            localStorage.setItem('selectedTheme', theme.id);
+            
+            // Update theme cards
+            renderThemeGrid();
+            
+            // Show notification
+            showNotification(`🎨 Applied ${theme.name} theme!`, 'success');
+        }
+
+        // Toggle theme panel
+        function toggleThemePanel() {
+            const panel = document.getElementById('themePanel');
+            panel.classList.toggle('active');
+        }
+
+        // Switch mode (dark/light/auto)
+        function switchMode(mode) {
+            currentMode = mode;
+            localStorage.setItem('themeMode', mode);
+            updateModeButtons();
+            
+            if (mode === 'auto') {
+                // Check system preference
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const autoTheme = isDark ? 'dracula' : 'github-light';
+                const theme = availableThemes.find(t => t.id === autoTheme);
+                if (theme) applyTheme(theme);
+            } else if (mode === 'light') {
+                // Apply a light theme
+                const lightTheme = availableThemes.find(t => t.id === 'github-light');
+                if (lightTheme) applyTheme(lightTheme);
+            } else {
+                // Apply a dark theme
+                const darkTheme = availableThemes.find(t => t.id === 'dracula');
+                if (darkTheme) applyTheme(darkTheme);
+            }
+        }
+
+        // Update mode button states
+        function updateModeButtons() {
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === currentMode);
+            });
+        }
+
+        // Apply custom theme from color pickers
+        function applyCustomTheme() {
+            const customTheme = {
+                id: 'custom',
+                name: 'Custom Theme',
+                background: document.getElementById('customBg').value,
+                foreground: document.getElementById('customFg').value,
+                accent: document.getElementById('customAccent').value,
+                secondary: document.getElementById('customSecondary').value,
+                success: document.getElementById('customSuccess').value,
+                error: document.getElementById('customError').value,
+                warning: document.getElementById('customSecondary').value,
+                panel: document.getElementById('customBg').value + 'dd',
+                border: document.getElementById('customAccent').value + '33'
+            };
+            
+            applyTheme(customTheme);
+        }
+
+        // Save custom theme to server
+        async function saveCustomTheme() {
+            const customTheme = {
+                name: prompt('Enter a name for your theme:', 'My Custom Theme'),
+                background: document.getElementById('customBg').value,
+                foreground: document.getElementById('customFg').value,
+                accent: document.getElementById('customAccent').value,
+                secondary: document.getElementById('customSecondary').value,
+                success: document.getElementById('customSuccess').value,
+                error: document.getElementById('customError').value,
+                warning: document.getElementById('customSecondary').value,
+                panel: document.getElementById('customBg').value + 'dd',
+                border: document.getElementById('customAccent').value + '33'
+            };
+            
+            if (!customTheme.name) return;
+            
+            try {
+                const response = await fetch('/api/theme/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: 'default',
+                        theme: customTheme
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification(`💾 Saved ${customTheme.name}!`, 'success');
+                    applyTheme(customTheme);
+                }
+            } catch (error) {
+                console.error('Failed to save theme:', error);
+                showNotification('❌ Failed to save theme', 'error');
+            }
+        }
+
+        // Sync color picker inputs
+        ['customBg', 'customFg', 'customAccent', 'customSecondary', 'customSuccess', 'customError'].forEach(id => {
+            const colorInput = document.getElementById(id);
+            const textInput = document.getElementById(id + 'Text');
+            
+            colorInput?.addEventListener('input', (e) => {
+                textInput.value = e.target.value;
+            });
+            
+            textInput?.addEventListener('input', (e) => {
+                if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                    colorInput.value = e.target.value;
+                }
+            });
+        });
+
+        // Show notification helper
+        function showNotification(message, type = 'info') {
+            const existingNotif = document.querySelector('.theme-notification');
+            if (existingNotif) existingNotif.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'theme-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${type === 'success' ? '#00ff88' : '#ff4444'};
+                color: #000;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideInUp 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutDown 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize themes on load
+        loadThemes();
+
+        // =====================
+        // END THEME SYSTEM
+        // =====================
+    </script>
 
 </body>
 </html>
