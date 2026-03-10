@@ -1200,6 +1200,245 @@ app.delete('/api/history', (req, res) => {
     res.json({ success: true, message: 'All history cleared' });
 });
 
+// ==================== TRAINING STUDIO ====================
+
+// In-memory training store (persisted to SQLite)
+const trainingJobsStore = new Map();
+const datasetsStore = new Map();
+
+function initTrainingDB() {
+    const db = taskDB; // reuse taskDB connection (same .blackroad directory)
+    if (!db) return;
+    db.run(`
+        CREATE TABLE IF NOT EXISTS training_jobs (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            base_model TEXT NOT NULL,
+            dataset_id TEXT,
+            dataset_name TEXT,
+            epochs INTEGER DEFAULT 3,
+            learning_rate REAL DEFAULT 0.00002,
+            status TEXT DEFAULT 'pending',
+            current_epoch INTEGER DEFAULT 0,
+            progress INTEGER DEFAULT 0,
+            loss REAL,
+            accuracy REAL,
+            created_at INTEGER DEFAULT (strftime('%s', 'now')),
+            updated_at INTEGER DEFAULT (strftime('%s', 'now')),
+            completed_at INTEGER
+        )
+    `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS training_datasets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            format TEXT DEFAULT 'jsonl',
+            examples INTEGER DEFAULT 0,
+            size_bytes INTEGER DEFAULT 0,
+            preview TEXT,
+            created_at INTEGER DEFAULT (strftime('%s', 'now'))
+        )
+    `);
+    // Load persisted data into memory
+    db.all('SELECT * FROM training_jobs', [], (err, rows) => {
+        if (!err && rows) rows.forEach(r => trainingJobsStore.set(r.id, r));
+    });
+    db.all('SELECT * FROM training_datasets', [], (err, rows) => {
+        if (!err && rows) rows.forEach(r => datasetsStore.set(r.id, r));
+    });
+}
+initTrainingDB();
+
+// Advance running training jobs (called periodically)
+function advanceTrainingJobs() {
+    const now = Math.floor(Date.now() / 1000);
+    trainingJobsStore.forEach((job, id) => {
+        if (job.status !== 'running') return;
+        // Advance progress ~2% every tick (tick = 10s)
+        const newProgress = Math.min(100, (job.progress || 0) + 2);
+        const newEpoch = Math.floor((newProgress / 100) * job.epochs);
+        const done = newProgress >= 100;
+        // Simulate decreasing loss and increasing accuracy
+        const loss = Math.max(0.05, 1.5 - (newProgress / 100) * 1.4 + (Math.random() * 0.05 - 0.025));
+        const accuracy = Math.min(0.99, 0.5 + (newProgress / 100) * 0.48 + (Math.random() * 0.02 - 0.01));
+        const updated = {
+            ...job,
+            progress: newProgress,
+            current_epoch: Math.min(newEpoch, job.epochs),
+            loss: parseFloat(loss.toFixed(3)),
+            accuracy: parseFloat(accuracy.toFixed(3)),
+            status: done ? 'completed' : 'running',
+            updated_at: now,
+            completed_at: done ? now : null
+        };
+        trainingJobsStore.set(id, updated);
+        if (taskDB) {
+            taskDB.run(
+                `UPDATE training_jobs SET progress=?, current_epoch=?, loss=?, accuracy=?, status=?, updated_at=?, completed_at=? WHERE id=?`,
+                [updated.progress, updated.current_epoch, updated.loss, updated.accuracy, updated.status, updated.updated_at, updated.completed_at, id]
+            );
+        }
+    });
+}
+setInterval(advanceTrainingJobs, 10000);
+
+// GET /api/training/stats
+app.get('/api/training/stats', (req, res) => {
+    const jobs = Array.from(trainingJobsStore.values());
+    const datasets = Array.from(datasetsStore.values());
+    const completed = jobs.filter(j => j.status === 'completed');
+    const running = jobs.filter(j => j.status === 'running');
+    const totalExamples = datasets.reduce((sum, d) => sum + (d.examples || 0), 0);
+    const avgAccuracy = completed.length > 0
+        ? completed.reduce((sum, j) => sum + (j.accuracy || 0), 0) / completed.length
+        : null;
+    res.json({
+        totalFineTunedModels: completed.length,
+        totalExamples,
+        activeJobs: running.length,
+        avgAccuracy: avgAccuracy !== null ? (avgAccuracy * 100).toFixed(1) : null
+    });
+});
+
+// GET /api/training/jobs
+app.get('/api/training/jobs', (req, res) => {
+    const jobs = Array.from(trainingJobsStore.values())
+        .sort((a, b) => b.created_at - a.created_at);
+    res.json({ jobs });
+});
+
+// POST /api/training/jobs
+app.post('/api/training/jobs', apiLimiter, (req, res) => {
+    const { name, baseModel, datasetId, epochs = 3, learningRate = 0.00002 } = req.body;
+    if (!name || !baseModel) {
+        return res.status(400).json({ error: 'name and baseModel are required' });
+    }
+    const dataset = datasetId ? datasetsStore.get(datasetId) : null;
+    const id = nanoid();
+    const now = Math.floor(Date.now() / 1000);
+    const job = {
+        id, name,
+        base_model: baseModel,
+        dataset_id: datasetId || null,
+        dataset_name: dataset ? dataset.name : null,
+        epochs: parseInt(epochs),
+        learning_rate: parseFloat(learningRate),
+        status: 'running',
+        current_epoch: 0,
+        progress: 0,
+        loss: null,
+        accuracy: null,
+        created_at: now,
+        updated_at: now,
+        completed_at: null
+    };
+    trainingJobsStore.set(id, job);
+    if (taskDB) {
+        taskDB.run(
+            `INSERT INTO training_jobs (id,name,base_model,dataset_id,dataset_name,epochs,learning_rate,status,current_epoch,progress,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [id, name, baseModel, datasetId||null, dataset?.name||null, epochs, learningRate, 'running', 0, 0, now, now]
+        );
+    }
+    res.status(201).json({ success: true, job });
+});
+
+// GET /api/training/jobs/:id
+app.get('/api/training/jobs/:id', (req, res) => {
+    const job = trainingJobsStore.get(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    res.json({ job });
+});
+
+// POST /api/training/jobs/:id/stop
+app.post('/api/training/jobs/:id/stop', apiLimiter, (req, res) => {
+    const job = trainingJobsStore.get(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    if (job.status !== 'running') return res.status(400).json({ error: 'Job is not running' });
+    const now = Math.floor(Date.now() / 1000);
+    const updated = { ...job, status: 'stopped', updated_at: now };
+    trainingJobsStore.set(job.id, updated);
+    if (taskDB) taskDB.run(`UPDATE training_jobs SET status='stopped', updated_at=? WHERE id=?`, [now, job.id]);
+    res.json({ success: true, job: updated });
+});
+
+// GET /api/training/jobs/:id/logs
+app.get('/api/training/jobs/:id/logs', (req, res) => {
+    const job = trainingJobsStore.get(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    const logs = generateTrainingLogs(job);
+    res.json({ logs });
+});
+
+function generateTrainingLogs(job) {
+    const lines = [];
+    const base = job.created_at * 1000;
+    const ts = (offsetMs) => new Date(base + offsetMs).toISOString().replace('T', ' ').substring(0, 19);
+    lines.push(`[${ts(0)}] 🚀 Training job "${job.name}" started`);
+    lines.push(`[${ts(1000)}] 📦 Base model: ${job.base_model}`);
+    if (job.dataset_name) lines.push(`[${ts(2000)}] 📊 Dataset: ${job.dataset_name}`);
+    lines.push(`[${ts(3000)}] ⚙️  Hyperparameters: epochs=${job.epochs}, lr=${job.learning_rate}`);
+    lines.push(`[${ts(5000)}] 🔄 Preprocessing data...`);
+    const epochsDone = job.current_epoch || 0;
+    for (let e = 1; e <= epochsDone; e++) {
+        const offsetMs = 10000 + (e - 1) * 30000;
+        const loss = Math.max(0.05, 1.5 - (e / job.epochs) * 1.4).toFixed(3);
+        const acc = Math.min(0.99, 0.5 + (e / job.epochs) * 0.48).toFixed(3);
+        lines.push(`[${ts(offsetMs)}] 📈 Epoch ${e}/${job.epochs} — Loss: ${loss} | Accuracy: ${acc}`);
+    }
+    if (job.status === 'completed') {
+        lines.push(`[${ts(10000 + job.epochs * 30000)}] ✅ Training complete! Final accuracy: ${(job.accuracy * 100).toFixed(1)}%`);
+    } else if (job.status === 'stopped') {
+        lines.push(`[${ts(job.updated_at * 1000 - job.created_at * 1000)}] ⛔ Training stopped at epoch ${job.current_epoch}/${job.epochs}`);
+    } else if (job.status === 'running') {
+        lines.push(`[${ts(10000 + epochsDone * 30000)}] ⏳ Training in progress... (${job.progress}%)`);
+    }
+    return lines;
+}
+
+// GET /api/training/datasets
+app.get('/api/training/datasets', (req, res) => {
+    const datasets = Array.from(datasetsStore.values())
+        .sort((a, b) => b.created_at - a.created_at);
+    res.json({ datasets });
+});
+
+// POST /api/training/datasets
+app.post('/api/training/datasets', apiLimiter, (req, res) => {
+    const { name, format = 'jsonl', content } = req.body;
+    if (!name) return res.status(400).json({ error: 'name is required' });
+    let examples = 0;
+    let preview = null;
+    if (content) {
+        try {
+            const lines = content.split('\n').filter(l => l.trim());
+            examples = lines.length;
+            const previewLines = lines.slice(0, 3);
+            preview = previewLines.join('\n');
+        } catch (e) { /* ignore parse errors */ }
+    }
+    const id = nanoid();
+    const now = Math.floor(Date.now() / 1000);
+    const sizeBytes = content ? Buffer.byteLength(content, 'utf8') : 0;
+    const dataset = { id, name, format, examples, size_bytes: sizeBytes, preview, created_at: now };
+    datasetsStore.set(id, dataset);
+    if (taskDB) {
+        taskDB.run(
+            `INSERT INTO training_datasets (id,name,format,examples,size_bytes,preview,created_at) VALUES (?,?,?,?,?,?,?)`,
+            [id, name, format, examples, sizeBytes, preview, now]
+        );
+    }
+    res.status(201).json({ success: true, dataset });
+});
+
+// DELETE /api/training/datasets/:id
+app.delete('/api/training/datasets/:id', apiLimiter, (req, res) => {
+    const id = req.params.id;
+    if (!datasetsStore.has(id)) return res.status(404).json({ error: 'Dataset not found' });
+    datasetsStore.delete(id);
+    if (taskDB) taskDB.run(`DELETE FROM training_datasets WHERE id=?`, [id]);
+    res.json({ success: true });
+});
+
 // ==================== HELPER FUNCTIONS ====================
 
 function getTimeAgo(date) {
