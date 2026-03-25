@@ -1,125 +1,48 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/BlackRoad-OS-FF0066?style=for-the-badge&logo=github&logoColor=white" alt="BlackRoad OS"/>
-</p>
+<!-- BlackRoad SEO Enhanced -->
 
-# BlackRoad AI Platform
+# ulackroad ai platform
 
-[![E2E Tests](https://github.com/BlackRoad-OS/blackroad-ai-platform/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/BlackRoad-OS/blackroad-ai-platform/actions/workflows/e2e-tests.yml)
-[![Playwright](https://img.shields.io/badge/tested%20with-Playwright-45ba4b.svg)](https://playwright.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+> Part of **[BlackRoad OS](https://blackroad.io)** — Sovereign Computing for Everyone
 
-Unified sovereign AI platform combining all BlackRoad AI capabilities. One platform for inference, training, agents, and deployment.
+[![BlackRoad OS](https://img.shields.io/badge/BlackRoad-OS-ff1d6c?style=for-the-badge)](https://blackroad.io)
+[![BlackRoad OS](https://img.shields.io/badge/Org-BlackRoad-OS-2979ff?style=for-the-badge)](https://github.com/BlackRoad-OS)
+[![License](https://img.shields.io/badge/License-Proprietary-f5a623?style=for-the-badge)](LICENSE)
 
-🔗 **Live Site**: [ai.blackroadai.com](https://ai.blackroadai.com)
+**ulackroad ai platform** is part of the **BlackRoad OS** ecosystem — a sovereign, distributed operating system built on edge computing, local AI, and mesh networking by **BlackRoad OS, Inc.**
 
-## ✨ NEW: Live Code Execution (REPL)
+## About BlackRoad OS
 
-⚡ **Run code directly in your browser!**
-- **JavaScript & Python** support with real-time output
-- **Secure sandboxed** execution environment
-- **WebSocket streaming** for instant results
-- **AI Integration** - Run AI-generated code with one click
-- **Execution history** with replay capability
+BlackRoad OS is a sovereign computing platform that runs AI locally on your own hardware. No cloud dependencies. No API keys. No surveillance. Built by [BlackRoad OS, Inc.](https://github.com/BlackRoad-OS-Inc), a Delaware C-Corp founded in 2025.
 
-See [REPL_FEATURE.md](./REPL_FEATURE.md) for full documentation.
+### Key Features
+- **Local AI** — Run LLMs on Raspberry Pi, Hailo-8, and commodity hardware
+- **Mesh Networking** — WireGuard VPN, NATS pub/sub, peer-to-peer communication
+- **Edge Computing** — 52 TOPS of AI acceleration across a Pi fleet
+- **Self-Hosted Everything** — Git, DNS, storage, CI/CD, chat — all sovereign
+- **Zero Cloud Dependencies** — Your data stays on your hardware
 
-## Features
+### The BlackRoad Ecosystem
+| Organization | Focus |
+|---|---|
+| [BlackRoad OS](https://github.com/BlackRoad-OS) | Core platform and applications |
+| [BlackRoad OS, Inc.](https://github.com/BlackRoad-OS-Inc) | Corporate and enterprise |
+| [BlackRoad AI](https://github.com/BlackRoad-AI) | Artificial intelligence and ML |
+| [BlackRoad Hardware](https://github.com/BlackRoad-Hardware) | Edge hardware and IoT |
+| [BlackRoad Security](https://github.com/BlackRoad-Security) | Cybersecurity and auditing |
+| [BlackRoad Quantum](https://github.com/BlackRoad-Quantum) | Quantum computing research |
+| [BlackRoad Agents](https://github.com/BlackRoad-Agents) | Autonomous AI agents |
+| [BlackRoad Network](https://github.com/BlackRoad-Network) | Mesh and distributed networking |
+| [BlackRoad Education](https://github.com/BlackRoad-Education) | Learning and tutoring platforms |
+| [BlackRoad Labs](https://github.com/BlackRoad-Labs) | Research and experiments |
+| [BlackRoad Cloud](https://github.com/BlackRoad-Cloud) | Self-hosted cloud infrastructure |
+| [BlackRoad Forge](https://github.com/BlackRoad-Forge) | Developer tools and utilities |
 
-- **⚡ Live Code REPL** - Execute JavaScript and Python in real-time
-- **Unified API** - Single interface for all AI operations
-- **Model Hub** - Access to 100+ pre-trained models
-- **Agent Orchestration** - Deploy and manage AI agent swarms
-- **Training Pipeline** - End-to-end ML training workflows
-- **Edge Deployment** - Deploy to any device, anywhere
-- **Full Sovereignty** - Your data, your infrastructure, your AI
+### Links
+- **Website**: [blackroad.io](https://blackroad.io)
+- **Documentation**: [docs.blackroad.io](https://docs.blackroad.io)
+- **Chat**: [chat.blackroad.io](https://chat.blackroad.io)
+- **Search**: [search.blackroad.io](https://search.blackroad.io)
 
-## Quick Start
+---
 
-### Visit the Platform
 
-Visit [ai.blackroadai.com](https://ai.blackroadai.com) to try the AI playground with:
-- 4 AI models (Claude Sonnet 4, Llama 3 70B, Mistral Large, GPT-4 Turbo)
-- Interactive parameter controls
-- Real-time response generation
-
-### Local Development
-
-```bash
-# Serve locally
-python3 -m http.server 8080
-
-# Run E2E tests
-npm install
-npx playwright install
-npm test
-
-# Test against production
-BASE_URL=https://ai.blackroadai.com npm test
-```
-
-## Testing
-
-🧪 **Enterprise-Grade Test Suite**: 200+ comprehensive tests
-
-### Test Coverage
-- ✅ **200+ tests** across 12 test suites
-- ✅ **5 browsers/devices** (Chrome, Firefox, Safari, Mobile x2)
-- ✅ **95%+ coverage** of all functionality
-- ✅ **99%+ pass rate** with automated CI/CD
-
-### Test Suites
-- ✅ **Functional Tests** (41) - Model tabs, sliders, generate button, page elements
-- ♿ **Accessibility Tests** (15) - WCAG 2.1 AA compliance, keyboard navigation
-- ⚡ **Performance Tests** (14) - Core Web Vitals, load time, memory optimization
-- 📸 **Visual Regression** (25+) - Screenshot comparison, responsive design
-- 🔄 **Advanced Workflows** (20) - Complex user journeys, error recovery
-- 🔐 **Security Tests** (16) - XSS, SQL injection, CSRF, secure headers
-- 💪 **Load Testing** (10) - Stress testing, memory leaks, concurrency
-- 🎭 **API Mocking** (10) - Error handling, rate limiting, timeouts
-- 📊 **Custom Reporting** - Beautiful HTML reports with metrics
-
-### Quick Test Commands
-```bash
-npm test                    # Run all tests
-npm run test:ui            # Open Playwright UI
-npm run test:a11y          # Accessibility tests
-npm run test:perf          # Performance tests
-npm run test:security      # Security validation
-npm run test:load          # Load & stress testing
-open test-dashboard.html   # View test dashboard
-```
-
-📊 **[View Test Dashboard](./test-dashboard.html)** | 📚 **[Full Testing Docs](./TEST_SUITE_COMPLETE.md)**
-- ✅ **CI/CD** automated testing on every push/PR
-
-```bash
-npm test                    # Run all tests
-npm run test:ui             # Interactive mode
-npm run test:report         # View HTML reports
-```
-
-See [tests/README.md](tests/README.md) for complete testing guide.
-
-## Architecture
-
-```
-┌────────────────────────────────────────────────────┐
-│              BlackRoad AI Platform                  │
-├────────────────────────────────────────────────────┤
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐           │
-│  │ Inference│ │ Training │ │  Agents  │           │
-│  └────┬─────┘ └────┬─────┘ └────┬─────┘           │
-│       └────────────┼────────────┘                  │
-│              ┌─────▼─────┐                         │
-│              │ Model Hub │                         │
-│              └─────┬─────┘                         │
-│              ┌─────▼─────┐                         │
-│              │   Edge    │                         │
-│              └───────────┘                         │
-└────────────────────────────────────────────────────┘
-```
-
-## License
-
-Copyright (c) 2026 BlackRoad OS, Inc. All rights reserved.
-Proprietary software. For licensing: blackroad.systems@gmail.com
